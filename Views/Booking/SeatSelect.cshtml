@@ -1,0 +1,179 @@
+@model SeatSelectVM
+@{
+    ViewData["Title"] = Model.Title;
+    var formatVND = (Func<decimal, string>)ViewBag.FormatVND;
+}
+
+<div class="container" style="padding-top:32px;">
+    <div class="section-head">
+        <div>
+            <h1 class="section-title">@Model.MovieTitle</h1>
+            <p style="color:var(--text-dim); font-size:14px; margin-top:6px;">
+                @Model.RoomName · @Model.StartTime.ToString("dddd, dd/MM HH:mm", new System.Globalization.CultureInfo("vi-VN"))
+            </p>
+        </div>
+        <a href="/phim/@Model.MovieId" class="section-link">← Đổi suất chiếu</a>
+    </div>
+
+    @if (Model.ErrorMessage != null)
+    {
+        <div class="form-error">@Model.ErrorMessage</div>
+    }
+
+    @if (!Model.IsLoggedIn)
+    {
+        <div class="form-error">Vui lòng <a href="/dang-nhap?next=/dat-ve/@Model.ShowtimeId" style="color:#ffb3ba; font-weight:700;">đăng nhập</a> để đặt vé.</div>
+    }
+
+    <form action="/dat-ve/@Model.ShowtimeId/xac-nhan" method="post" id="bookingForm">
+        @Html.AntiForgeryToken()
+    <div class="booking-layout">
+        <div>
+            <div class="screen-curve">
+                <div class="screen-shape"></div>
+                <div class="screen-label">Màn hình</div>
+            </div>
+
+            <div class="seat-map">
+                @foreach (var rowLabel in Model.Rows.Keys)
+                {
+                    <div class="seat-row">
+                        <span class="row-label">@rowLabel</span>
+                        @foreach (var seat in Model.Rows[rowLabel].OrderBy(s => s.ColumnNumber))
+                        {
+                            var typeClass = seat.SeatType == "VIP" ? "type-vip" : (seat.SeatType == "Đôi" ? "type-double" : "");
+                            var taken = seat.Status == "Đã đặt";
+                            <button type="button"
+                                    class="seat @typeClass @(taken ? "taken" : "")"
+                                    data-id="@seat.ShowtimeSeatId"
+                                    data-type="@seat.SeatType"
+                                    data-label="@rowLabel@(seat.ColumnNumber)"
+                                    disabled="@taken">
+                                @seat.ColumnNumber
+                            </button>
+                        }
+                        <span class="row-label">@rowLabel</span>
+                    </div>
+                }
+            </div>
+
+            <div class="seat-legend">
+                <span><span class="swatch" style="background:var(--bg-card); border:1px solid var(--border);"></span>Thường (@formatVND(Model.PriceByType["Thường"]))</span>
+                <span><span class="swatch" style="background:rgba(255,184,77,.15); border:1px solid #a67c00;"></span>VIP (@formatVND(Model.PriceByType["VIP"]))</span>
+                <span><span class="swatch" style="background:rgba(124,58,237,.15); border:1px solid #7c3aed;"></span>Đôi (@formatVND(Model.PriceByType["Đôi"]))</span>
+                <span><span class="swatch" style="background:var(--bg-elevated); opacity:.5;"></span>Đã đặt</span>
+                <span><span class="swatch" style="background:var(--accent);"></span>Đang chọn</span>
+            </div>
+
+            <div class="section" style="margin-top:36px;">
+                <h3 style="font-size:17px; margin-bottom:14px;">🍿 Combo bắp nước</h3>
+                <div class="summary-card" style="position:static;">
+                    @foreach (var c in Model.Combos)
+                    {
+                        <div class="combo-row">
+                            <div>
+                                <div class="name">@c.ComboName</div>
+                                <div class="price">@formatVND(c.Price)</div>
+                            </div>
+                            <div class="qty-control" data-combo-id="@c.ComboId" data-price="@c.Price">
+                                <button type="button" class="qty-minus">−</button>
+                                <span class="qty-val">0</span>
+                                <button type="button" class="qty-plus">+</button>
+                            </div>
+                            <input type="hidden" name="combos[@c.ComboId]" value="0" class="combo-input">
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <div class="summary-card">
+                <h3>Tóm tắt đơn hàng</h3>
+                <div class="summary-row"><span>Ghế đã chọn</span><strong id="seatCount">0</strong></div>
+                <div id="seatList" style="font-size:13px; color:var(--text-dim); margin-bottom:14px;">Chưa chọn ghế nào</div>
+                <div class="summary-row"><span>Tiền vé</span><strong id="ticketTotal">0₫</strong></div>
+                <div class="summary-row"><span>Combo</span><strong id="comboTotal">0₫</strong></div>
+
+                <div class="voucher-input">
+                    <input type="text" name="voucherCode" placeholder="Mã giảm giá (VD: SUMMER10)">
+                </div>
+
+                <div class="summary-total">
+                    <span>Tổng cộng</span>
+                    <span class="val" id="grandTotal">0₫</span>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block" style="margin-top:18px;" id="submitBtn" disabled="@(!Model.IsLoggedIn)">
+                    @(Model.IsLoggedIn ? "Xác nhận đặt vé" : "Đăng nhập để đặt vé")
+                </button>
+            </div>
+        </div>
+    </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        const priceByType = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.PriceByType));
+        const form = document.getElementById('bookingForm');
+        const selectedSeats = new Map();
+
+        function formatVND(n) { return Math.round(n).toLocaleString('vi-VN') + '₫'; }
+
+        document.querySelectorAll('.seat:not(.taken)').forEach(seat => {
+            seat.addEventListener('click', () => {
+                const id = seat.dataset.id;
+                if (selectedSeats.has(id)) {
+                    selectedSeats.delete(id);
+                    seat.classList.remove('selected');
+                } else {
+                    selectedSeats.set(id, { type: seat.dataset.type, label: seat.dataset.label, price: priceByType[seat.dataset.type] });
+                    seat.classList.add('selected');
+                }
+                updateSummary();
+            });
+        });
+
+        document.querySelectorAll('.qty-control').forEach(ctrl => {
+            const input = ctrl.parentElement.querySelector('.combo-input');
+            const valSpan = ctrl.querySelector('.qty-val');
+            let qty = 0;
+            ctrl.querySelector('.qty-plus').addEventListener('click', () => { qty++; valSpan.textContent = qty; input.value = qty; updateSummary(); });
+            ctrl.querySelector('.qty-minus').addEventListener('click', () => { if (qty > 0) qty--; valSpan.textContent = qty; input.value = qty; updateSummary(); });
+        });
+
+        function updateSummary() {
+            document.getElementById('seatCount').textContent = selectedSeats.size;
+            const list = [...selectedSeats.values()].map(s => s.label).join(', ');
+            document.getElementById('seatList').textContent = list || 'Chưa chọn ghế nào';
+
+            let ticketTotal = 0;
+            selectedSeats.forEach(s => ticketTotal += s.price);
+            document.getElementById('ticketTotal').textContent = formatVND(ticketTotal);
+
+            let comboTotal = 0;
+            document.querySelectorAll('.qty-control').forEach(ctrl => {
+                const qty = parseInt(ctrl.querySelector('.qty-val').textContent);
+                comboTotal += qty * parseFloat(ctrl.dataset.price);
+            });
+            document.getElementById('comboTotal').textContent = formatVND(comboTotal);
+            document.getElementById('grandTotal').textContent = formatVND(ticketTotal + comboTotal);
+        }
+
+        form.addEventListener('submit', (e) => {
+            if (selectedSeats.size === 0) {
+                e.preventDefault();
+                alert('Vui lòng chọn ít nhất 1 ghế.');
+                return;
+            }
+            selectedSeats.forEach((val, id) => {
+                const inp = document.createElement('input');
+                inp.type = 'hidden';
+                inp.name = 'seats';
+                inp.value = id;
+                form.appendChild(inp);
+            });
+        });
+    </script>
+}

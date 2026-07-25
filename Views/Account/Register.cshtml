@@ -1,0 +1,36 @@
+@model RegisterVM
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<div class="container auth-wrap">
+    <div class="auth-card">
+        <h1>Tạo tài khoản</h1>
+        <p class="sub">Đăng ký để đặt vé và tích điểm thành viên</p>
+        @if (Model.Error != null)
+        {
+            <div class="form-error">@Model.Error</div>
+        }
+        <form method="post" action="/dang-ky">
+            @Html.AntiForgeryToken()
+            <div class="field">
+                <label>Họ và tên</label>
+                <input type="text" name="fullName" placeholder="Nguyễn Văn A" required>
+            </div>
+            <div class="field">
+                <label>Email</label>
+                <input type="email" name="email" placeholder="ban@email.com" required>
+            </div>
+            <div class="field">
+                <label>Số điện thoại</label>
+                <input type="text" name="phone" placeholder="09xxxxxxxx">
+            </div>
+            <div class="field">
+                <label>Mật khẩu</label>
+                <input type="password" name="password" placeholder="••••••••" required>
+            </div>
+            <button class="btn btn-primary btn-block" type="submit">Đăng ký</button>
+        </form>
+        <div class="auth-alt">Đã có tài khoản? <a href="/dang-nhap">Đăng nhập</a></div>
+    </div>
+</div>

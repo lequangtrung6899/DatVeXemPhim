@@ -1,0 +1,42 @@
+@model MoviesListVM
+@{
+    ViewData["Title"] = Model.Title;
+    var genreSuffix = Model.GenreId.HasValue ? "&genre=" + Model.GenreId : "";
+}
+
+<div class="container" style="padding-top:36px;">
+    <div class="section-head">
+        <h1 class="section-title">@Model.Title</h1>
+    </div>
+
+    <div class="status-tabs">
+        <a href="/phim?status=Đang chiếu@(genreSuffix)" class="@(Model.Status == "Đang chiếu" ? "active" : "")">Đang chiếu</a>
+        <a href="/phim?status=Sắp chiếu@(genreSuffix)" class="@(Model.Status == "Sắp chiếu" ? "active" : "")">Sắp chiếu</a>
+        <a href="/phim?status=Ngừng chiếu@(genreSuffix)" class="@(Model.Status == "Ngừng chiếu" ? "active" : "")">Đã kết thúc</a>
+    </div>
+
+    <div class="genre-filter">
+        <a href="/phim?status=@Uri.EscapeDataString(Model.Status)" class="@(Model.GenreId == null ? "active" : "")">Tất cả thể loại</a>
+        @foreach (var g in Model.Genres)
+        {
+            <a href="/phim?status=@Uri.EscapeDataString(Model.Status)&genre=@g.GenreId" class="@(Model.GenreId == g.GenreId ? "active" : "")">@g.GenreName</a>
+        }
+    </div>
+
+    @if (Model.Movies.Count == 0)
+    {
+        <div class="empty-state">
+            <div class="icon">🎬</div>
+            <p>Không có phim nào trong danh mục này.</p>
+        </div>
+    }
+    else
+    {
+        <div class="movie-grid">
+            @foreach (var movie in Model.Movies)
+            {
+                @await Html.PartialAsync("_MovieCard", movie)
+            }
+        </div>
+    }
+</div>

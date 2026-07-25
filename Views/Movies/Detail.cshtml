@@ -1,0 +1,265 @@
+@model MovieDetailVM
+@{
+    ViewData["Title"] = Model.Title;
+    var movie = Model.Movie;
+    var customer = ViewBag.Customer as Customer;
+    var formatVND = (Func<decimal, string>)ViewBag.FormatVND;
+}
+
+@{
+    var heroGradient = $"linear-gradient(135deg, hsl({(movie.MovieId * 53) % 360},45%,14%), hsl({(movie.MovieId * 53 + 40) % 360},40%,8%))";
+    var posterGradient = $"linear-gradient(135deg, hsl({(movie.MovieId * 53) % 360},40%,20%), hsl({(movie.MovieId * 53 + 40) % 360},35%,10%))";
+    var hasPoster = !string.IsNullOrEmpty(movie.PosterUrl);
+
+    // Prefer accurate data from OMDb (real-world release date / runtime) over the
+    // local SQL seed data, which may use placeholder/fictional dates.
+    DateTime? omdbReleased = null;
+    if (!string.IsNullOrEmpty(Model.Omdb?.Released) && Model.Omdb.Released != "N/A"
+        && DateTime.TryParseExact(Model.Omdb.Released, "d MMM yyyy", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out var parsedReleased))
+    {
+        omdbReleased = parsedReleased;
+    }
+    var effectiveReleaseDate = omdbReleased ?? movie.ReleaseDate;
+
+    int? omdbRuntimeMinutes = null;
+    if (!string.IsNullOrEmpty(Model.Omdb?.Runtime) && Model.Omdb.Runtime != "N/A")
+    {
+        var digits = new string(Model.Omdb.Runtime.TakeWhile(char.IsDigit).ToArray());
+        if (int.TryParse(digits, out var mins)) omdbRuntimeMinutes = mins;
+    }
+    var effectiveDuration = omdbRuntimeMinutes ?? movie.Duration;
+}
+<div class="movie-hero">
+    <div class="movie-hero-bg"
+         style="background:@(hasPoster ? $"url('{movie.PosterUrl}') center/cover, {heroGradient}" : heroGradient);"></div>
+    <div class="container movie-hero-grid">
+        <div class="movie-poster-lg">
+            @if (hasPoster)
+            {
+                <img src="@movie.PosterUrl" alt="@movie.Title"
+                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+            }
+            <div class="poster-fallback" style="position:static; height:100%; display:@(hasPoster ? "none" : "flex"); align-items:center; justify-content:center; background:@posterGradient;">
+                @movie.Title
+            </div>
+        </div>
+        <div>
+            @if (movie.Status == "Đang chiếu")
+            {
+                <span class="status-badge" style="position:static; display:inline-block; margin-bottom:14px;">Đang chiếu</span>
+            }
+            @if (movie.Status == "Sắp chiếu")
+            {
+                <span class="status-badge soon" style="position:static; display:inline-block; margin-bottom:14px;">Sắp chiếu</span>
+            }
+            <h1 class="movie-title-lg">@movie.Title</h1>
+            <div class="movie-tags">
+                @foreach (var g in movie.Genres)
+                {
+                    <span class="tag">@g</span>
+                }
+                <span class="tag">@effectiveDuration phút</span>
+            </div>
+            <div class="movie-stats">
+                <div class="stat-item">
+                    <div class="num">★ @(movie.AvgRating?.ToString() ?? "—")</div>
+                    <div class="label">@movie.ReviewCount đánh giá</div>
+                </div>
+                @if (!string.IsNullOrEmpty(Model.Omdb?.ImdbRating) && Model.Omdb.ImdbRating != "N/A")
+                {
+                    <div class="stat-item">
+                        <div class="num">🌟 @Model.Omdb.ImdbRating</div>
+                        <div class="label">IMDb (@(Model.Omdb.ImdbVotes ?? "—") lượt)</div>
+                    </div>
+                }
+                <div class="stat-item">
+                    <div class="num">@effectiveReleaseDate.ToString("dd/MM/yyyy")</div>
+                    <div class="label">Khởi chiếu</div>
+                </div>
+                <div class="stat-item">
+                    <div class="num">@(effectiveDuration)′</div>
+                    <div class="label">Thời lượng</div>
+                </div>
+            </div>
+            <p class="movie-desc">@movie.Description</p>
+            @if (!string.IsNullOrEmpty(Model.Omdb?.Plot) && Model.Omdb.Plot != "N/A")
+            {
+                <p class="movie-desc movie-desc-original">
+                    <span class="imdb-label">Mô tả gốc (IMDb, tiếng Anh):</span> @Model.Omdb.Plot
+                </p>
+            }
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                <a href="#suat-chieu" class="btn btn-primary">🎟️ Chọn suất chiếu</a>
+                <a href="https://www.youtube.com/results?search_query=@Uri.EscapeDataString(movie.Title + " trailer chính thức")"
+                   target="_blank" rel="noopener" class="btn btn-ghost">▶️ Xem trailer</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+
+    @if (Model.Omdb != null)
+    {
+        <section class="section">
+            <div class="section-head"><h2 class="section-title">Thông tin phim</h2></div>
+            <div class="imdb-info">
+                @if (!string.IsNullOrEmpty(Model.Omdb.Genre) && Model.Omdb.Genre != "N/A")
+                {
+                    <div class="imdb-row"><span class="imdb-label">Thể loại (IMDb)</span><span>@Model.Omdb.Genre</span></div>
+                }
+                @if (!string.IsNullOrEmpty(Model.Omdb.Director) && Model.Omdb.Director != "N/A")
+                {
+                    <div class="imdb-row"><span class="imdb-label">Đạo diễn</span><span>@Model.Omdb.Director</span></div>
+                }
+                @if (!string.IsNullOrEmpty(Model.Omdb.Actors) && Model.Omdb.Actors != "N/A")
+                {
+                    <div class="imdb-row"><span class="imdb-label">Diễn viên</span><span>@Model.Omdb.Actors</span></div>
+                }
+                @if (!string.IsNullOrEmpty(Model.Omdb.Writer) && Model.Omdb.Writer != "N/A")
+                {
+                    <div class="imdb-row"><span class="imdb-label">Biên kịch</span><span>@Model.Omdb.Writer</span></div>
+                }
+                @if (!string.IsNullOrEmpty(Model.Omdb.Country) && Model.Omdb.Country != "N/A")
+                {
+                    <div class="imdb-row"><span class="imdb-label">Quốc gia</span><span>@Model.Omdb.Country</span></div>
+                }
+                @if (!string.IsNullOrEmpty(Model.Omdb.Language) && Model.Omdb.Language != "N/A")
+                {
+                    <div class="imdb-row"><span class="imdb-label">Ngôn ngữ</span><span>@Model.Omdb.Language</span></div>
+                }
+                @if (!string.IsNullOrEmpty(Model.Omdb.Rated) && Model.Omdb.Rated != "N/A")
+                {
+                    <div class="imdb-row"><span class="imdb-label">Nhãn độ tuổi</span><span>@Model.Omdb.Rated</span></div>
+                }
+                @if (!string.IsNullOrEmpty(Model.Omdb.Awards) && Model.Omdb.Awards != "N/A")
+                {
+                    <div class="imdb-row"><span class="imdb-label">Giải thưởng</span><span>@Model.Omdb.Awards</span></div>
+                }
+                @if (!string.IsNullOrEmpty(Model.Omdb.BoxOffice) && Model.Omdb.BoxOffice != "N/A")
+                {
+                    <div class="imdb-row"><span class="imdb-label">Doanh thu</span><span>@Model.Omdb.BoxOffice</span></div>
+                }
+            </div>
+        </section>
+    }
+
+    <section class="section" id="suat-chieu">
+        <div class="section-head"><h2 class="section-title">Lịch chiếu</h2></div>
+
+        @{
+            var dates = Model.ByDate.Keys.ToList();
+        }
+        @if (dates.Count == 0)
+        {
+            <div class="empty-state">
+                <div class="icon">🗓️</div>
+                <p>Hiện chưa có suất chiếu nào được mở bán cho phim này.</p>
+            </div>
+        }
+        else
+        {
+            <div class="showtime-dates">
+                @for (var i = 0; i < dates.Count; i++)
+                {
+                    var d = dates[i];
+                    var dDate = DateTime.Parse(d);
+                    <div class="date-pill @(i == 0 ? "active" : "")" data-date="@d">
+                        @dDate.ToString("ddd dd/MM", new System.Globalization.CultureInfo("vi-VN"))
+                    </div>
+                }
+            </div>
+
+            for (var i = 0; i < dates.Count; i++)
+            {
+                var d = dates[i];
+                <div class="showtime-group @(i == 0 ? "active" : "")" data-date-group="@d">
+                    @foreach (var roomEntry in Model.ByDate[d])
+                    {
+                        <div class="room-block">
+                            <h4>🏛️ @roomEntry.Key</h4>
+                            <div class="time-list">
+                                @foreach (var st in roomEntry.Value)
+                                {
+                                    <a class="time-chip" href="/dat-ve/@st.ShowtimeId">
+                                        @st.StartTime.ToString("HH:mm")
+                                        <span class="price">@(formatVND(st.TicketPrice))+</span>
+                                    </a>
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        }
+    </section>
+
+    <section class="section">
+        <div class="section-head"><h2 class="section-title">Đánh giá từ khán giả</h2></div>
+
+        @if (customer != null)
+        {
+            <form class="review-form" action="/phim/@movie.MovieId/review" method="post" style="margin-bottom:24px;">
+                @Html.AntiForgeryToken()
+                <div class="rating-select">
+                    @foreach (var n in new[] { 5, 4, 3, 2, 1 })
+                    {
+                        <input type="radio" id="star@(n)" name="rating" value="@n" checked="@(n == 5)">
+                        <label for="star@(n)">★</label>
+                    }
+                </div>
+                <textarea name="comment" placeholder="Chia sẻ cảm nhận của bạn về bộ phim..." required></textarea>
+                <div style="margin-top:10px;"><button class="btn btn-primary btn-sm" type="submit">Gửi đánh giá</button></div>
+            </form>
+        }
+        else
+        {
+            <p class="movie-desc"><a href="/dang-nhap?next=/phim/@movie.MovieId" style="color:var(--accent)">Đăng nhập</a> để viết đánh giá cho bộ phim này.</p>
+        }
+
+        @if (Model.Reviews.Count == 0)
+        {
+            <p class="movie-desc">Chưa có đánh giá nào. Hãy là người đầu tiên!</p>
+        }
+        else
+        {
+            foreach (var r in Model.Reviews)
+            {
+                <div class="review-card">
+                    <div class="review-head">
+                        <span class="review-name">@r.FullName</span>
+                        <span class="stars">@(new string('★', r.Rating))@(new string('☆', 5 - r.Rating))</span>
+                    </div>
+                    <p class="review-body">@r.Comment</p>
+                </div>
+            }
+        }
+    </section>
+
+    @if (Model.Related.Count > 0)
+    {
+        <section class="section">
+            <div class="section-head"><h2 class="section-title">Phim liên quan</h2></div>
+            <div class="movie-grid">
+                @foreach (var m in Model.Related)
+                {
+                    @await Html.PartialAsync("_MovieCard", m)
+                }
+            </div>
+        </section>
+    }
+
+</div>
+
+@section Scripts {
+    <script>
+        document.querySelectorAll('.date-pill').forEach(pill => {
+            pill.addEventListener('click', () => {
+                document.querySelectorAll('.date-pill').forEach(p => p.classList.remove('active'));
+                document.querySelectorAll('.showtime-group').forEach(g => g.classList.remove('active'));
+                pill.classList.add('active');
+                document.querySelector('.showtime-group[data-date-group="' + pill.dataset.date + '"]').classList.add('active');
+            });
+        });
+    </script>
+}

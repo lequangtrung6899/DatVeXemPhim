@@ -1,0 +1,30 @@
+@model LoginVM
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<div class="container auth-wrap">
+    <div class="auth-card">
+        <h1>Đăng nhập</h1>
+        <p class="sub">Chào mừng trở lại DatVeXemPhim</p>
+        @if (Model.Error != null)
+        {
+            <div class="form-error">@Model.Error</div>
+        }
+        <form method="post" action="/dang-nhap">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="next" value="@Model.Next">
+            <div class="field">
+                <label>Email</label>
+                <input type="email" name="email" placeholder="ban@email.com" required>
+            </div>
+            <div class="field">
+                <label>Mật khẩu</label>
+                <input type="password" name="password" placeholder="••••••••" required>
+            </div>
+            <button class="btn btn-primary btn-block" type="submit">Đăng nhập</button>
+        </form>
+        <p class="demo-note">Demo: dùng email <strong>levanan@gmail.com</strong> (hoặc bất kỳ email nào đã đăng ký) với mật khẩu bất kỳ.</p>
+        <div class="auth-alt">Chưa có tài khoản? <a href="/dang-ky">Đăng ký ngay</a></div>
+    </div>
+</div>

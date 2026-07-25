@@ -1,0 +1,33 @@
+@model SearchVM
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<div class="container" style="padding-top:32px;">
+    <div class="section-head">
+        <h1 class="section-title">Kết quả tìm kiếm @(!string.IsNullOrEmpty(Model.Q) ? $"cho \"{Model.Q}\"" : "")</h1>
+    </div>
+
+    <form class="search-form" action="/tim-kiem" method="get" style="width:100%; max-width:420px; margin-bottom:28px;">
+        <button type="submit">🔍</button>
+        <input type="text" name="q" value="@Model.Q" placeholder="Tìm phim...">
+    </form>
+
+    @if (string.IsNullOrEmpty(Model.Q))
+    {
+        <div class="empty-state"><div class="icon">🔍</div><p>Nhập tên phim để tìm kiếm.</p></div>
+    }
+    else if (Model.Movies.Count == 0)
+    {
+        <div class="empty-state"><div class="icon">🎬</div><p>Không tìm thấy phim nào phù hợp.</p></div>
+    }
+    else
+    {
+        <div class="movie-grid">
+            @foreach (var movie in Model.Movies)
+            {
+                @await Html.PartialAsync("_MovieCard", movie)
+            }
+        </div>
+    }
+</div>

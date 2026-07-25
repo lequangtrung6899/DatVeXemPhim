@@ -1,0 +1,38 @@
+@model MyTicketsVM
+@{
+    ViewData["Title"] = Model.Title;
+    var formatVND = (Func<decimal, string>)ViewBag.FormatVND;
+}
+
+<div class="container" style="padding-top:32px;">
+    <div class="section-head"><h1 class="section-title">Vé của tôi</h1></div>
+
+    @if (Model.Tickets.Count == 0)
+    {
+        <div class="empty-state">
+            <div class="icon">🎟️</div>
+            <p>Bạn chưa đặt vé nào.</p>
+            <a href="/" class="btn btn-primary" style="margin-top:14px;">Khám phá phim ngay</a>
+        </div>
+    }
+    else
+    {
+        <div style="display:flex; flex-direction:column; gap:14px;">
+            @foreach (var t in Model.Tickets)
+            {
+                <a href="/ve/@t.TicketId" class="review-card" style="display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <div class="review-name">@t.Title</div>
+                        <div style="color:var(--text-dim); font-size:13px; margin-top:4px;">
+                            @t.StartTime.ToString("dd/MM/yyyy HH:mm") · Vé #@t.TicketId
+                        </div>
+                    </div>
+                    <div style="text-align:right;">
+                        <div style="font-weight:800; color:var(--accent);">@formatVND(t.TotalAmount)</div>
+                        <div class="badge-inline" style="margin-top:6px;">@t.Status</div>
+                    </div>
+                </a>
+            }
+        </div>
+    }
+</div>

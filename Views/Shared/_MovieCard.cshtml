@@ -1,0 +1,35 @@
+@model MovieCardVM
+
+<a href="/phim/@Model.MovieId" class="movie-card">
+    <div class="poster-wrap">
+        @if (Model.Status == "Đang chiếu")
+        {
+            <span class="status-badge">Đang chiếu</span>
+        }
+        else if (Model.Status == "Sắp chiếu")
+        {
+            <span class="status-badge soon">Sắp chiếu</span>
+        }
+        @if (Model.AvgRating != null)
+        {
+            <span class="rating-badge">★ @Model.AvgRating</span>
+        }
+        @if (!string.IsNullOrEmpty(Model.PosterUrl))
+        {
+            <img src="@Model.PosterUrl" alt="@Model.Title" loading="lazy"
+                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+            <div class="poster-fallback" style="display:none;">@Model.Title</div>
+        }
+        else
+        {
+            <div class="poster-fallback">@Model.Title</div>
+        }
+    </div>
+    <div class="card-body">
+        <p class="card-title">@Model.Title</p>
+        <div class="card-meta">
+            <span>@Model.Duration phút</span>
+            <span>@string.Join(", ", Model.Genres.Take(2))</span>
+        </div>
+    </div>
+</a>

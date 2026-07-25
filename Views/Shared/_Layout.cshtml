@@ -1,0 +1,97 @@
+@{
+    var customer = ViewBag.Customer as Customer;
+    var path = (string)(ViewBag.Path ?? "/");
+}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"] · DatVeXemPhim</title>
+    <link rel="stylesheet" href="~/css/style.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="container header-inner">
+            <a href="/" class="logo">
+                <span class="mark">🎬</span>
+                <span>Dat<span class="brand-sub">Ve</span>XemPhim</span>
+            </a>
+            <nav class="main-nav">
+                <a href="/phim?status=Đang chiếu" class="@(path.StartsWith("/phim") ? "active" : "")">Phim đang chiếu</a>
+                <a href="/phim?status=Sắp chiếu">Phim sắp chiếu</a>
+                <a href="/#rap">Cụm rạp</a>
+                <a href="/#uu-dai">Ưu đãi</a>
+            </nav>
+            <form class="search-form" action="/tim-kiem" method="get">
+                <button type="submit" aria-label="Tìm kiếm">🔍</button>
+                <input type="text" name="q" placeholder="Tìm phim...">
+            </form>
+            <div class="header-actions">
+                @if (customer != null)
+                {
+                    <a href="/tai-khoan/ve-cua-toi" class="user-chip">
+                        <span class="avatar">@customer.FullName.Substring(0, 1)</span>
+                        <span>@customer.FullName.Split(' ').Last()</span>
+                    </a>
+                    <form action="/dang-xuat" method="post" style="margin:0">
+                        @Html.AntiForgeryToken()
+                        <button class="btn btn-ghost btn-sm" type="submit">Đăng xuất</button>
+                    </form>
+                }
+                else
+                {
+                    <a href="/dang-nhap" class="btn btn-ghost btn-sm">Đăng nhập</a>
+                    <a href="/dang-ky" class="btn btn-primary btn-sm">Đăng ký</a>
+                }
+            </div>
+        </div>
+    </header>
+
+    @RenderBody()
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <div class="logo" style="margin-bottom:14px;">
+                        <span class="mark">🎬</span>
+                        <span>Dat<span class="brand-sub">Ve</span>XemPhim</span>
+                    </div>
+                    <p style="max-width:280px; font-size:13.5px;">Đặt vé xem phim nhanh chóng, chọn ghế trực tuyến và nhận ưu đãi thành viên mỗi ngày.</p>
+                </div>
+                <div>
+                    <h4>Khám phá</h4>
+                    <ul>
+                        <li><a href="/phim?status=Đang chiếu">Phim đang chiếu</a></li>
+                        <li><a href="/phim?status=Sắp chiếu">Phim sắp chiếu</a></li>
+                        <li><a href="/tim-kiem">Tìm kiếm</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>Tài khoản</h4>
+                    <ul>
+                        <li><a href="/dang-nhap">Đăng nhập</a></li>
+                        <li><a href="/dang-ky">Đăng ký</a></li>
+                        <li><a href="/tai-khoan/ve-cua-toi">Vé của tôi</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>Hỗ trợ</h4>
+                    <ul>
+                        <li><a href="#">Câu hỏi thường gặp</a></li>
+                        <li><a href="#">Chính sách đổi/trả vé</a></li>
+                        <li><a href="#">Liên hệ</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <span>© 2026 DatVeXemPhim — Demo project built on the provided database schema.</span>
+                <span>ASP.NET Core MVC edition</span>
+            </div>
+        </div>
+    </footer>
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

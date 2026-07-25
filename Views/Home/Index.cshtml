@@ -1,0 +1,109 @@
+@model HomeVM
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<section class="hero">
+    @for (var i = 0; i < Model.Hero.Count; i++)
+    {
+        <div class="hero-slide @(i == 0 ? "active" : "")" data-idx="@i"
+             style="background-image: linear-gradient(135deg, hsl(@((i * 67) % 360),45%,18%), hsl(@((i * 67 + 40) % 360),40%,10%));"></div>
+    }
+    <div class="container hero-content">
+        @if (Model.Hero.Count > 0)
+        {
+            var m = Model.Hero[0];
+            var desc = m.Description ?? "";
+            var shortDesc = desc.Length > 160 ? desc.Substring(0, 160) + "…" : desc;
+            <span class="hero-badge">🔥 Đang chiếu</span>
+            <h1 class="hero-title">@m.Title</h1>
+            <div class="hero-meta">
+                <span>@m.Duration phút</span>
+                <span class="dot">@string.Join(", ", m.Genres)</span>
+                @if (m.AvgRating != null)
+                {
+                    <span class="dot">★ @m.AvgRating (@m.ReviewCount đánh giá)</span>
+                }
+            </div>
+            <p class="hero-desc">@shortDesc</p>
+            <div class="hero-actions">
+                <a href="/phim/@m.MovieId" class="btn btn-primary">🎟️ Đặt vé ngay</a>
+                <a href="/phim/@m.MovieId" class="btn btn-ghost">Xem chi tiết</a>
+            </div>
+        }
+    </div>
+    <div class="hero-dots">
+        @for (var i = 0; i < Model.Hero.Count; i++)
+        {
+            <span class="@(i == 0 ? "active" : "")" data-idx="@i"></span>
+        }
+    </div>
+</section>
+
+<div class="container">
+
+    <section class="section" id="dang-chieu">
+        <div class="section-head">
+            <h2 class="section-title">Phim <span class="accent">đang chiếu</span></h2>
+            <a href="/phim?status=Đang chiếu" class="section-link">Xem tất cả →</a>
+        </div>
+        <div class="movie-grid">
+            @foreach (var movie in Model.NowShowing.Take(10))
+            {
+                @await Html.PartialAsync("_MovieCard", movie)
+            }
+        </div>
+    </section>
+
+    <section class="section" id="sap-chieu">
+        <div class="section-head">
+            <h2 class="section-title">Phim <span class="accent">sắp chiếu</span></h2>
+            <a href="/phim?status=Sắp chiếu" class="section-link">Xem tất cả →</a>
+        </div>
+        <div class="movie-grid">
+            @foreach (var movie in Model.ComingSoon.Take(10))
+            {
+                @await Html.PartialAsync("_MovieCard", movie)
+            }
+        </div>
+    </section>
+
+    <section class="section" id="uu-dai">
+        <div class="section-head">
+            <h2 class="section-title">Ưu đãi <span class="accent">thành viên</span></h2>
+        </div>
+        <div class="movie-grid" style="grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));">
+            <div class="review-card">
+                <h3 style="margin:0 0 8px;">🎁 SUMMER10</h3>
+                <p class="review-body">Giảm 10% cho đơn từ 100.000₫. Áp dụng đến 31/08.</p>
+            </div>
+            <div class="review-card">
+                <h3 style="margin:0 0 8px;">🎁 GIAM20K</h3>
+                <p class="review-body">Giảm ngay 20.000₫ cho đơn từ 150.000₫ trong tháng 7.</p>
+            </div>
+            <div class="review-card">
+                <h3 style="margin:0 0 8px;">🎁 VE50K</h3>
+                <p class="review-body">Giảm 50.000₫ cho đơn từ 250.000₫. Nhập mã tại bước thanh toán.</p>
+            </div>
+        </div>
+    </section>
+
+</div>
+
+@section Scripts {
+    <script>
+        const slides = document.querySelectorAll('.hero-slide');
+        const dots = document.querySelectorAll('.hero-dots span');
+        let idx = 0;
+        function show(i) {
+            slides.forEach(s => s.classList.remove('active'));
+            dots.forEach(d => d.classList.remove('active'));
+            slides[i]?.classList.add('active');
+            dots[i]?.classList.add('active');
+        }
+        dots.forEach(d => d.addEventListener('click', () => { idx = parseInt(d.dataset.idx); show(idx); }));
+        if (slides.length > 1) {
+            setInterval(() => { idx = (idx + 1) % slides.length; show(idx); }, 5000);
+        }
+    </script>
+}
