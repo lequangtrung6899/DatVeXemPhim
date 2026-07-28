@@ -1,0 +1,19 @@
+@model DatVeXemPhim.Models.Genre
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = Model.GenreId == 0 ? "Thêm thể loại" : "Sửa thể loại";
+}
+<h1>@ViewData["Title"]</h1>
+
+<form class="admin-form" method="post" action="/quan-tri/the-loai/luu">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="genreId" value="@Model.GenreId">
+
+    <label>Tên thể loại</label>
+    <input type="text" name="genreName" value="@Model.GenreName" required>
+
+    <div class="admin-actions">
+        <button type="submit" class="btn btn-primary">Lưu</button>
+        <a href="/quan-tri/the-loai" class="btn btn-ghost">Hủy</a>
+    </div>
+</form>

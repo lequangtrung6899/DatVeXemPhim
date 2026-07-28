@@ -1,0 +1,85 @@
+@model DatVeXemPhim.Models.ViewModels.AdminRoomSeatsVM
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Quản lý ghế · " + Model.Room.RoomName;
+}
+<div class="admin-toolbar">
+    <h1 style="margin:0;">Quản lý ghế — @Model.Room.RoomName</h1>
+    <a href="/quan-tri/phong-chieu" class="btn btn-ghost btn-sm">← Danh sách phòng</a>
+</div>
+
+@if (Model.Seats.Count == 0)
+{
+    <div class="admin-form" style="margin-bottom:20px;">
+        <h2 style="font-size:15px; margin:0 0 10px;">Tạo lưới ghế tự động</h2>
+        <form method="post" action="/quan-tri/phong-chieu/@Model.Room.RoomId/ghe/tao-luoi">
+            @Html.AntiForgeryToken()
+            <label>Các hàng (phân cách bởi dấu phẩy, ví dụ: A,B,C,D)</label>
+            <input type="text" name="rows" placeholder="A,B,C,D,E,F" required>
+
+            <label>Số cột mỗi hàng</label>
+            <input type="number" name="columns" value="10" min="1" required>
+
+            <label>Loại ghế mặc định</label>
+            <select name="seatType">
+                <option value="Thường">Thường</option>
+                <option value="VIP">VIP</option>
+                <option value="Đôi">Đôi</option>
+            </select>
+
+            <div class="admin-actions">
+                <button type="submit" class="btn btn-primary">Tạo lưới ghế</button>
+            </div>
+        </form>
+    </div>
+}
+else
+{
+    <div class="admin-form" style="margin-bottom:20px;">
+        <h2 style="font-size:15px; margin:0 0 10px;">Thêm một ghế</h2>
+        <form method="post" action="/quan-tri/phong-chieu/@Model.Room.RoomId/ghe/them">
+            @Html.AntiForgeryToken()
+            <div style="display:flex; gap:10px;">
+                <div style="flex:1;">
+                    <label>Hàng</label>
+                    <input type="text" name="rowLabel" maxlength="5" required>
+                </div>
+                <div style="flex:1;">
+                    <label>Cột</label>
+                    <input type="number" name="columnNumber" min="1" required>
+                </div>
+                <div style="flex:1;">
+                    <label>Loại ghế</label>
+                    <select name="seatType">
+                        <option value="Thường">Thường</option>
+                        <option value="VIP">VIP</option>
+                        <option value="Đôi">Đôi</option>
+                    </select>
+                </div>
+            </div>
+            <div class="admin-actions">
+                <button type="submit" class="btn btn-primary btn-sm">Thêm ghế</button>
+            </div>
+        </form>
+    </div>
+
+    <table class="admin-table">
+        <thead><tr><th>Hàng</th><th>Cột</th><th>Loại ghế</th><th></th></tr></thead>
+        <tbody>
+            @foreach (var s in Model.Seats)
+            {
+                <tr>
+                    <td>@s.RowLabel</td>
+                    <td>@s.ColumnNumber</td>
+                    <td>@s.SeatType</td>
+                    <td>
+                        <form class="admin-inline-form" method="post" action="/quan-tri/phong-chieu/@Model.Room.RoomId/ghe/@s.SeatId/xoa" onsubmit="return confirm('Xóa ghế này?');">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-ghost btn-sm admin-link-danger">Xóa</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

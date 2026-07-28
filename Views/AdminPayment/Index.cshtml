@@ -1,0 +1,68 @@
+@model List<DatVeXemPhim.Models.ViewModels.AdminPaymentRow>
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Quản lý thanh toán";
+    string? status = ViewBag.Status;
+    string? q = ViewBag.Q;
+}
+<h1>Quản lý thanh toán</h1>
+
+<form method="get" class="admin-search-form" style="margin-bottom:16px;">
+    <select name="status">
+        <option value="">-- Tất cả trạng thái --</option>
+        @foreach (var s in new[] { "Thành công", "Chờ xử lý", "Thất bại", "Đã hoàn tiền" })
+        {
+            <option value="@s" selected="@(status == s)">@s</option>
+        }
+    </select>
+    <input type="text" name="q" placeholder="Mã GD / tên khách / mã vé..." value="@q">
+    <button type="submit" class="btn btn-ghost btn-sm">Lọc</button>
+</form>
+
+@if (Model.Count == 0)
+{
+    <div class="admin-empty">Không có giao dịch nào phù hợp.</div>
+}
+else
+{
+    <table class="admin-table">
+        <thead><tr><th>Mã GD</th><th>Vé</th><th>Khách hàng</th><th>Phim</th><th>Số tiền</th><th>Phương thức</th><th>Trạng thái</th><th>Ngày</th><th></th></tr></thead>
+        <tbody>
+            @foreach (var p in Model)
+            {
+                <tr>
+                    <td>@p.TransactionCode</td>
+                    <td><a href="/quan-tri/ho-tro?ticketId=@p.TicketId" style="color:inherit;">#@p.TicketId</a></td>
+                    <td>@p.CustomerName</td>
+                    <td>@p.MovieTitle</td>
+                    <td>@ViewBag.FormatVND(p.Amount)</td>
+                    <td>@p.PaymentMethod</td>
+                    <td>
+                        @{
+                            var badge = p.PaymentStatus switch
+                            {
+                                "Thành công" => "admin-badge-ok",
+                                "Chờ xử lý" => "admin-badge-warn",
+                                "Thất bại" => "admin-badge-danger",
+                                _ => "admin-badge-muted"
+                            };
+                        }
+                        <span class="admin-badge @badge">@p.PaymentStatus</span>
+                    </td>
+                    <td>@p.PaymentDate.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>
+                        <form class="admin-inline-form" method="post" action="/quan-tri/thanh-toan/@p.PaymentId/cap-nhat">
+                            @Html.AntiForgeryToken()
+                            <select name="paymentStatus" onchange="this.form.submit()">
+                                @foreach (var s in new[] { "Thành công", "Chờ xử lý", "Thất bại", "Đã hoàn tiền" })
+                                {
+                                    <option value="@s" selected="@(p.PaymentStatus == s)">@s</option>
+                                }
+                            </select>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

@@ -1,0 +1,50 @@
+@model DatVeXemPhim.Models.ViewModels.AdminShowtimeEditVM
+@{
+    Layout = "_AdminLayout";
+    var s = Model.Showtime;
+    ViewData["Title"] = s.ShowtimeId == 0 ? "Thêm suất chiếu" : "Sửa suất chiếu";
+}
+<h1>@ViewData["Title"]</h1>
+
+<form class="admin-form" method="post" action="/quan-tri/suat-chieu/luu">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="showtimeId" value="@s.ShowtimeId">
+
+    <label>Phim</label>
+    <select name="movieId" required>
+        @foreach (var m in Model.Movies)
+        {
+            <option value="@m.MovieId" selected="@(s.MovieId == m.MovieId)">@m.Title</option>
+        }
+    </select>
+
+    <label>Phòng chiếu</label>
+    <select name="roomId" required>
+        @foreach (var r in Model.Rooms)
+        {
+            <option value="@r.RoomId" selected="@(s.RoomId == r.RoomId)">@r.RoomName</option>
+        }
+    </select>
+
+    <label>Bắt đầu</label>
+    <input type="datetime-local" name="startTime" value="@s.StartTime.ToString("yyyy-MM-ddTHH:mm")" required>
+
+    <label>Kết thúc</label>
+    <input type="datetime-local" name="endTime" value="@s.EndTime.ToString("yyyy-MM-ddTHH:mm")" required>
+
+    <label>Giá vé cơ bản (ghế Thường)</label>
+    <input type="number" name="ticketPrice" value="@s.TicketPrice" min="0" step="1000" required>
+
+    <label>Trạng thái</label>
+    <select name="status">
+        @foreach (var st in new[] { "Sắp chiếu", "Đang chiếu", "Đã kết thúc", "Đã hủy" })
+        {
+            <option value="@st" selected="@(s.Status == st)">@st</option>
+        }
+    </select>
+
+    <div class="admin-actions">
+        <button type="submit" class="btn btn-primary">Lưu</button>
+        <a href="/quan-tri/suat-chieu" class="btn btn-ghost">Hủy</a>
+    </div>
+</form>

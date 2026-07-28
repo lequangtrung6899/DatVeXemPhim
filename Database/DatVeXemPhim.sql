@@ -1,4 +1,12 @@
-﻿USE [master]
+﻿-- ĐÃ CHUYỂN SANG CODE FIRST (EF Core Migrations).
+-- File này chỉ còn giá trị THAM KHẢO lịch sử — không cần chạy file này nữa để tạo database.
+-- Schema và dữ liệu mẫu bây giờ được định nghĩa hoàn toàn trong code:
+--   - Cấu trúc bảng: Models/*.cs + Data/ApplicationDbContext.cs (Fluent API)
+--   - Dữ liệu mẫu:   Data/ApplicationDbContext.cs (OnModelCreating -> HasData)
+-- Cách tạo database mới: xem hướng dẫn trong README.md (mục "Code First / Migrations").
+-- ---------------------------------------------------------------------------------------
+
+USE [master]
 GO
 /****** Object:  Database [DatVeXemPhim]    Script Date: 12/07/2026 5:20:21 CH ******/
 CREATE DATABASE [DatVeXemPhim]

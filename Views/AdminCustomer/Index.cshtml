@@ -1,0 +1,42 @@
+@model List<DatVeXemPhim.Models.Customer>
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Quản lý khách hàng";
+}
+<h1>Quản lý khách hàng</h1>
+
+<form method="get" class="admin-search-form" style="margin-bottom:16px;">
+    <input type="text" name="q" placeholder="Tìm theo tên hoặc email..." value="@ViewBag.Q">
+    <button type="submit" class="btn btn-ghost btn-sm">Tìm</button>
+</form>
+
+@if (Model.Count == 0)
+{
+    <div class="admin-empty">Không tìm thấy khách hàng nào.</div>
+}
+else
+{
+    <table class="admin-table">
+        <thead><tr><th>Họ tên</th><th>Email</th><th>SĐT</th><th>Hạng thành viên</th><th>Điểm tích lũy</th><th>Trạng thái</th><th></th></tr></thead>
+        <tbody>
+            @foreach (var c in Model)
+            {
+                <tr>
+                    <td><a href="/quan-tri/khach-hang/@c.CustomerId" style="color:inherit;">@c.FullName</a></td>
+                    <td>@c.Email</td>
+                    <td>@c.Phone</td>
+                    <td>@c.MembershipRank</td>
+                    <td>@c.LoyaltyPoint</td>
+                    <td><span class="admin-badge @(c.IsActive ? "admin-badge-ok" : "admin-badge-danger")">@(c.IsActive ? "Hoạt động" : "Đã khóa")</span></td>
+                    <td>
+                        <a href="/quan-tri/khach-hang/@c.CustomerId" class="btn btn-ghost btn-sm">Chi tiết</a>
+                        <form class="admin-inline-form" method="post" action="/quan-tri/khach-hang/@c.CustomerId/khoa">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-ghost btn-sm @(c.IsActive ? "admin-link-danger" : "")">@(c.IsActive ? "Khóa" : "Mở khóa")</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

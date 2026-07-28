@@ -1,0 +1,80 @@
+@using DatVeXemPhim.Models
+@{
+    var staff = ViewBag.Staff as User;
+    var path = (string)(ViewBag.AdminPath ?? "/quan-tri");
+    bool IsActive(string prefix) => path.StartsWith(prefix, StringComparison.OrdinalIgnoreCase);
+    var isAdminRole = staff != null && staff.Role.RoleName == "Admin";
+}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"] · Quản trị DatVeXemPhim</title>
+    <link rel="stylesheet" href="~/css/style.css">
+    <link rel="stylesheet" href="~/css/admin.css">
+</head>
+<body class="admin-body">
+    <div class="admin-shell">
+        <aside class="admin-sidebar">
+            <a href="/quan-tri" class="admin-logo">🎬 Quản trị</a>
+            <nav class="admin-nav">
+                <div class="admin-nav-group">Tổng quan</div>
+                <a href="/quan-tri" class="@(path == "/quan-tri" ? "active" : "")">Thống kê báo cáo</a>
+
+                <div class="admin-nav-group">Nội dung</div>
+                <a href="/quan-tri/phim" class="@(IsActive("/quan-tri/phim") ? "active" : "")">Quản lý phim</a>
+                <a href="/quan-tri/the-loai" class="@(IsActive("/quan-tri/the-loai") ? "active" : "")">Quản lý thể loại</a>
+                <a href="/quan-tri/danh-gia" class="@(IsActive("/quan-tri/danh-gia") ? "active" : "")">Quản lý đánh giá</a>
+
+                <div class="admin-nav-group">Rạp &amp; suất chiếu</div>
+                <a href="/quan-tri/phong-chieu" class="@(IsActive("/quan-tri/phong-chieu") ? "active" : "")">Quản lý phòng chiếu</a>
+                <a href="/quan-tri/suat-chieu" class="@(IsActive("/quan-tri/suat-chieu") ? "active" : "")">Quản lý suất chiếu</a>
+
+                <div class="admin-nav-group">Kinh doanh</div>
+                <a href="/quan-tri/combo" class="@(IsActive("/quan-tri/combo") ? "active" : "")">Quản lý Combo</a>
+                <a href="/quan-tri/voucher" class="@(IsActive("/quan-tri/voucher") ? "active" : "")">Quản lý Voucher</a>
+                <a href="/quan-tri/thanh-toan" class="@(IsActive("/quan-tri/thanh-toan") ? "active" : "")">Quản lý thanh toán</a>
+
+                <div class="admin-nav-group">Khách hàng &amp; hỗ trợ</div>
+                <a href="/quan-tri/khach-hang" class="@(IsActive("/quan-tri/khach-hang") ? "active" : "")">Quản lý khách hàng</a>
+                <a href="/quan-tri/ho-tro" class="@(IsActive("/quan-tri/ho-tro") ? "active" : "")">Hỗ trợ khách hàng</a>
+
+                @if (isAdminRole)
+                {
+                    <div class="admin-nav-group">Quản trị hệ thống</div>
+                    <a href="/quan-tri/nhan-vien" class="@(IsActive("/quan-tri/nhan-vien") ? "active" : "")">Quản lý tài khoản nhân viên</a>
+                    <a href="/quan-tri/vai-tro" class="@(IsActive("/quan-tri/vai-tro") ? "active" : "")">Quản lý vai trò</a>
+                }
+            </nav>
+        </aside>
+
+        <div class="admin-main">
+            <header class="admin-topbar">
+                <div></div>
+                <div class="admin-topbar-user">
+                    @if (staff != null)
+                    {
+                        <span>@staff.FullName <em>(@staff.Role.RoleName)</em></span>
+                        <form action="/quan-tri/dang-xuat" method="post" style="margin:0">
+                            @Html.AntiForgeryToken()
+                            <button class="btn btn-ghost btn-sm" type="submit">Đăng xuất</button>
+                        </form>
+                    }
+                </div>
+            </header>
+            <main class="admin-content">
+                @if (TempData["Success"] != null)
+                {
+                    <div class="admin-alert admin-alert-success">@TempData["Success"]</div>
+                }
+                @if (TempData["Error"] != null)
+                {
+                    <div class="admin-alert admin-alert-error">@TempData["Error"]</div>
+                }
+                @RenderBody()
+            </main>
+        </div>
+    </div>
+</body>
+</html>

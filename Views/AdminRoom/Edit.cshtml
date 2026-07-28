@@ -1,0 +1,29 @@
+@model DatVeXemPhim.Models.Room
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = Model.RoomId == 0 ? "Thêm phòng chiếu" : "Sửa phòng chiếu";
+}
+<h1>@ViewData["Title"]</h1>
+
+<form class="admin-form" method="post" action="/quan-tri/phong-chieu/luu">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="roomId" value="@Model.RoomId">
+
+    <label>Tên phòng</label>
+    <input type="text" name="roomName" value="@Model.RoomName" required>
+
+    <label>Tổng số ghế</label>
+    <input type="number" name="totalSeats" value="@Model.TotalSeats" min="0" required>
+    <p style="font-size:12.5px; color:#9aa0ad; margin-top:6px;">Số này chỉ mang tính tham khảo — số ghế thật sự được quản lý ở màn hình "Quản lý ghế".</p>
+
+    <div class="admin-check">
+        <input type="hidden" name="isActive" value="false">
+        <input type="checkbox" name="isActive" value="true" checked="@Model.IsActive" onclick="this.previousElementSibling.disabled=this.checked">
+        <label style="margin:0;">Đang hoạt động</label>
+    </div>
+
+    <div class="admin-actions">
+        <button type="submit" class="btn btn-primary">Lưu</button>
+        <a href="/quan-tri/phong-chieu" class="btn btn-ghost">Hủy</a>
+    </div>
+</form>

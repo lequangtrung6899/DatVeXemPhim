@@ -1,0 +1,61 @@
+@model DatVeXemPhim.Models.ViewModels.AdminDashboardVM
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Thống kê báo cáo";
+}
+<h1>Thống kê báo cáo</h1>
+
+<form method="get" class="admin-search-form" style="margin-bottom:20px;">
+    <label style="margin:0; align-self:center; font-size:13.5px;">Từ ngày</label>
+    <input type="date" name="from" value="@Model.From.ToString("yyyy-MM-dd")">
+    <label style="margin:0; align-self:center; font-size:13.5px;">Đến ngày</label>
+    <input type="date" name="to" value="@Model.To.ToString("yyyy-MM-dd")">
+    <button type="submit" class="btn btn-primary btn-sm">Xem báo cáo</button>
+</form>
+
+<div class="admin-stat-grid">
+    <div class="admin-stat-card">
+        <div class="label">Doanh thu (đã thanh toán)</div>
+        <div class="value">@ViewBag.FormatVND(Model.TotalRevenue)</div>
+    </div>
+    <div class="admin-stat-card">
+        <div class="label">Vé đã bán</div>
+        <div class="value">@Model.TotalTickets</div>
+    </div>
+    <div class="admin-stat-card">
+        <div class="label">Vé đã hủy</div>
+        <div class="value">@Model.CancelledTickets</div>
+    </div>
+    <div class="admin-stat-card">
+        <div class="label">Khách hàng mới</div>
+        <div class="value">@Model.NewCustomers</div>
+    </div>
+    <div class="admin-stat-card">
+        <div class="label">Đánh giá chờ duyệt</div>
+        <div class="value">@Model.PendingReviews</div>
+    </div>
+</div>
+
+<h2 style="font-size:16px; margin-bottom:10px;">Top phim bán chạy</h2>
+@if (Model.TopMovies.Count == 0)
+{
+    <div class="admin-empty">Chưa có dữ liệu vé bán trong khoảng thời gian này.</div>
+}
+else
+{
+    <table class="admin-table">
+        <thead>
+            <tr><th>Phim</th><th>Số vé bán</th><th>Doanh thu</th></tr>
+        </thead>
+        <tbody>
+            @foreach (var m in Model.TopMovies)
+            {
+                <tr>
+                    <td>@m.Title</td>
+                    <td>@m.TicketsSold</td>
+                    <td>@ViewBag.FormatVND(m.Revenue)</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

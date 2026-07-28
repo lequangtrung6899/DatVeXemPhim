@@ -1,0 +1,46 @@
+@model DatVeXemPhim.Models.Voucher
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = Model.VoucherId == 0 ? "Thêm voucher" : "Sửa voucher";
+}
+<h1>@ViewData["Title"]</h1>
+
+<form class="admin-form" method="post" action="/quan-tri/voucher/luu">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="voucherId" value="@Model.VoucherId">
+
+    <label>Mã voucher</label>
+    <input type="text" name="code" value="@Model.Code" required style="text-transform:uppercase;">
+
+    <label>Loại giảm giá</label>
+    <select name="discountType">
+        <option value="Phần trăm" selected="@(Model.DiscountType == "Phần trăm")">Phần trăm</option>
+        <option value="Tiền mặt" selected="@(Model.DiscountType == "Tiền mặt")">Tiền mặt</option>
+    </select>
+
+    <label>Giá trị giảm (% hoặc VNĐ tùy loại)</label>
+    <input type="number" name="discountValue" value="@Model.DiscountValue" min="0" step="1" required>
+
+    <label>Giá trị đơn hàng tối thiểu</label>
+    <input type="number" name="minOrderAmount" value="@Model.MinOrderAmount" min="0" step="1000" required>
+
+    <label>Ngày bắt đầu</label>
+    <input type="date" name="startDate" value="@Model.StartDate.ToString("yyyy-MM-dd")" required>
+
+    <label>Ngày kết thúc</label>
+    <input type="date" name="endDate" value="@Model.EndDate.ToString("yyyy-MM-dd")" required>
+
+    <label>Giới hạn lượt dùng</label>
+    <input type="number" name="usageLimit" value="@Model.UsageLimit" min="1" required>
+
+    <div class="admin-check">
+        <input type="hidden" name="isActive" value="false">
+        <input type="checkbox" name="isActive" value="true" checked="@Model.IsActive">
+        <label style="margin:0;">Kích hoạt</label>
+    </div>
+
+    <div class="admin-actions">
+        <button type="submit" class="btn btn-primary">Lưu</button>
+        <a href="/quan-tri/voucher" class="btn btn-ghost">Hủy</a>
+    </div>
+</form>

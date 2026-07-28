@@ -1,0 +1,31 @@
+@model DatVeXemPhim.Models.Combo
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = Model.ComboId == 0 ? "Thêm combo" : "Sửa combo";
+}
+<h1>@ViewData["Title"]</h1>
+
+<form class="admin-form" method="post" action="/quan-tri/combo/luu">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="comboId" value="@Model.ComboId">
+
+    <label>Tên combo</label>
+    <input type="text" name="comboName" value="@Model.ComboName" required>
+
+    <label>Mô tả</label>
+    <textarea name="description">@Model.Description</textarea>
+
+    <label>Giá</label>
+    <input type="number" name="price" value="@Model.Price" min="0" step="1000" required>
+
+    <div class="admin-check">
+        <input type="hidden" name="isActive" value="false">
+        <input type="checkbox" name="isActive" value="true" checked="@Model.IsActive">
+        <label style="margin:0;">Đang bán</label>
+    </div>
+
+    <div class="admin-actions">
+        <button type="submit" class="btn btn-primary">Lưu</button>
+        <a href="/quan-tri/combo" class="btn btn-ghost">Hủy</a>
+    </div>
+</form>

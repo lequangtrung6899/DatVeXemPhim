@@ -28,6 +28,16 @@ builder.Services.AddHttpClient<OmdbService>();
 
 var app = builder.Build();
 
+// ---- Code First: apply any pending EF Core migrations automatically on startup ----
+// The database no longer needs to be created manually from Database/DatVeXemPhim.sql;
+// running the app (after `dotnet ef migrations add InitialCreate`, see README) is enough
+// to create the schema and seed data from the model itself.
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    db.Database.Migrate();
+}
+
 // ---- Middleware pipeline ----
 if (!app.Environment.IsDevelopment())
 {

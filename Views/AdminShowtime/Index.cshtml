@@ -1,0 +1,69 @@
+@model List<DatVeXemPhim.Models.Showtime>
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Quản lý suất chiếu";
+    var movies = ViewBag.Movies as List<DatVeXemPhim.Models.Movie>;
+    int? movieId = ViewBag.MovieId;
+    DateTime? date = ViewBag.Date;
+}
+<div class="admin-toolbar">
+    <h1 style="margin:0;">Quản lý suất chiếu</h1>
+    <a href="/quan-tri/suat-chieu/them" class="btn btn-primary btn-sm">+ Thêm suất chiếu</a>
+</div>
+
+<form method="get" class="admin-search-form" style="margin-bottom:16px;">
+    <select name="movieId">
+        <option value="">-- Tất cả phim --</option>
+        @foreach (var m in movies!)
+        {
+            <option value="@m.MovieId" selected="@(movieId == m.MovieId)">@m.Title</option>
+        }
+    </select>
+    <input type="date" name="date" value="@(date?.ToString("yyyy-MM-dd"))">
+    <button type="submit" class="btn btn-ghost btn-sm">Lọc</button>
+</form>
+
+@if (Model.Count == 0)
+{
+    <div class="admin-empty">Không có suất chiếu nào phù hợp.</div>
+}
+else
+{
+    <table class="admin-table">
+        <thead><tr><th>Phim</th><th>Phòng</th><th>Bắt đầu</th><th>Kết thúc</th><th>Giá vé</th><th>Trạng thái</th><th></th></tr></thead>
+        <tbody>
+            @foreach (var s in Model)
+            {
+                <tr>
+                    <td>@s.Movie.Title</td>
+                    <td>@s.Room.RoomName</td>
+                    <td>@s.StartTime.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>@s.EndTime.ToString("HH:mm")</td>
+                    <td>@ViewBag.FormatVND(s.TicketPrice)</td>
+                    <td>
+                        @{
+                            var badge = s.Status switch
+                            {
+                                "Đang chiếu" => "admin-badge-ok",
+                                "Sắp chiếu" => "admin-badge-warn",
+                                "Đã hủy" => "admin-badge-danger",
+                                _ => "admin-badge-muted"
+                            };
+                        }
+                        <span class="admin-badge @badge">@s.Status</span>
+                    </td>
+                    <td>
+                        <a href="/quan-tri/suat-chieu/@s.ShowtimeId/sua" class="btn btn-ghost btn-sm">Sửa</a>
+                        @if (s.Status != "Đã hủy")
+                        {
+                            <form class="admin-inline-form" method="post" action="/quan-tri/suat-chieu/@s.ShowtimeId/huy" onsubmit="return confirm('Hủy suất chiếu này?');">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-ghost btn-sm admin-link-danger">Hủy</button>
+                            </form>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

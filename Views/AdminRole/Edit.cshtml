@@ -1,0 +1,19 @@
+@model DatVeXemPhim.Models.Role
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = Model.RoleId == 0 ? "Thêm vai trò" : "Sửa vai trò";
+}
+<h1>@ViewData["Title"]</h1>
+
+<form class="admin-form" method="post" action="/quan-tri/vai-tro/luu">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="roleId" value="@Model.RoleId">
+
+    <label>Tên vai trò</label>
+    <input type="text" name="roleName" value="@Model.RoleName" required>
+
+    <div class="admin-actions">
+        <button type="submit" class="btn btn-primary">Lưu</button>
+        <a href="/quan-tri/vai-tro" class="btn btn-ghost">Hủy</a>
+    </div>
+</form>

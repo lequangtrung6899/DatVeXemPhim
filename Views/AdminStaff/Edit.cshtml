@@ -1,0 +1,46 @@
+@model DatVeXemPhim.Models.ViewModels.AdminStaffEditVM
+@{
+    Layout = "_AdminLayout";
+    var u = Model.User;
+    ViewData["Title"] = u.UserId == 0 ? "Thêm nhân viên" : "Sửa nhân viên";
+}
+<h1>@ViewData["Title"]</h1>
+
+<form class="admin-form" method="post" action="/quan-tri/nhan-vien/luu">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="userId" value="@u.UserId">
+
+    <label>Tên đăng nhập</label>
+    <input type="text" name="username" value="@u.Username" required>
+
+    <label>Họ tên</label>
+    <input type="text" name="fullName" value="@u.FullName" required>
+
+    <label>Email</label>
+    <input type="text" name="email" value="@u.Email" required>
+
+    <label>Số điện thoại</label>
+    <input type="text" name="phone" value="@u.Phone">
+
+    <label>Vai trò</label>
+    <select name="roleId" required>
+        @foreach (var r in Model.Roles)
+        {
+            <option value="@r.RoleId" selected="@(u.RoleId == r.RoleId)">@r.RoleName</option>
+        }
+    </select>
+
+    <label>@(u.UserId == 0 ? "Mật khẩu" : "Mật khẩu mới (để trống nếu không đổi)")</label>
+    <input type="password" name="password" @(u.UserId == 0 ? "required" : "")>
+
+    <div class="admin-check">
+        <input type="hidden" name="isActive" value="false">
+        <input type="checkbox" name="isActive" value="true" checked="@u.IsActive">
+        <label style="margin:0;">Đang hoạt động</label>
+    </div>
+
+    <div class="admin-actions">
+        <button type="submit" class="btn btn-primary">Lưu</button>
+        <a href="/quan-tri/nhan-vien" class="btn btn-ghost">Hủy</a>
+    </div>
+</form>

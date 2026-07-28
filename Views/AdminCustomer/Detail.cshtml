@@ -1,0 +1,41 @@
+@model DatVeXemPhim.Models.Customer
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Khách hàng · " + Model.FullName;
+    var tickets = ViewBag.Tickets as List<DatVeXemPhim.Models.Ticket>;
+}
+<div class="admin-toolbar">
+    <h1 style="margin:0;">@Model.FullName</h1>
+    <a href="/quan-tri/khach-hang" class="btn btn-ghost btn-sm">← Danh sách khách hàng</a>
+</div>
+
+<div class="admin-stat-grid">
+    <div class="admin-stat-card"><div class="label">Email</div><div class="value" style="font-size:15px;">@Model.Email</div></div>
+    <div class="admin-stat-card"><div class="label">SĐT</div><div class="value" style="font-size:15px;">@Model.Phone</div></div>
+    <div class="admin-stat-card"><div class="label">Hạng thành viên</div><div class="value" style="font-size:15px;">@Model.MembershipRank</div></div>
+    <div class="admin-stat-card"><div class="label">Điểm tích lũy</div><div class="value">@Model.LoyaltyPoint</div></div>
+</div>
+
+<h2 style="font-size:16px; margin-bottom:10px;">Lịch sử đặt vé gần đây</h2>
+@if (tickets == null || tickets.Count == 0)
+{
+    <div class="admin-empty">Khách hàng chưa đặt vé nào.</div>
+}
+else
+{
+    <table class="admin-table">
+        <thead><tr><th>Mã vé</th><th>Phim</th><th>Suất chiếu</th><th>Tổng tiền</th><th>Trạng thái</th></tr></thead>
+        <tbody>
+            @foreach (var t in tickets)
+            {
+                <tr>
+                    <td>#@t.TicketId</td>
+                    <td>@t.Showtime.Movie.Title</td>
+                    <td>@t.Showtime.StartTime.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>@ViewBag.FormatVND(t.TotalAmount)</td>
+                    <td>@t.Status</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

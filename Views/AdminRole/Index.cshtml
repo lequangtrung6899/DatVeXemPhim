@@ -1,0 +1,38 @@
+@model List<DatVeXemPhim.Models.Role>
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Quản lý vai trò";
+    var counts = ViewBag.UserCounts as Dictionary<int, int>;
+}
+<div class="admin-toolbar">
+    <h1 style="margin:0;">Quản lý vai trò</h1>
+    <a href="/quan-tri/vai-tro/them" class="btn btn-primary btn-sm">+ Thêm vai trò</a>
+</div>
+
+@if (Model.Count == 0)
+{
+    <div class="admin-empty">Chưa có vai trò nào.</div>
+}
+else
+{
+    <table class="admin-table">
+        <thead><tr><th>#</th><th>Tên vai trò</th><th>Số nhân viên</th><th></th></tr></thead>
+        <tbody>
+            @foreach (var r in Model)
+            {
+                <tr>
+                    <td>@r.RoleId</td>
+                    <td>@r.RoleName</td>
+                    <td>@(counts != null && counts.ContainsKey(r.RoleId) ? counts[r.RoleId] : 0)</td>
+                    <td>
+                        <a href="/quan-tri/vai-tro/@r.RoleId/sua" class="btn btn-ghost btn-sm">Sửa</a>
+                        <form class="admin-inline-form" method="post" action="/quan-tri/vai-tro/@r.RoleId/xoa" onsubmit="return confirm('Xóa vai trò này?');">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-ghost btn-sm admin-link-danger">Xóa</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

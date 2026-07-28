@@ -1,0 +1,54 @@
+@model DatVeXemPhim.Models.ViewModels.AdminMovieEditVM
+@{
+    Layout = "_AdminLayout";
+    var m = Model.Movie;
+    ViewData["Title"] = m.MovieId == 0 ? "Thêm phim" : "Sửa phim";
+}
+<h1>@ViewData["Title"]</h1>
+
+<form class="admin-form" method="post" action="/quan-tri/phim/luu">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="movieId" value="@m.MovieId">
+
+    <label>Tên phim</label>
+    <input type="text" name="title" value="@m.Title" required>
+
+    <label>Mô tả</label>
+    <textarea name="description">@m.Description</textarea>
+
+    <label>Thời lượng (phút)</label>
+    <input type="number" name="duration" value="@m.Duration" min="1" required>
+
+    <label>Poster URL</label>
+    <input type="text" name="posterUrl" value="@m.PosterUrl">
+
+    <label>Ngày khởi chiếu</label>
+    <input type="date" name="releaseDate" value="@m.ReleaseDate.ToString("yyyy-MM-dd")" required>
+
+    <label>Ngày kết thúc (nếu có)</label>
+    <input type="date" name="endDate" value="@(m.EndDate?.ToString("yyyy-MM-dd"))">
+
+    <label>Trạng thái</label>
+    <select name="status">
+        @foreach (var s in new[] { "Sắp chiếu", "Đang chiếu", "Ngừng chiếu" })
+        {
+            <option value="@s" selected="@(m.Status == s)">@s</option>
+        }
+    </select>
+
+    <label>Thể loại</label>
+    <div class="admin-checkbox-grid">
+        @foreach (var g in Model.AllGenres)
+        {
+            <label>
+                <input type="checkbox" name="genreIds" value="@g.GenreId" checked="@Model.SelectedGenreIds.Contains(g.GenreId)">
+                @g.GenreName
+            </label>
+        }
+    </div>
+
+    <div class="admin-actions">
+        <button type="submit" class="btn btn-primary">Lưu</button>
+        <a href="/quan-tri/phim" class="btn btn-ghost">Hủy</a>
+    </div>
+</form>

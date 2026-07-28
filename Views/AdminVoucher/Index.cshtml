@@ -1,0 +1,41 @@
+@model List<DatVeXemPhim.Models.Voucher>
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Quản lý Voucher";
+}
+<div class="admin-toolbar">
+    <h1 style="margin:0;">Quản lý Voucher</h1>
+    <a href="/quan-tri/voucher/them" class="btn btn-primary btn-sm">+ Thêm voucher</a>
+</div>
+
+@if (Model.Count == 0)
+{
+    <div class="admin-empty">Chưa có voucher nào.</div>
+}
+else
+{
+    <table class="admin-table">
+        <thead><tr><th>Mã</th><th>Loại giảm</th><th>Giá trị</th><th>Đơn tối thiểu</th><th>Hiệu lực</th><th>Đã dùng</th><th>Trạng thái</th><th></th></tr></thead>
+        <tbody>
+            @foreach (var v in Model)
+            {
+                <tr>
+                    <td>@v.Code</td>
+                    <td>@v.DiscountType</td>
+                    <td>@(v.DiscountType == "Phần trăm" ? v.DiscountValue + "%" : ViewBag.FormatVND(v.DiscountValue))</td>
+                    <td>@ViewBag.FormatVND(v.MinOrderAmount)</td>
+                    <td>@v.StartDate.ToString("dd/MM/yyyy") - @v.EndDate.ToString("dd/MM/yyyy")</td>
+                    <td>@v.UsedCount / @v.UsageLimit</td>
+                    <td><span class="admin-badge @(v.IsActive ? "admin-badge-ok" : "admin-badge-muted")">@(v.IsActive ? "Kích hoạt" : "Tắt")</span></td>
+                    <td>
+                        <a href="/quan-tri/voucher/@v.VoucherId/sua" class="btn btn-ghost btn-sm">Sửa</a>
+                        <form class="admin-inline-form" method="post" action="/quan-tri/voucher/@v.VoucherId/xoa" onsubmit="return confirm('Xóa voucher này?');">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-ghost btn-sm admin-link-danger">Xóa</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

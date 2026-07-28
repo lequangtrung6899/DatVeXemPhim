@@ -1,0 +1,97 @@
+@model DatVeXemPhim.Models.ViewModels.AdminSupportVM
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Hỗ trợ khách hàng";
+}
+<h1>Hỗ trợ khách hàng</h1>
+<p style="color:#9aa0ad; font-size:13.5px; margin-top:-10px;">Tra cứu thông tin vé theo mã vé hoặc mã giao dịch thanh toán để kiểm tra vé, kiểm tra thanh toán và hỗ trợ khách hàng (hủy vé/hoàn tiền khi cần).</p>
+
+<div style="display:flex; gap:16px; margin-bottom:20px; flex-wrap:wrap;">
+    <form method="get" class="admin-search-form">
+        <input type="number" name="ticketId" placeholder="Nhập mã vé..." value="@Model.TicketIdInput">
+        <button type="submit" class="btn btn-primary btn-sm">Kiểm tra vé</button>
+    </form>
+    <form method="get" class="admin-search-form">
+        <input type="text" name="transactionCode" placeholder="Nhập mã giao dịch..." value="@Model.TransactionCodeInput">
+        <button type="submit" class="btn btn-ghost btn-sm">Kiểm tra thanh toán</button>
+    </form>
+</div>
+
+@if (Model.NotFound)
+{
+    <div class="admin-alert admin-alert-error">Không tìm thấy thông tin vé cần xử lý. Vui lòng kiểm tra lại mã vé hoặc mã giao dịch.</div>
+}
+
+@if (Model.Ticket != null)
+{
+    var t = Model.Ticket;
+    <div class="admin-stat-grid">
+        <div class="admin-stat-card"><div class="label">Khách hàng</div><div class="value" style="font-size:15px;">@t.Customer.FullName</div></div>
+        <div class="admin-stat-card"><div class="label">Phim / Suất chiếu</div><div class="value" style="font-size:15px;">@t.Showtime.Movie.Title<br><span style="font-size:12.5px; color:#9aa0ad;">@t.Showtime.StartTime.ToString("dd/MM/yyyy HH:mm") · @t.Showtime.Room.RoomName</span></div></div>
+        <div class="admin-stat-card"><div class="label">Tổng tiền</div><div class="value">@ViewBag.FormatVND(t.TotalAmount)</div></div>
+        <div class="admin-stat-card">
+            <div class="label">Trạng thái vé</div>
+            <div class="value" style="font-size:15px;">
+                @{
+                    var badge = t.Status switch { "Đã thanh toán" => "admin-badge-ok", "Đã hủy" => "admin-badge-danger", _ => "admin-badge-warn" };
+                }
+                <span class="admin-badge @badge">@t.Status</span>
+            </div>
+        </div>
+    </div>
+
+    <h2 style="font-size:15px;">Ghế đã đặt</h2>
+    <table class="admin-table" style="margin-bottom:20px;">
+        <thead><tr><th>Ghế</th><th>Loại</th><th>Giá</th></tr></thead>
+        <tbody>
+            @foreach (var s in Model.Seats)
+            {
+                <tr><td>@s.RowLabel@(s.ColumnNumber)</td><td>@s.SeatType</td><td>@ViewBag.FormatVND(s.Price)</td></tr>
+            }
+        </tbody>
+    </table>
+
+    @if (Model.Combos.Count > 0)
+    {
+        <h2 style="font-size:15px;">Combo</h2>
+        <table class="admin-table" style="margin-bottom:20px;">
+            <thead><tr><th>Combo</th><th>SL</th><th>Giá</th></tr></thead>
+            <tbody>
+                @foreach (var c in Model.Combos)
+                {
+                    <tr><td>@c.ComboName</td><td>@c.Quantity</td><td>@ViewBag.FormatVND(c.Price)</td></tr>
+                }
+            </tbody>
+        </table>
+    }
+
+    <h2 style="font-size:15px;">Lịch sử thanh toán</h2>
+    <table class="admin-table" style="margin-bottom:20px;">
+        <thead><tr><th>Mã GD</th><th>Số tiền</th><th>Phương thức</th><th>Trạng thái</th><th>Ngày</th></tr></thead>
+        <tbody>
+            @foreach (var p in Model.Payments)
+            {
+                <tr>
+                    <td>@p.TransactionCode</td>
+                    <td>@ViewBag.FormatVND(p.Amount)</td>
+                    <td>@p.PaymentMethod</td>
+                    <td>@p.PaymentStatus</td>
+                    <td>@p.PaymentDate.ToString("dd/MM/yyyy HH:mm")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    @if (t.Status != "Đã hủy")
+    {
+        <form method="post" action="/quan-tri/ho-tro/@t.TicketId/huy-ve" onsubmit="return confirm('Hủy vé này và hoàn tiền cho khách?');" class="admin-form">
+            @Html.AntiForgeryToken()
+            <h2 style="font-size:15px; margin-top:0;">Hỗ trợ hủy vé / hoàn tiền</h2>
+            <label>Số tiền hoàn (mặc định bằng tổng tiền vé)</label>
+            <input type="number" name="refundAmount" value="@t.TotalAmount" min="0" step="1000">
+            <div class="admin-actions">
+                <button type="submit" class="btn btn-primary admin-link-danger">Hủy vé cho khách &amp; đánh dấu hoàn tiền</button>
+            </div>
+        </form>
+    }
+}

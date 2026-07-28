@@ -1,0 +1,38 @@
+@model DatVeXemPhim.Models.ViewModels.AdminLoginVM
+@{
+    Layout = null;
+    ViewData["Title"] = "Đăng nhập quản trị";
+}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng nhập quản trị · DatVeXemPhim</title>
+    <link rel="stylesheet" href="~/css/style.css">
+    <link rel="stylesheet" href="~/css/admin.css">
+</head>
+<body class="admin-body">
+    <div class="admin-login-wrap">
+        <form class="admin-login-card" method="post" action="/quan-tri/dang-nhap">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="next" value="@Model.Next" />
+            <h1>🎬 Đăng nhập quản trị</h1>
+            <p class="admin-login-sub">Dành cho Nhân viên và Quản trị viên rạp phim.</p>
+
+            @if (!string.IsNullOrEmpty(Model.Error))
+            {
+                <div class="admin-alert admin-alert-error">@Model.Error</div>
+            }
+
+            <label>Tên đăng nhập</label>
+            <input type="text" name="username" required autofocus>
+
+            <label>Mật khẩu</label>
+            <input type="password" name="password" required>
+
+            <button type="submit" class="btn btn-primary btn-block">Đăng nhập</button>
+        </form>
+    </div>
+</body>
+</html>

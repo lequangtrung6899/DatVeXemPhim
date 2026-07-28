@@ -1,0 +1,70 @@
+@model List<DatVeXemPhim.Models.ViewModels.AdminReviewRow>
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Quản lý đánh giá";
+    string status = ViewBag.Status;
+}
+<h1>Quản lý đánh giá phim</h1>
+
+<form method="get" class="admin-search-form" style="margin-bottom:16px;">
+    <select name="status" onchange="this.form.submit()">
+        @foreach (var s in new[] { "Chờ duyệt", "Đã duyệt", "Từ chối", "Tất cả" })
+        {
+            <option value="@s" selected="@(status == s)">@s</option>
+        }
+    </select>
+</form>
+
+@if (Model.Count == 0)
+{
+    <div class="admin-empty">Không có đánh giá nào ở trạng thái này.</div>
+}
+else
+{
+    <table class="admin-table">
+        <thead><tr><th>Phim</th><th>Khách hàng</th><th>Điểm</th><th>Nội dung</th><th>Ngày gửi</th><th>Trạng thái</th><th></th></tr></thead>
+        <tbody>
+            @foreach (var r in Model)
+            {
+                <tr>
+                    <td>@r.MovieTitle</td>
+                    <td>@r.CustomerName</td>
+                    <td>@r.Rating/5</td>
+                    <td style="max-width:260px;">@r.Comment</td>
+                    <td>@r.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>
+                        @{
+                            var badge = r.Status switch
+                            {
+                                "Đã duyệt" => "admin-badge-ok",
+                                "Từ chối" => "admin-badge-danger",
+                                _ => "admin-badge-warn"
+                            };
+                        }
+                        <span class="admin-badge @badge">@r.Status</span>
+                    </td>
+                    <td>
+                        @if (r.Status != "Đã duyệt")
+                        {
+                            <form class="admin-inline-form" method="post" action="/quan-tri/danh-gia/@r.ReviewId/duyet">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-ghost btn-sm">Duyệt</button>
+                            </form>
+                        }
+                        @if (r.Status != "Từ chối")
+                        {
+                            <form class="admin-inline-form" method="post" action="/quan-tri/danh-gia/@r.ReviewId/tu-choi">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-ghost btn-sm">Từ chối</button>
+                            </form>
+                        }
+                        <form class="admin-inline-form" method="post" action="/quan-tri/danh-gia/@r.ReviewId/xoa" onsubmit="return confirm('Xóa đánh giá này?');">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-ghost btn-sm admin-link-danger">Xóa</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
