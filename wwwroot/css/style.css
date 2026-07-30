@@ -532,8 +532,9 @@ button { font-family: inherit; cursor: pointer; }
 .seat.type-vip { border-color: #a67c00; background: rgba(255,184,77,.08); }
 .seat.type-double { width: 64px; border-color: #7c3aed; background: rgba(124,58,237,.08); }
 .seat.taken { background: var(--bg-elevated); color: var(--text-dimmer); cursor: not-allowed; opacity: .4; }
+.seat.held { background: var(--bg-elevated); color: var(--text-dimmer); cursor: not-allowed; opacity: .55; border-style: dashed; }
 .seat.selected { background: var(--accent); border-color: var(--accent); color: #fff; transform: scale(1.08); }
-.seat:not(.taken):hover { border-color: var(--accent); }
+.seat:not(.taken):not(.held):hover { border-color: var(--accent); }
 
 .seat-legend { display: flex; gap: 22px; justify-content: center; flex-wrap: wrap; font-size: 12.5px; color: var(--text-dim); margin-bottom: 10px; }
 .seat-legend .swatch { display: inline-block; width: 16px; height: 16px; border-radius: 4px; margin-right: 6px; vertical-align: middle; }

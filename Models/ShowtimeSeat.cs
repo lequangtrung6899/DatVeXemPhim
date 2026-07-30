@@ -18,6 +18,11 @@ public class ShowtimeSeat
 
     public DateTime? HoldExpiredAt { get; set; }
 
+    // Session ID của người đang tạm giữ ghế (null khi ghế "Trống" hoặc "Đã đặt").
+    // Dùng để phân biệt "tôi đang giữ ghế này" với "người khác đang giữ ghế này".
+    [MaxLength(100)]
+    public string? HeldBySessionId { get; set; }
+
     [Timestamp]
     public byte[]? RowVersion { get; set; }
 }

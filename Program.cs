@@ -7,6 +7,11 @@ var builder = WebApplication.CreateBuilder(args);
 // ---- Services ----
 builder.Services.AddControllersWithViews();
 
+// Cho phép gửi antiforgery token qua header (dùng cho các lời gọi AJAX/JSON, ví dụ
+// endpoint giữ ghế tạm thời trong BookingController.Hold), thay vì chỉ chấp nhận
+// token trong form field __RequestVerificationToken như mặc định.
+builder.Services.AddAntiforgery(options => options.HeaderName = "RequestVerificationToken");
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 

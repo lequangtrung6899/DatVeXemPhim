@@ -9,6 +9,10 @@ public class SeatCell
     public int ColumnNumber { get; set; }
     public string SeatType { get; set; } = string.Empty;
     public string Status { get; set; } = string.Empty; // 'Trống' | 'Đang giữ' | 'Đã đặt'
+
+    // Ghế "Đang giữ" nhưng do chính người xem trang này giữ (vẫn chọn được, không phải màu xám).
+    public bool IsHeldByMe { get; set; }
+    public int? HoldSecondsLeft { get; set; }
 }
 
 public class SeatSelectVM
@@ -28,5 +32,6 @@ public class SeatSelectVM
     public List<Combo> Combos { get; set; } = new();
 
     public bool IsLoggedIn { get; set; }
+    public int HoldMinutes { get; set; }
     public string? ErrorMessage { get; set; }
 }

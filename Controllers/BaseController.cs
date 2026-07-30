@@ -33,6 +33,19 @@ public abstract class BaseController : Controller
         HttpContext.Session.Remove(SessionKey);
     }
 
+    // ASP.NET Core Session.Id changes on every request until something is actually
+    // written to the session at least once. Used to identify "who" is temporarily
+    // holding a seat (Ca sử dụng "Chọn ghế") — works even before the customer logs in.
+    protected string EnsureBrowserSessionId()
+    {
+        const string marker = "_sid";
+        if (string.IsNullOrEmpty(HttpContext.Session.GetString(marker)))
+        {
+            HttpContext.Session.SetString(marker, "1");
+        }
+        return HttpContext.Session.Id;
+    }
+
     // Equivalent to the Express app's `formatVND(n)` helper.
     protected static string FormatVND(decimal n)
     {

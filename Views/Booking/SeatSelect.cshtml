@@ -25,6 +25,10 @@
         <div class="form-error">Vui lòng <a href="/dang-nhap?next=/dat-ve/@Model.ShowtimeId" style="color:#ffb3ba; font-weight:700;">đăng nhập</a> để đặt vé.</div>
     }
 
+    <div id="holdBanner" class="form-error" style="display:none; background:rgba(255,184,77,.12); border-color:#a67c00; color:#ffd699;">
+        Bạn đang giữ ghế trong <strong id="holdCountdown">--:--</strong> — vui lòng hoàn tất đặt vé trước khi hết giờ.
+    </div>
+
     <form action="/dat-ve/@Model.ShowtimeId/xac-nhan" method="post" id="bookingForm">
         @Html.AntiForgeryToken()
     <div class="booking-layout">
@@ -43,12 +47,16 @@
                         {
                             var typeClass = seat.SeatType == "VIP" ? "type-vip" : (seat.SeatType == "Đôi" ? "type-double" : "");
                             var taken = seat.Status == "Đã đặt";
+                            var heldByOther = seat.Status == "Đang giữ" && !seat.IsHeldByMe;
+                            var blocked = taken || heldByOther;
                             <button type="button"
-                                    class="seat @typeClass @(taken ? "taken" : "")"
+                                    class="seat @typeClass @(taken ? "taken" : "") @(heldByOther ? "held" : "") @(seat.IsHeldByMe ? "selected" : "")"
                                     data-id="@seat.ShowtimeSeatId"
                                     data-type="@seat.SeatType"
                                     data-label="@rowLabel@(seat.ColumnNumber)"
-                                    disabled="@taken">
+                                    data-mine="@(seat.IsHeldByMe ? "1" : "0")"
+                                    title="@(taken ? "Đã đặt" : (heldByOther ? "Đang được người khác giữ" : ""))"
+                                    disabled="@blocked">
                                 @seat.ColumnNumber
                             </button>
                         }
@@ -61,7 +69,8 @@
                 <span><span class="swatch" style="background:var(--bg-card); border:1px solid var(--border);"></span>Thường (@formatVND(Model.PriceByType["Thường"]))</span>
                 <span><span class="swatch" style="background:rgba(255,184,77,.15); border:1px solid #a67c00;"></span>VIP (@formatVND(Model.PriceByType["VIP"]))</span>
                 <span><span class="swatch" style="background:rgba(124,58,237,.15); border:1px solid #7c3aed;"></span>Đôi (@formatVND(Model.PriceByType["Đôi"]))</span>
-                <span><span class="swatch" style="background:var(--bg-elevated); opacity:.5;"></span>Đã đặt</span>
+                <span><span class="swatch" style="background:var(--bg-elevated); opacity:.4;"></span>Đã đặt</span>
+                <span><span class="swatch" style="background:var(--bg-elevated); opacity:.55; border-style:dashed;"></span>Đang được giữ</span>
                 <span><span class="swatch" style="background:var(--accent);"></span>Đang chọn</span>
             </div>
 
@@ -116,12 +125,30 @@
 @section Scripts {
     <script>
         const priceByType = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.PriceByType));
+        const showtimeId = @Model.ShowtimeId;
+        const holdMinutes = @Model.HoldMinutes;
         const form = document.getElementById('bookingForm');
         const selectedSeats = new Map();
+        let holdExpiresAt = null; // Date, cập nhật từ server sau mỗi lần giữ ghế thành công
+        let holdSyncTimer = null;
+        let countdownTimer = null;
+        let pollTimer = null;
 
         function formatVND(n) { return Math.round(n).toLocaleString('vi-VN') + '₫'; }
+        function antiForgeryToken() { return form.querySelector('input[name="__RequestVerificationToken"]').value; }
 
-        document.querySelectorAll('.seat:not(.taken)').forEach(seat => {
+        function seatButton(id) { return document.querySelector(`.seat[data-id="${id}"]`); }
+
+        // Chọn sẵn các ghế mà session này đã đang giữ từ trước (ví dụ vừa tải lại trang).
+        document.querySelectorAll('.seat[data-mine="1"]').forEach(seat => {
+            selectedSeats.set(seat.dataset.id, { type: seat.dataset.type, label: seat.dataset.label, price: priceByType[seat.dataset.type] });
+        });
+        if (selectedSeats.size > 0) {
+            holdExpiresAt = new Date(Date.now() + holdMinutes * 60000); // ước lượng, sẽ đồng bộ lại khi poll
+            startCountdown();
+        }
+
+        document.querySelectorAll('.seat:not(.taken):not(.held)').forEach(seat => {
             seat.addEventListener('click', () => {
                 const id = seat.dataset.id;
                 if (selectedSeats.has(id)) {
@@ -132,7 +159,125 @@
                     seat.classList.add('selected');
                 }
                 updateSummary();
+                scheduleHoldSync();
             });
+        });
+
+        // Gửi lên server TOÀN BỘ danh sách ghế đang chọn để giữ tạm (debounce nhẹ
+        // để không gọi API dồn dập khi người dùng bấm chọn nhiều ghế liên tiếp).
+        function scheduleHoldSync() {
+            clearTimeout(holdSyncTimer);
+            holdSyncTimer = setTimeout(syncHold, 350);
+        }
+
+        async function syncHold() {
+            const seatIds = [...selectedSeats.keys()].map(Number);
+            try {
+                const res = await fetch(`/dat-ve/${showtimeId}/giu-ghe`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'RequestVerificationToken': antiForgeryToken() },
+                    body: JSON.stringify({ seatIds })
+                });
+                const data = await res.json();
+
+                if (data.conflicts && data.conflicts.length > 0) {
+                    data.conflicts.forEach(id => {
+                        const strId = String(id);
+                        selectedSeats.delete(strId);
+                        const btn = seatButton(strId);
+                        if (btn) {
+                            btn.classList.remove('selected');
+                            btn.classList.add('held');
+                            btn.disabled = true;
+                        }
+                    });
+                    updateSummary();
+                    alert('Một hoặc nhiều ghế bạn vừa chọn đã được người khác giữ/đặt trước. Đã bỏ chọn các ghế đó, vui lòng kiểm tra lại.');
+                }
+
+                if (data.holdExpiresAt) {
+                    holdExpiresAt = new Date(data.holdExpiresAt);
+                    if (selectedSeats.size > 0) startCountdown(); else stopCountdown();
+                }
+            } catch (e) {
+                console.error('Không thể giữ ghế:', e);
+            }
+        }
+
+        function startCountdown() {
+            document.getElementById('holdBanner').style.display = 'block';
+            clearInterval(countdownTimer);
+            countdownTimer = setInterval(tickCountdown, 1000);
+            tickCountdown();
+            if (!pollTimer) pollTimer = setInterval(pollSeatStatus, 12000);
+        }
+
+        function stopCountdown() {
+            document.getElementById('holdBanner').style.display = 'none';
+            clearInterval(countdownTimer);
+            countdownTimer = null;
+        }
+
+        function tickCountdown() {
+            if (!holdExpiresAt || selectedSeats.size === 0) { stopCountdown(); return; }
+            const secondsLeft = Math.max(0, Math.round((holdExpiresAt - Date.now()) / 1000));
+            const m = Math.floor(secondsLeft / 60);
+            const s = secondsLeft % 60;
+            document.getElementById('holdCountdown').textContent = `${m}:${s.toString().padStart(2, '0')}`;
+            if (secondsLeft <= 0) {
+                alert('Đã hết thời gian giữ ghế. Vui lòng chọn lại ghế.');
+                selectedSeats.forEach((val, id) => {
+                    const btn = seatButton(id);
+                    if (btn) btn.classList.remove('selected');
+                });
+                selectedSeats.clear();
+                updateSummary();
+                stopCountdown();
+            }
+        }
+
+        // Làm mới trạng thái toàn bộ ghế định kỳ, để thấy ngay khi người khác giữ/đặt ghế khác.
+        async function pollSeatStatus() {
+            try {
+                const res = await fetch(`/dat-ve/${showtimeId}/trang-thai-ghe`);
+                const seats = await res.json();
+                let mineWasDropped = false;
+
+                seats.forEach(s => {
+                    const btn = seatButton(s.id);
+                    if (!btn) return;
+                    const idStr = String(s.id);
+
+                    if (s.status === 'Đã đặt') {
+                        btn.classList.remove('held', 'selected');
+                        btn.classList.add('taken');
+                        btn.disabled = true;
+                        if (selectedSeats.has(idStr)) { selectedSeats.delete(idStr); mineWasDropped = true; }
+                    } else if (s.status === 'Đang giữ' && !s.isMine) {
+                        btn.classList.remove('taken', 'selected');
+                        btn.classList.add('held');
+                        btn.disabled = true;
+                        if (selectedSeats.has(idStr)) { selectedSeats.delete(idStr); mineWasDropped = true; }
+                    } else if (s.status === 'Trống') {
+                        btn.classList.remove('taken', 'held');
+                        btn.disabled = false;
+                    }
+                });
+
+                if (mineWasDropped) {
+                    updateSummary();
+                    alert('Một số ghế bạn đang giữ đã hết hạn hoặc bị người khác lấy mất. Vui lòng kiểm tra lại lựa chọn.');
+                }
+            } catch (e) {
+                console.error('Không thể làm mới trạng thái ghế:', e);
+            }
+        }
+
+        // Nhả ghế đang giữ khi rời trang (best-effort, không chặn việc đóng tab).
+        window.addEventListener('pagehide', () => {
+            if (selectedSeats.size > 0) {
+                navigator.sendBeacon(`/dat-ve/${showtimeId}/bo-giu`);
+            }
         });
 
         document.querySelectorAll('.qty-control').forEach(ctrl => {
@@ -160,6 +305,8 @@
             document.getElementById('comboTotal').textContent = formatVND(comboTotal);
             document.getElementById('grandTotal').textContent = formatVND(ticketTotal + comboTotal);
         }
+
+        updateSummary();
 
         form.addEventListener('submit', (e) => {
             if (selectedSeats.size === 0) {
