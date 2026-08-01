@@ -57,7 +57,7 @@ public class AdminMovieController : AdminBaseController
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Save(
         int movieId, string title, string? description, int duration,
-        string? posterUrl, DateTime releaseDate, DateTime? endDate, string status,
+        string? posterUrl, string? bannerUrl, DateTime releaseDate, DateTime? endDate, string status,
         [FromForm(Name = "genreIds")] List<int>? genreIds)
     {
         genreIds ??= new List<int>();
@@ -79,6 +79,7 @@ public class AdminMovieController : AdminBaseController
         movie.Description = description;
         movie.Duration = duration;
         movie.PosterUrl = posterUrl;
+        movie.BannerUrl = bannerUrl;
         movie.ReleaseDate = releaseDate;
         movie.EndDate = endDate;
         movie.Status = status;

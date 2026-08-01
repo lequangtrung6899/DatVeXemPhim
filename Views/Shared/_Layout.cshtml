@@ -1,6 +1,10 @@
 @{
     var customer = ViewBag.Customer as Customer;
     var path = (string)(ViewBag.Path ?? "/");
+    var currentStatus = Context.Request.Query["status"].ToString();
+    var isMoviesListPage = path == "/phim";
+    var isNowShowingActive = isMoviesListPage && (string.IsNullOrEmpty(currentStatus) || currentStatus == "Đang chiếu");
+    var isComingSoonActive = isMoviesListPage && currentStatus == "Sắp chiếu";
 }
 <!DOCTYPE html>
 <html lang="vi">
@@ -18,9 +22,8 @@
                 <span>Dat<span class="brand-sub">Ve</span>XemPhim</span>
             </a>
             <nav class="main-nav">
-                <a href="/phim?status=Đang chiếu" class="@(path.StartsWith("/phim") ? "active" : "")">Phim đang chiếu</a>
-                <a href="/phim?status=Sắp chiếu">Phim sắp chiếu</a>
-                <a href="/#rap">Cụm rạp</a>
+                <a href="/phim?status=Đang chiếu" class="@(isNowShowingActive ? "active" : "")">Phim đang chiếu</a>
+                <a href="/phim?status=Sắp chiếu" class="@(isComingSoonActive ? "active" : "")">Phim sắp chiếu</a>
                 <a href="/#uu-dai">Ưu đãi</a>
             </nav>
             <form class="search-form" action="/tim-kiem" method="get">

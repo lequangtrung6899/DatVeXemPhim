@@ -227,7 +227,10 @@
             {
                 <div class="review-card">
                     <div class="review-head">
-                        <span class="review-name">@r.FullName</span>
+                        <div class="review-name-group">
+                            <span class="review-avatar">@r.FullName.Substring(0, 1).ToUpper()</span>
+                            <span class="review-name">@r.FullName</span>
+                        </div>
                         <span class="stars">@(new string('★', r.Rating))@(new string('☆', 5 - r.Rating))</span>
                     </div>
                     <p class="review-body">@r.Comment</p>

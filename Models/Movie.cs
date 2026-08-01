@@ -16,6 +16,11 @@ public class Movie
     [MaxLength(500)]
     public string? PosterUrl { get; set; }
 
+    // Ảnh ngang riêng cho banner trang chủ (khác tỉ lệ với PosterUrl - ảnh áp phích dọc).
+    // Nếu để trống, banner sẽ dùng PosterUrl (nhưng ảnh dọc hiển thị trong khung ngang sẽ không đẹp).
+    [MaxLength(500)]
+    public string? BannerUrl { get; set; }
+
     public DateTime ReleaseDate { get; set; }
 
     public DateTime? EndDate { get; set; }

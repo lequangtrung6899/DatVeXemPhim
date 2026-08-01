@@ -10,6 +10,7 @@ public class MovieCardVM
     public string? Description { get; set; }
     public int Duration { get; set; }
     public string? PosterUrl { get; set; }
+    public string? BannerUrl { get; set; }
     public DateTime ReleaseDate { get; set; }
     public DateTime? EndDate { get; set; }
     public string Status { get; set; } = string.Empty;
@@ -25,6 +26,7 @@ public class MovieCardVM
         Description = m.Description,
         Duration = m.Duration,
         PosterUrl = m.PosterUrl,
+        BannerUrl = m.BannerUrl,
         ReleaseDate = m.ReleaseDate,
         EndDate = m.EndDate,
         Status = m.Status,
