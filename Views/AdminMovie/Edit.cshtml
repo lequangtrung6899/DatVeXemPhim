@@ -19,8 +19,11 @@
     <label>Thời lượng (phút)</label>
     <input type="number" name="duration" value="@m.Duration" min="1" required>
 
-    <label>Poster URL</label>
+    <label>Poster URL (ảnh dọc, dùng cho danh sách/chi tiết phim)</label>
     <input type="text" name="posterUrl" value="@m.PosterUrl">
+
+    <label>Banner URL (ảnh ngang, dùng cho banner trang chủ — để trống sẽ dùng tạm Poster URL)</label>
+    <input type="text" name="bannerUrl" value="@m.BannerUrl" placeholder="/banners/ten-file.jpg">
 
     <label>Ngày khởi chiếu</label>
     <input type="date" name="releaseDate" value="@m.ReleaseDate.ToString("yyyy-MM-dd")" required>

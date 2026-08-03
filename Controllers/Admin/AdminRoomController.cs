@@ -148,12 +148,22 @@ public class AdminRoomController : AdminBaseController
         var seat = await Db.Seats.FindAsync(seatId);
         if (seat is null || seat.RoomId != roomId) return NotFound();
 
-        var inUse = await Db.ShowtimeSeats.AnyAsync(ss => ss.SeatId == seatId);
+        // Chỉ chặn xóa nếu ghế đã thực sự được đặt trong ít nhất 1 vé — không tính việc
+        // ghế chỉ đơn thuần có mặt trong lịch của 1 suất chiếu (mọi ghế đều tự động có
+        // dòng ShowtimeSeat khi suất chiếu được tạo, kể cả khi chưa ai đặt ghế đó).
+        var inUse = await Db.ShowtimeSeats
+            .Where(ss => ss.SeatId == seatId)
+            .AnyAsync(ss => Db.TicketDetails.Any(td => td.ShowtimeSeatId == ss.ShowtimeSeatId));
         if (inUse)
         {
-            TempData["Error"] = "Không thể xóa: ghế này đã được dùng trong ít nhất một suất chiếu.";
+            TempData["Error"] = "Không thể xóa: ghế này đã được khách đặt trong ít nhất một vé.";
             return Redirect($"/quan-tri/phong-chieu/{roomId}/ghe");
         }
+
+        // Xóa các dòng lịch ghế (ShowtimeSeat) gắn với ghế này trước — đã xác nhận ở
+        // trên là chưa có vé nào đặt các dòng này, nên xóa an toàn, tránh lỗi khóa ngoại.
+        var relatedShowtimeSeats = Db.ShowtimeSeats.Where(ss => ss.SeatId == seatId);
+        Db.ShowtimeSeats.RemoveRange(relatedShowtimeSeats);
 
         Db.Seats.Remove(seat);
         var room = await Db.Rooms.FindAsync(roomId);

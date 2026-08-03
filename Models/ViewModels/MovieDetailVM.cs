@@ -34,4 +34,10 @@ public class MovieDetailVM
     // IMDb-style extra info (director, cast, country, IMDb rating, ...) fetched
     // live from OMDb by title. Null if lookup failed or no API key is configured.
     public OmdbInfo? Omdb { get; set; }
+
+    // Bản dịch tiếng Việt của Omdb.Plot/Genre/Awards (qua Azure Translator).
+    // Bằng nguyên văn tiếng Anh nếu chưa cấu hình ApiKey hoặc dịch thất bại.
+    public string? TranslatedPlot { get; set; }
+    public string? TranslatedGenre { get; set; }
+    public string? TranslatedAwards { get; set; }
 }

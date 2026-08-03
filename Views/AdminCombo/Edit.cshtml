@@ -16,11 +16,11 @@
     <textarea name="description">@Model.Description</textarea>
 
     <label>Giá</label>
-    <input type="number" name="price" value="@Model.Price" min="0" step="1000" required>
+    <input type="number" name="price" value="@Model.Price.ToString(System.Globalization.CultureInfo.InvariantCulture)" min="0" step="1000" required>
 
     <div class="admin-check">
-        <input type="hidden" name="isActive" value="false">
         <input type="checkbox" name="isActive" value="true" checked="@Model.IsActive">
+        <input type="hidden" name="isActive" value="false">
         <label style="margin:0;">Đang bán</label>
     </div>
 

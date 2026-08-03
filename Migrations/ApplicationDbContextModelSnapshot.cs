@@ -215,6 +215,10 @@ namespace DatVeXemPhim.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MovieId"), 1L, 1);
 
+                    b.Property<string>("BannerUrl")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -322,6 +326,7 @@ namespace DatVeXemPhim.Migrations
                         new
                         {
                             MovieId = 7,
+                            BannerUrl = "/banners/it-ends-with-us-banner.jpg",
                             CreatedAt = new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified),
                             Description = "Một người phụ nữ trẻ phải đối mặt với những lựa chọn khó khăn khi tình yêu và quá khứ đau buồn đan xen.",
                             Duration = 130,
@@ -357,6 +362,7 @@ namespace DatVeXemPhim.Migrations
                         new
                         {
                             MovieId = 10,
+                            BannerUrl = "/banners/past-lives-banner.jpg",
                             CreatedAt = new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified),
                             Description = "Hai người bạn thời thơ ấu tái ngộ sau nhiều năm xa cách, đối diện với những gì có thể đã xảy ra.",
                             Duration = 106,
@@ -369,6 +375,7 @@ namespace DatVeXemPhim.Migrations
                         new
                         {
                             MovieId = 11,
+                            BannerUrl = "/banners/the-substance-banner.jpg",
                             CreatedAt = new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified),
                             Description = "Một ngôi sao đang lụi tàn sử dụng loại thuốc bí ẩn để tạo ra phiên bản trẻ trung hơn của chính mình, với cái giá khủng khiếp.",
                             Duration = 141,
@@ -484,6 +491,7 @@ namespace DatVeXemPhim.Migrations
                         new
                         {
                             MovieId = 21,
+                            BannerUrl = "/banners/barbie-banner.jpg",
                             CreatedAt = new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified),
                             Description = "Barbie rời khỏi thế giới hoàn hảo của mình để khám phá thế giới thực đầy bất ngờ.",
                             Duration = 114,
@@ -541,6 +549,7 @@ namespace DatVeXemPhim.Migrations
                         new
                         {
                             MovieId = 26,
+                            BannerUrl = "/banners/dune-2-banner.jpg",
                             CreatedAt = new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified),
                             Description = "Paul Atreides hợp lực cùng người Fremen trên hành trình trả thù và định đoạt số phận cả vũ trụ.",
                             Duration = 166,
@@ -1258,7 +1267,7 @@ namespace DatVeXemPhim.Migrations
                     b.HasData(
                         new
                         {
-                            ShowtimeId = 1,
+                            ShowtimeId = 100001,
                             EndTime = new DateTime(2026, 7, 29, 11, 13, 0, 0, DateTimeKind.Unspecified),
                             MovieId = 6,
                             RoomId = 1,
@@ -1268,7 +1277,7 @@ namespace DatVeXemPhim.Migrations
                         },
                         new
                         {
-                            ShowtimeId = 2,
+                            ShowtimeId = 100002,
                             EndTime = new DateTime(2026, 8, 2, 11, 13, 0, 0, DateTimeKind.Unspecified),
                             MovieId = 6,
                             RoomId = 2,
@@ -1278,7 +1287,7 @@ namespace DatVeXemPhim.Migrations
                         },
                         new
                         {
-                            ShowtimeId = 3,
+                            ShowtimeId = 100003,
                             EndTime = new DateTime(2026, 7, 30, 11, 40, 0, 0, DateTimeKind.Unspecified),
                             MovieId = 7,
                             RoomId = 2,
@@ -1288,7 +1297,7 @@ namespace DatVeXemPhim.Migrations
                         },
                         new
                         {
-                            ShowtimeId = 4,
+                            ShowtimeId = 100004,
                             EndTime = new DateTime(2026, 8, 3, 11, 40, 0, 0, DateTimeKind.Unspecified),
                             MovieId = 7,
                             RoomId = 1,
@@ -1298,7 +1307,7 @@ namespace DatVeXemPhim.Migrations
                         },
                         new
                         {
-                            ShowtimeId = 5,
+                            ShowtimeId = 100005,
                             EndTime = new DateTime(2026, 7, 31, 11, 16, 0, 0, DateTimeKind.Unspecified),
                             MovieId = 10,
                             RoomId = 1,
@@ -1308,7 +1317,7 @@ namespace DatVeXemPhim.Migrations
                         },
                         new
                         {
-                            ShowtimeId = 6,
+                            ShowtimeId = 100006,
                             EndTime = new DateTime(2026, 8, 4, 11, 16, 0, 0, DateTimeKind.Unspecified),
                             MovieId = 10,
                             RoomId = 2,
@@ -1318,7 +1327,7 @@ namespace DatVeXemPhim.Migrations
                         },
                         new
                         {
-                            ShowtimeId = 7,
+                            ShowtimeId = 100007,
                             EndTime = new DateTime(2026, 8, 1, 11, 51, 0, 0, DateTimeKind.Unspecified),
                             MovieId = 11,
                             RoomId = 2,
@@ -1328,7 +1337,7 @@ namespace DatVeXemPhim.Migrations
                         },
                         new
                         {
-                            ShowtimeId = 8,
+                            ShowtimeId = 100008,
                             EndTime = new DateTime(2026, 7, 29, 13, 54, 0, 0, DateTimeKind.Unspecified),
                             MovieId = 11,
                             RoomId = 1,
@@ -1338,7 +1347,7 @@ namespace DatVeXemPhim.Migrations
                         },
                         new
                         {
-                            ShowtimeId = 9,
+                            ShowtimeId = 100009,
                             EndTime = new DateTime(2026, 8, 2, 11, 35, 0, 0, DateTimeKind.Unspecified),
                             MovieId = 13,
                             RoomId = 1,
@@ -1348,7 +1357,7 @@ namespace DatVeXemPhim.Migrations
                         },
                         new
                         {
-                            ShowtimeId = 10,
+                            ShowtimeId = 100010,
                             EndTime = new DateTime(2026, 7, 30, 14, 5, 0, 0, DateTimeKind.Unspecified),
                             MovieId = 13,
                             RoomId = 2,
@@ -1358,7 +1367,7 @@ namespace DatVeXemPhim.Migrations
                         },
                         new
                         {
-                            ShowtimeId = 11,
+                            ShowtimeId = 100011,
                             EndTime = new DateTime(2026, 8, 3, 11, 4, 0, 0, DateTimeKind.Unspecified),
                             MovieId = 18,
                             RoomId = 2,
@@ -1368,7 +1377,7 @@ namespace DatVeXemPhim.Migrations
                         },
                         new
                         {
-                            ShowtimeId = 12,
+                            ShowtimeId = 100012,
                             EndTime = new DateTime(2026, 7, 31, 13, 10, 0, 0, DateTimeKind.Unspecified),
                             MovieId = 18,
                             RoomId = 1,
@@ -1378,7 +1387,7 @@ namespace DatVeXemPhim.Migrations
                         },
                         new
                         {
-                            ShowtimeId = 13,
+                            ShowtimeId = 100013,
                             EndTime = new DateTime(2026, 8, 4, 11, 24, 0, 0, DateTimeKind.Unspecified),
                             MovieId = 21,
                             RoomId = 1,
@@ -1388,7 +1397,7 @@ namespace DatVeXemPhim.Migrations
                         },
                         new
                         {
-                            ShowtimeId = 14,
+                            ShowtimeId = 100014,
                             EndTime = new DateTime(2026, 8, 1, 14, 5, 0, 0, DateTimeKind.Unspecified),
                             MovieId = 21,
                             RoomId = 2,
@@ -1398,7 +1407,7 @@ namespace DatVeXemPhim.Migrations
                         },
                         new
                         {
-                            ShowtimeId = 15,
+                            ShowtimeId = 100015,
                             EndTime = new DateTime(2026, 7, 29, 11, 6, 0, 0, DateTimeKind.Unspecified),
                             MovieId = 25,
                             RoomId = 2,
@@ -1408,7 +1417,7 @@ namespace DatVeXemPhim.Migrations
                         },
                         new
                         {
-                            ShowtimeId = 16,
+                            ShowtimeId = 100016,
                             EndTime = new DateTime(2026, 8, 2, 13, 31, 0, 0, DateTimeKind.Unspecified),
                             MovieId = 25,
                             RoomId = 1,
@@ -1418,7 +1427,7 @@ namespace DatVeXemPhim.Migrations
                         },
                         new
                         {
-                            ShowtimeId = 17,
+                            ShowtimeId = 100017,
                             EndTime = new DateTime(2026, 7, 30, 12, 16, 0, 0, DateTimeKind.Unspecified),
                             MovieId = 26,
                             RoomId = 1,
@@ -1428,7 +1437,7 @@ namespace DatVeXemPhim.Migrations
                         },
                         new
                         {
-                            ShowtimeId = 18,
+                            ShowtimeId = 100018,
                             EndTime = new DateTime(2026, 8, 3, 14, 10, 0, 0, DateTimeKind.Unspecified),
                             MovieId = 26,
                             RoomId = 2,
@@ -1438,7 +1447,7 @@ namespace DatVeXemPhim.Migrations
                         },
                         new
                         {
-                            ShowtimeId = 19,
+                            ShowtimeId = 100019,
                             EndTime = new DateTime(2026, 7, 31, 11, 29, 0, 0, DateTimeKind.Unspecified),
                             MovieId = 28,
                             RoomId = 2,
@@ -1448,7 +1457,7 @@ namespace DatVeXemPhim.Migrations
                         },
                         new
                         {
-                            ShowtimeId = 20,
+                            ShowtimeId = 100020,
                             EndTime = new DateTime(2026, 8, 4, 13, 43, 0, 0, DateTimeKind.Unspecified),
                             MovieId = 28,
                             RoomId = 1,
@@ -1458,7 +1467,7 @@ namespace DatVeXemPhim.Migrations
                         },
                         new
                         {
-                            ShowtimeId = 21,
+                            ShowtimeId = 100021,
                             EndTime = new DateTime(2026, 8, 1, 11, 43, 0, 0, DateTimeKind.Unspecified),
                             MovieId = 29,
                             RoomId = 1,
@@ -1468,7 +1477,7 @@ namespace DatVeXemPhim.Migrations
                         },
                         new
                         {
-                            ShowtimeId = 22,
+                            ShowtimeId = 100022,
                             EndTime = new DateTime(2026, 7, 29, 13, 39, 0, 0, DateTimeKind.Unspecified),
                             MovieId = 29,
                             RoomId = 2,
@@ -1478,7 +1487,7 @@ namespace DatVeXemPhim.Migrations
                         },
                         new
                         {
-                            ShowtimeId = 23,
+                            ShowtimeId = 100023,
                             EndTime = new DateTime(2026, 8, 2, 13, 54, 0, 0, DateTimeKind.Unspecified),
                             MovieId = 30,
                             RoomId = 2,
@@ -1488,7 +1497,7 @@ namespace DatVeXemPhim.Migrations
                         },
                         new
                         {
-                            ShowtimeId = 24,
+                            ShowtimeId = 100024,
                             EndTime = new DateTime(2026, 7, 30, 14, 57, 0, 0, DateTimeKind.Unspecified),
                             MovieId = 30,
                             RoomId = 1,
@@ -1498,7 +1507,7 @@ namespace DatVeXemPhim.Migrations
                         },
                         new
                         {
-                            ShowtimeId = 25,
+                            ShowtimeId = 100025,
                             EndTime = new DateTime(2026, 8, 3, 13, 34, 0, 0, DateTimeKind.Unspecified),
                             MovieId = 34,
                             RoomId = 1,
@@ -1508,7 +1517,7 @@ namespace DatVeXemPhim.Migrations
                         },
                         new
                         {
-                            ShowtimeId = 26,
+                            ShowtimeId = 100026,
                             EndTime = new DateTime(2026, 7, 31, 13, 23, 0, 0, DateTimeKind.Unspecified),
                             MovieId = 34,
                             RoomId = 2,
@@ -1518,7 +1527,7 @@ namespace DatVeXemPhim.Migrations
                         },
                         new
                         {
-                            ShowtimeId = 27,
+                            ShowtimeId = 100027,
                             EndTime = new DateTime(2026, 8, 4, 13, 13, 0, 0, DateTimeKind.Unspecified),
                             MovieId = 35,
                             RoomId = 2,
@@ -1528,7 +1537,7 @@ namespace DatVeXemPhim.Migrations
                         },
                         new
                         {
-                            ShowtimeId = 28,
+                            ShowtimeId = 100028,
                             EndTime = new DateTime(2026, 8, 1, 13, 40, 0, 0, DateTimeKind.Unspecified),
                             MovieId = 35,
                             RoomId = 1,
@@ -1538,7 +1547,7 @@ namespace DatVeXemPhim.Migrations
                         },
                         new
                         {
-                            ShowtimeId = 29,
+                            ShowtimeId = 100029,
                             EndTime = new DateTime(2026, 8, 5, 11, 25, 0, 0, DateTimeKind.Unspecified),
                             MovieId = 2,
                             RoomId = 1,
@@ -1548,7 +1557,7 @@ namespace DatVeXemPhim.Migrations
                         },
                         new
                         {
-                            ShowtimeId = 30,
+                            ShowtimeId = 100030,
                             EndTime = new DateTime(2026, 8, 9, 11, 25, 0, 0, DateTimeKind.Unspecified),
                             MovieId = 2,
                             RoomId = 2,
@@ -1558,7 +1567,7 @@ namespace DatVeXemPhim.Migrations
                         },
                         new
                         {
-                            ShowtimeId = 31,
+                            ShowtimeId = 100031,
                             EndTime = new DateTime(2026, 8, 6, 11, 58, 0, 0, DateTimeKind.Unspecified),
                             MovieId = 4,
                             RoomId = 2,
@@ -1568,7 +1577,7 @@ namespace DatVeXemPhim.Migrations
                         },
                         new
                         {
-                            ShowtimeId = 32,
+                            ShowtimeId = 100032,
                             EndTime = new DateTime(2026, 8, 10, 11, 58, 0, 0, DateTimeKind.Unspecified),
                             MovieId = 4,
                             RoomId = 1,
@@ -1578,7 +1587,7 @@ namespace DatVeXemPhim.Migrations
                         },
                         new
                         {
-                            ShowtimeId = 33,
+                            ShowtimeId = 100033,
                             EndTime = new DateTime(2026, 8, 7, 11, 25, 0, 0, DateTimeKind.Unspecified),
                             MovieId = 9,
                             RoomId = 1,
@@ -1588,7 +1597,7 @@ namespace DatVeXemPhim.Migrations
                         },
                         new
                         {
-                            ShowtimeId = 34,
+                            ShowtimeId = 100034,
                             EndTime = new DateTime(2026, 8, 11, 11, 25, 0, 0, DateTimeKind.Unspecified),
                             MovieId = 9,
                             RoomId = 2,
@@ -1598,7 +1607,7 @@ namespace DatVeXemPhim.Migrations
                         },
                         new
                         {
-                            ShowtimeId = 35,
+                            ShowtimeId = 100035,
                             EndTime = new DateTime(2026, 8, 8, 11, 37, 0, 0, DateTimeKind.Unspecified),
                             MovieId = 12,
                             RoomId = 2,
@@ -1608,7 +1617,7 @@ namespace DatVeXemPhim.Migrations
                         },
                         new
                         {
-                            ShowtimeId = 36,
+                            ShowtimeId = 100036,
                             EndTime = new DateTime(2026, 8, 5, 13, 52, 0, 0, DateTimeKind.Unspecified),
                             MovieId = 12,
                             RoomId = 1,
@@ -1618,7 +1627,7 @@ namespace DatVeXemPhim.Migrations
                         },
                         new
                         {
-                            ShowtimeId = 37,
+                            ShowtimeId = 100037,
                             EndTime = new DateTime(2026, 8, 9, 11, 15, 0, 0, DateTimeKind.Unspecified),
                             MovieId = 14,
                             RoomId = 1,
@@ -1628,7 +1637,7 @@ namespace DatVeXemPhim.Migrations
                         },
                         new
                         {
-                            ShowtimeId = 38,
+                            ShowtimeId = 100038,
                             EndTime = new DateTime(2026, 8, 6, 14, 3, 0, 0, DateTimeKind.Unspecified),
                             MovieId = 14,
                             RoomId = 2,
@@ -1638,7 +1647,7 @@ namespace DatVeXemPhim.Migrations
                         },
                         new
                         {
-                            ShowtimeId = 39,
+                            ShowtimeId = 100039,
                             EndTime = new DateTime(2026, 8, 10, 11, 11, 0, 0, DateTimeKind.Unspecified),
                             MovieId = 15,
                             RoomId = 2,
@@ -1648,7 +1657,7 @@ namespace DatVeXemPhim.Migrations
                         },
                         new
                         {
-                            ShowtimeId = 40,
+                            ShowtimeId = 100040,
                             EndTime = new DateTime(2026, 8, 7, 13, 26, 0, 0, DateTimeKind.Unspecified),
                             MovieId = 15,
                             RoomId = 1,
@@ -1658,7 +1667,7 @@ namespace DatVeXemPhim.Migrations
                         },
                         new
                         {
-                            ShowtimeId = 41,
+                            ShowtimeId = 100041,
                             EndTime = new DateTime(2026, 8, 11, 11, 6, 0, 0, DateTimeKind.Unspecified),
                             MovieId = 16,
                             RoomId = 1,
@@ -1668,7 +1677,7 @@ namespace DatVeXemPhim.Migrations
                         },
                         new
                         {
-                            ShowtimeId = 42,
+                            ShowtimeId = 100042,
                             EndTime = new DateTime(2026, 8, 8, 13, 33, 0, 0, DateTimeKind.Unspecified),
                             MovieId = 16,
                             RoomId = 2,
@@ -1678,7 +1687,7 @@ namespace DatVeXemPhim.Migrations
                         },
                         new
                         {
-                            ShowtimeId = 43,
+                            ShowtimeId = 100043,
                             EndTime = new DateTime(2026, 8, 5, 11, 10, 0, 0, DateTimeKind.Unspecified),
                             MovieId = 17,
                             RoomId = 2,
@@ -1688,7 +1697,7 @@ namespace DatVeXemPhim.Migrations
                         },
                         new
                         {
-                            ShowtimeId = 44,
+                            ShowtimeId = 100044,
                             EndTime = new DateTime(2026, 8, 9, 13, 15, 0, 0, DateTimeKind.Unspecified),
                             MovieId = 17,
                             RoomId = 1,
@@ -1698,7 +1707,7 @@ namespace DatVeXemPhim.Migrations
                         },
                         new
                         {
-                            ShowtimeId = 45,
+                            ShowtimeId = 100045,
                             EndTime = new DateTime(2026, 8, 6, 11, 13, 0, 0, DateTimeKind.Unspecified),
                             MovieId = 22,
                             RoomId = 1,
@@ -1708,7 +1717,7 @@ namespace DatVeXemPhim.Migrations
                         },
                         new
                         {
-                            ShowtimeId = 46,
+                            ShowtimeId = 100046,
                             EndTime = new DateTime(2026, 8, 10, 13, 14, 0, 0, DateTimeKind.Unspecified),
                             MovieId = 22,
                             RoomId = 2,
@@ -1718,7 +1727,7 @@ namespace DatVeXemPhim.Migrations
                         },
                         new
                         {
-                            ShowtimeId = 47,
+                            ShowtimeId = 100047,
                             EndTime = new DateTime(2026, 8, 7, 11, 49, 0, 0, DateTimeKind.Unspecified),
                             MovieId = 23,
                             RoomId = 2,
@@ -1728,7 +1737,7 @@ namespace DatVeXemPhim.Migrations
                         },
                         new
                         {
-                            ShowtimeId = 48,
+                            ShowtimeId = 100048,
                             EndTime = new DateTime(2026, 8, 11, 13, 45, 0, 0, DateTimeKind.Unspecified),
                             MovieId = 23,
                             RoomId = 1,
@@ -1738,7 +1747,7 @@ namespace DatVeXemPhim.Migrations
                         },
                         new
                         {
-                            ShowtimeId = 49,
+                            ShowtimeId = 100049,
                             EndTime = new DateTime(2026, 8, 8, 11, 3, 0, 0, DateTimeKind.Unspecified),
                             MovieId = 24,
                             RoomId = 1,
@@ -1748,7 +1757,7 @@ namespace DatVeXemPhim.Migrations
                         },
                         new
                         {
-                            ShowtimeId = 50,
+                            ShowtimeId = 100050,
                             EndTime = new DateTime(2026, 8, 5, 13, 3, 0, 0, DateTimeKind.Unspecified),
                             MovieId = 24,
                             RoomId = 2,
@@ -1758,7 +1767,7 @@ namespace DatVeXemPhim.Migrations
                         },
                         new
                         {
-                            ShowtimeId = 51,
+                            ShowtimeId = 100051,
                             EndTime = new DateTime(2026, 8, 9, 13, 40, 0, 0, DateTimeKind.Unspecified),
                             MovieId = 27,
                             RoomId = 2,
@@ -1768,7 +1777,7 @@ namespace DatVeXemPhim.Migrations
                         },
                         new
                         {
-                            ShowtimeId = 52,
+                            ShowtimeId = 100052,
                             EndTime = new DateTime(2026, 8, 6, 13, 28, 0, 0, DateTimeKind.Unspecified),
                             MovieId = 27,
                             RoomId = 1,
@@ -1778,7 +1787,7 @@ namespace DatVeXemPhim.Migrations
                         },
                         new
                         {
-                            ShowtimeId = 53,
+                            ShowtimeId = 100053,
                             EndTime = new DateTime(2026, 8, 10, 13, 43, 0, 0, DateTimeKind.Unspecified),
                             MovieId = 32,
                             RoomId = 1,
@@ -1788,7 +1797,7 @@ namespace DatVeXemPhim.Migrations
                         },
                         new
                         {
-                            ShowtimeId = 54,
+                            ShowtimeId = 100054,
                             EndTime = new DateTime(2026, 8, 7, 13, 34, 0, 0, DateTimeKind.Unspecified),
                             MovieId = 32,
                             RoomId = 2,
@@ -1798,7 +1807,7 @@ namespace DatVeXemPhim.Migrations
                         },
                         new
                         {
-                            ShowtimeId = 55,
+                            ShowtimeId = 100055,
                             EndTime = new DateTime(2026, 8, 11, 13, 25, 0, 0, DateTimeKind.Unspecified),
                             MovieId = 33,
                             RoomId = 2,
@@ -1808,7 +1817,7 @@ namespace DatVeXemPhim.Migrations
                         },
                         new
                         {
-                            ShowtimeId = 56,
+                            ShowtimeId = 100056,
                             EndTime = new DateTime(2026, 8, 8, 13, 3, 0, 0, DateTimeKind.Unspecified),
                             MovieId = 33,
                             RoomId = 1,
@@ -1861,4510 +1870,4510 @@ namespace DatVeXemPhim.Migrations
                     b.HasData(
                         new
                         {
-                            ShowtimeSeatId = 1,
+                            ShowtimeSeatId = 200001,
                             SeatId = 1,
-                            ShowtimeId = 1,
+                            ShowtimeId = 100001,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 2,
+                            ShowtimeSeatId = 200002,
                             SeatId = 2,
-                            ShowtimeId = 1,
+                            ShowtimeId = 100001,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 3,
+                            ShowtimeSeatId = 200003,
                             SeatId = 3,
-                            ShowtimeId = 1,
+                            ShowtimeId = 100001,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 4,
+                            ShowtimeSeatId = 200004,
                             SeatId = 4,
-                            ShowtimeId = 1,
+                            ShowtimeId = 100001,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 5,
+                            ShowtimeSeatId = 200005,
                             SeatId = 5,
-                            ShowtimeId = 1,
+                            ShowtimeId = 100001,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 6,
+                            ShowtimeSeatId = 200006,
                             SeatId = 6,
-                            ShowtimeId = 1,
+                            ShowtimeId = 100001,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 7,
+                            ShowtimeSeatId = 200007,
                             SeatId = 7,
-                            ShowtimeId = 1,
+                            ShowtimeId = 100001,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 8,
+                            ShowtimeSeatId = 200008,
                             SeatId = 8,
-                            ShowtimeId = 1,
+                            ShowtimeId = 100001,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 9,
+                            ShowtimeSeatId = 200009,
                             SeatId = 9,
-                            ShowtimeId = 1,
+                            ShowtimeId = 100001,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 10,
+                            ShowtimeSeatId = 200010,
                             SeatId = 10,
-                            ShowtimeId = 1,
+                            ShowtimeId = 100001,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 11,
+                            ShowtimeSeatId = 200011,
                             SeatId = 11,
-                            ShowtimeId = 1,
+                            ShowtimeId = 100001,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 12,
+                            ShowtimeSeatId = 200012,
                             SeatId = 12,
-                            ShowtimeId = 1,
+                            ShowtimeId = 100001,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 13,
+                            ShowtimeSeatId = 200013,
                             SeatId = 13,
-                            ShowtimeId = 1,
+                            ShowtimeId = 100001,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 14,
+                            ShowtimeSeatId = 200014,
                             SeatId = 14,
-                            ShowtimeId = 1,
+                            ShowtimeId = 100001,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 15,
+                            ShowtimeSeatId = 200015,
                             SeatId = 15,
-                            ShowtimeId = 1,
+                            ShowtimeId = 100001,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 16,
+                            ShowtimeSeatId = 200016,
                             SeatId = 16,
-                            ShowtimeId = 2,
+                            ShowtimeId = 100002,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 17,
+                            ShowtimeSeatId = 200017,
                             SeatId = 17,
-                            ShowtimeId = 2,
+                            ShowtimeId = 100002,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 18,
+                            ShowtimeSeatId = 200018,
                             SeatId = 18,
-                            ShowtimeId = 2,
+                            ShowtimeId = 100002,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 19,
+                            ShowtimeSeatId = 200019,
                             SeatId = 19,
-                            ShowtimeId = 2,
+                            ShowtimeId = 100002,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 20,
+                            ShowtimeSeatId = 200020,
                             SeatId = 20,
-                            ShowtimeId = 2,
+                            ShowtimeId = 100002,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 21,
+                            ShowtimeSeatId = 200021,
                             SeatId = 21,
-                            ShowtimeId = 2,
+                            ShowtimeId = 100002,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 22,
+                            ShowtimeSeatId = 200022,
                             SeatId = 22,
-                            ShowtimeId = 2,
+                            ShowtimeId = 100002,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 23,
+                            ShowtimeSeatId = 200023,
                             SeatId = 23,
-                            ShowtimeId = 2,
+                            ShowtimeId = 100002,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 24,
+                            ShowtimeSeatId = 200024,
                             SeatId = 16,
-                            ShowtimeId = 3,
+                            ShowtimeId = 100003,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 25,
+                            ShowtimeSeatId = 200025,
                             SeatId = 17,
-                            ShowtimeId = 3,
+                            ShowtimeId = 100003,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 26,
+                            ShowtimeSeatId = 200026,
                             SeatId = 18,
-                            ShowtimeId = 3,
+                            ShowtimeId = 100003,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 27,
+                            ShowtimeSeatId = 200027,
                             SeatId = 19,
-                            ShowtimeId = 3,
+                            ShowtimeId = 100003,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 28,
+                            ShowtimeSeatId = 200028,
                             SeatId = 20,
-                            ShowtimeId = 3,
+                            ShowtimeId = 100003,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 29,
+                            ShowtimeSeatId = 200029,
                             SeatId = 21,
-                            ShowtimeId = 3,
+                            ShowtimeId = 100003,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 30,
+                            ShowtimeSeatId = 200030,
                             SeatId = 22,
-                            ShowtimeId = 3,
+                            ShowtimeId = 100003,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 31,
+                            ShowtimeSeatId = 200031,
                             SeatId = 23,
-                            ShowtimeId = 3,
+                            ShowtimeId = 100003,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 32,
+                            ShowtimeSeatId = 200032,
                             SeatId = 1,
-                            ShowtimeId = 4,
+                            ShowtimeId = 100004,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 33,
+                            ShowtimeSeatId = 200033,
                             SeatId = 2,
-                            ShowtimeId = 4,
+                            ShowtimeId = 100004,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 34,
+                            ShowtimeSeatId = 200034,
                             SeatId = 3,
-                            ShowtimeId = 4,
+                            ShowtimeId = 100004,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 35,
+                            ShowtimeSeatId = 200035,
                             SeatId = 4,
-                            ShowtimeId = 4,
+                            ShowtimeId = 100004,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 36,
+                            ShowtimeSeatId = 200036,
                             SeatId = 5,
-                            ShowtimeId = 4,
+                            ShowtimeId = 100004,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 37,
+                            ShowtimeSeatId = 200037,
                             SeatId = 6,
-                            ShowtimeId = 4,
+                            ShowtimeId = 100004,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 38,
+                            ShowtimeSeatId = 200038,
                             SeatId = 7,
-                            ShowtimeId = 4,
+                            ShowtimeId = 100004,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 39,
+                            ShowtimeSeatId = 200039,
                             SeatId = 8,
-                            ShowtimeId = 4,
+                            ShowtimeId = 100004,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 40,
+                            ShowtimeSeatId = 200040,
                             SeatId = 9,
-                            ShowtimeId = 4,
+                            ShowtimeId = 100004,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 41,
+                            ShowtimeSeatId = 200041,
                             SeatId = 10,
-                            ShowtimeId = 4,
+                            ShowtimeId = 100004,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 42,
+                            ShowtimeSeatId = 200042,
                             SeatId = 11,
-                            ShowtimeId = 4,
+                            ShowtimeId = 100004,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 43,
+                            ShowtimeSeatId = 200043,
                             SeatId = 12,
-                            ShowtimeId = 4,
+                            ShowtimeId = 100004,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 44,
+                            ShowtimeSeatId = 200044,
                             SeatId = 13,
-                            ShowtimeId = 4,
+                            ShowtimeId = 100004,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 45,
+                            ShowtimeSeatId = 200045,
                             SeatId = 14,
-                            ShowtimeId = 4,
+                            ShowtimeId = 100004,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 46,
+                            ShowtimeSeatId = 200046,
                             SeatId = 15,
-                            ShowtimeId = 4,
+                            ShowtimeId = 100004,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 47,
+                            ShowtimeSeatId = 200047,
                             SeatId = 1,
-                            ShowtimeId = 5,
+                            ShowtimeId = 100005,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 48,
+                            ShowtimeSeatId = 200048,
                             SeatId = 2,
-                            ShowtimeId = 5,
+                            ShowtimeId = 100005,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 49,
+                            ShowtimeSeatId = 200049,
                             SeatId = 3,
-                            ShowtimeId = 5,
+                            ShowtimeId = 100005,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 50,
+                            ShowtimeSeatId = 200050,
                             SeatId = 4,
-                            ShowtimeId = 5,
+                            ShowtimeId = 100005,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 51,
+                            ShowtimeSeatId = 200051,
                             SeatId = 5,
-                            ShowtimeId = 5,
+                            ShowtimeId = 100005,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 52,
+                            ShowtimeSeatId = 200052,
                             SeatId = 6,
-                            ShowtimeId = 5,
+                            ShowtimeId = 100005,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 53,
+                            ShowtimeSeatId = 200053,
                             SeatId = 7,
-                            ShowtimeId = 5,
+                            ShowtimeId = 100005,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 54,
+                            ShowtimeSeatId = 200054,
                             SeatId = 8,
-                            ShowtimeId = 5,
+                            ShowtimeId = 100005,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 55,
+                            ShowtimeSeatId = 200055,
                             SeatId = 9,
-                            ShowtimeId = 5,
+                            ShowtimeId = 100005,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 56,
+                            ShowtimeSeatId = 200056,
                             SeatId = 10,
-                            ShowtimeId = 5,
+                            ShowtimeId = 100005,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 57,
+                            ShowtimeSeatId = 200057,
                             SeatId = 11,
-                            ShowtimeId = 5,
+                            ShowtimeId = 100005,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 58,
+                            ShowtimeSeatId = 200058,
                             SeatId = 12,
-                            ShowtimeId = 5,
+                            ShowtimeId = 100005,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 59,
+                            ShowtimeSeatId = 200059,
                             SeatId = 13,
-                            ShowtimeId = 5,
+                            ShowtimeId = 100005,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 60,
+                            ShowtimeSeatId = 200060,
                             SeatId = 14,
-                            ShowtimeId = 5,
+                            ShowtimeId = 100005,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 61,
+                            ShowtimeSeatId = 200061,
                             SeatId = 15,
-                            ShowtimeId = 5,
+                            ShowtimeId = 100005,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 62,
+                            ShowtimeSeatId = 200062,
                             SeatId = 16,
-                            ShowtimeId = 6,
+                            ShowtimeId = 100006,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 63,
+                            ShowtimeSeatId = 200063,
                             SeatId = 17,
-                            ShowtimeId = 6,
+                            ShowtimeId = 100006,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 64,
+                            ShowtimeSeatId = 200064,
                             SeatId = 18,
-                            ShowtimeId = 6,
+                            ShowtimeId = 100006,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 65,
+                            ShowtimeSeatId = 200065,
                             SeatId = 19,
-                            ShowtimeId = 6,
+                            ShowtimeId = 100006,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 66,
+                            ShowtimeSeatId = 200066,
                             SeatId = 20,
-                            ShowtimeId = 6,
+                            ShowtimeId = 100006,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 67,
+                            ShowtimeSeatId = 200067,
                             SeatId = 21,
-                            ShowtimeId = 6,
+                            ShowtimeId = 100006,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 68,
+                            ShowtimeSeatId = 200068,
                             SeatId = 22,
-                            ShowtimeId = 6,
+                            ShowtimeId = 100006,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 69,
+                            ShowtimeSeatId = 200069,
                             SeatId = 23,
-                            ShowtimeId = 6,
+                            ShowtimeId = 100006,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 70,
+                            ShowtimeSeatId = 200070,
                             SeatId = 16,
-                            ShowtimeId = 7,
+                            ShowtimeId = 100007,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 71,
+                            ShowtimeSeatId = 200071,
                             SeatId = 17,
-                            ShowtimeId = 7,
+                            ShowtimeId = 100007,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 72,
+                            ShowtimeSeatId = 200072,
                             SeatId = 18,
-                            ShowtimeId = 7,
+                            ShowtimeId = 100007,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 73,
+                            ShowtimeSeatId = 200073,
                             SeatId = 19,
-                            ShowtimeId = 7,
+                            ShowtimeId = 100007,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 74,
+                            ShowtimeSeatId = 200074,
                             SeatId = 20,
-                            ShowtimeId = 7,
+                            ShowtimeId = 100007,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 75,
+                            ShowtimeSeatId = 200075,
                             SeatId = 21,
-                            ShowtimeId = 7,
+                            ShowtimeId = 100007,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 76,
+                            ShowtimeSeatId = 200076,
                             SeatId = 22,
-                            ShowtimeId = 7,
+                            ShowtimeId = 100007,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 77,
+                            ShowtimeSeatId = 200077,
                             SeatId = 23,
-                            ShowtimeId = 7,
+                            ShowtimeId = 100007,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 78,
+                            ShowtimeSeatId = 200078,
                             SeatId = 1,
-                            ShowtimeId = 8,
+                            ShowtimeId = 100008,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 79,
+                            ShowtimeSeatId = 200079,
                             SeatId = 2,
-                            ShowtimeId = 8,
+                            ShowtimeId = 100008,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 80,
+                            ShowtimeSeatId = 200080,
                             SeatId = 3,
-                            ShowtimeId = 8,
+                            ShowtimeId = 100008,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 81,
+                            ShowtimeSeatId = 200081,
                             SeatId = 4,
-                            ShowtimeId = 8,
+                            ShowtimeId = 100008,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 82,
+                            ShowtimeSeatId = 200082,
                             SeatId = 5,
-                            ShowtimeId = 8,
+                            ShowtimeId = 100008,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 83,
+                            ShowtimeSeatId = 200083,
                             SeatId = 6,
-                            ShowtimeId = 8,
+                            ShowtimeId = 100008,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 84,
+                            ShowtimeSeatId = 200084,
                             SeatId = 7,
-                            ShowtimeId = 8,
+                            ShowtimeId = 100008,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 85,
+                            ShowtimeSeatId = 200085,
                             SeatId = 8,
-                            ShowtimeId = 8,
+                            ShowtimeId = 100008,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 86,
+                            ShowtimeSeatId = 200086,
                             SeatId = 9,
-                            ShowtimeId = 8,
+                            ShowtimeId = 100008,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 87,
+                            ShowtimeSeatId = 200087,
                             SeatId = 10,
-                            ShowtimeId = 8,
+                            ShowtimeId = 100008,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 88,
+                            ShowtimeSeatId = 200088,
                             SeatId = 11,
-                            ShowtimeId = 8,
+                            ShowtimeId = 100008,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 89,
+                            ShowtimeSeatId = 200089,
                             SeatId = 12,
-                            ShowtimeId = 8,
+                            ShowtimeId = 100008,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 90,
+                            ShowtimeSeatId = 200090,
                             SeatId = 13,
-                            ShowtimeId = 8,
+                            ShowtimeId = 100008,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 91,
+                            ShowtimeSeatId = 200091,
                             SeatId = 14,
-                            ShowtimeId = 8,
+                            ShowtimeId = 100008,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 92,
+                            ShowtimeSeatId = 200092,
                             SeatId = 15,
-                            ShowtimeId = 8,
+                            ShowtimeId = 100008,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 93,
+                            ShowtimeSeatId = 200093,
                             SeatId = 1,
-                            ShowtimeId = 9,
+                            ShowtimeId = 100009,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 94,
+                            ShowtimeSeatId = 200094,
                             SeatId = 2,
-                            ShowtimeId = 9,
+                            ShowtimeId = 100009,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 95,
+                            ShowtimeSeatId = 200095,
                             SeatId = 3,
-                            ShowtimeId = 9,
+                            ShowtimeId = 100009,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 96,
+                            ShowtimeSeatId = 200096,
                             SeatId = 4,
-                            ShowtimeId = 9,
+                            ShowtimeId = 100009,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 97,
+                            ShowtimeSeatId = 200097,
                             SeatId = 5,
-                            ShowtimeId = 9,
+                            ShowtimeId = 100009,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 98,
+                            ShowtimeSeatId = 200098,
                             SeatId = 6,
-                            ShowtimeId = 9,
+                            ShowtimeId = 100009,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 99,
+                            ShowtimeSeatId = 200099,
                             SeatId = 7,
-                            ShowtimeId = 9,
+                            ShowtimeId = 100009,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 100,
+                            ShowtimeSeatId = 200100,
                             SeatId = 8,
-                            ShowtimeId = 9,
+                            ShowtimeId = 100009,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 101,
+                            ShowtimeSeatId = 200101,
                             SeatId = 9,
-                            ShowtimeId = 9,
+                            ShowtimeId = 100009,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 102,
+                            ShowtimeSeatId = 200102,
                             SeatId = 10,
-                            ShowtimeId = 9,
+                            ShowtimeId = 100009,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 103,
+                            ShowtimeSeatId = 200103,
                             SeatId = 11,
-                            ShowtimeId = 9,
+                            ShowtimeId = 100009,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 104,
+                            ShowtimeSeatId = 200104,
                             SeatId = 12,
-                            ShowtimeId = 9,
+                            ShowtimeId = 100009,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 105,
+                            ShowtimeSeatId = 200105,
                             SeatId = 13,
-                            ShowtimeId = 9,
+                            ShowtimeId = 100009,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 106,
+                            ShowtimeSeatId = 200106,
                             SeatId = 14,
-                            ShowtimeId = 9,
+                            ShowtimeId = 100009,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 107,
+                            ShowtimeSeatId = 200107,
                             SeatId = 15,
-                            ShowtimeId = 9,
+                            ShowtimeId = 100009,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 108,
+                            ShowtimeSeatId = 200108,
                             SeatId = 16,
-                            ShowtimeId = 10,
+                            ShowtimeId = 100010,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 109,
+                            ShowtimeSeatId = 200109,
                             SeatId = 17,
-                            ShowtimeId = 10,
+                            ShowtimeId = 100010,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 110,
+                            ShowtimeSeatId = 200110,
                             SeatId = 18,
-                            ShowtimeId = 10,
+                            ShowtimeId = 100010,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 111,
+                            ShowtimeSeatId = 200111,
                             SeatId = 19,
-                            ShowtimeId = 10,
+                            ShowtimeId = 100010,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 112,
+                            ShowtimeSeatId = 200112,
                             SeatId = 20,
-                            ShowtimeId = 10,
+                            ShowtimeId = 100010,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 113,
+                            ShowtimeSeatId = 200113,
                             SeatId = 21,
-                            ShowtimeId = 10,
+                            ShowtimeId = 100010,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 114,
+                            ShowtimeSeatId = 200114,
                             SeatId = 22,
-                            ShowtimeId = 10,
+                            ShowtimeId = 100010,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 115,
+                            ShowtimeSeatId = 200115,
                             SeatId = 23,
-                            ShowtimeId = 10,
+                            ShowtimeId = 100010,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 116,
+                            ShowtimeSeatId = 200116,
                             SeatId = 16,
-                            ShowtimeId = 11,
+                            ShowtimeId = 100011,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 117,
+                            ShowtimeSeatId = 200117,
                             SeatId = 17,
-                            ShowtimeId = 11,
+                            ShowtimeId = 100011,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 118,
+                            ShowtimeSeatId = 200118,
                             SeatId = 18,
-                            ShowtimeId = 11,
+                            ShowtimeId = 100011,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 119,
+                            ShowtimeSeatId = 200119,
                             SeatId = 19,
-                            ShowtimeId = 11,
+                            ShowtimeId = 100011,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 120,
+                            ShowtimeSeatId = 200120,
                             SeatId = 20,
-                            ShowtimeId = 11,
+                            ShowtimeId = 100011,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 121,
+                            ShowtimeSeatId = 200121,
                             SeatId = 21,
-                            ShowtimeId = 11,
+                            ShowtimeId = 100011,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 122,
+                            ShowtimeSeatId = 200122,
                             SeatId = 22,
-                            ShowtimeId = 11,
+                            ShowtimeId = 100011,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 123,
+                            ShowtimeSeatId = 200123,
                             SeatId = 23,
-                            ShowtimeId = 11,
+                            ShowtimeId = 100011,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 124,
+                            ShowtimeSeatId = 200124,
                             SeatId = 1,
-                            ShowtimeId = 12,
+                            ShowtimeId = 100012,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 125,
+                            ShowtimeSeatId = 200125,
                             SeatId = 2,
-                            ShowtimeId = 12,
+                            ShowtimeId = 100012,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 126,
+                            ShowtimeSeatId = 200126,
                             SeatId = 3,
-                            ShowtimeId = 12,
+                            ShowtimeId = 100012,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 127,
+                            ShowtimeSeatId = 200127,
                             SeatId = 4,
-                            ShowtimeId = 12,
+                            ShowtimeId = 100012,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 128,
+                            ShowtimeSeatId = 200128,
                             SeatId = 5,
-                            ShowtimeId = 12,
+                            ShowtimeId = 100012,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 129,
+                            ShowtimeSeatId = 200129,
                             SeatId = 6,
-                            ShowtimeId = 12,
+                            ShowtimeId = 100012,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 130,
+                            ShowtimeSeatId = 200130,
                             SeatId = 7,
-                            ShowtimeId = 12,
+                            ShowtimeId = 100012,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 131,
+                            ShowtimeSeatId = 200131,
                             SeatId = 8,
-                            ShowtimeId = 12,
+                            ShowtimeId = 100012,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 132,
+                            ShowtimeSeatId = 200132,
                             SeatId = 9,
-                            ShowtimeId = 12,
+                            ShowtimeId = 100012,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 133,
+                            ShowtimeSeatId = 200133,
                             SeatId = 10,
-                            ShowtimeId = 12,
+                            ShowtimeId = 100012,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 134,
+                            ShowtimeSeatId = 200134,
                             SeatId = 11,
-                            ShowtimeId = 12,
+                            ShowtimeId = 100012,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 135,
+                            ShowtimeSeatId = 200135,
                             SeatId = 12,
-                            ShowtimeId = 12,
+                            ShowtimeId = 100012,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 136,
+                            ShowtimeSeatId = 200136,
                             SeatId = 13,
-                            ShowtimeId = 12,
+                            ShowtimeId = 100012,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 137,
+                            ShowtimeSeatId = 200137,
                             SeatId = 14,
-                            ShowtimeId = 12,
+                            ShowtimeId = 100012,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 138,
+                            ShowtimeSeatId = 200138,
                             SeatId = 15,
-                            ShowtimeId = 12,
+                            ShowtimeId = 100012,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 139,
+                            ShowtimeSeatId = 200139,
                             SeatId = 1,
-                            ShowtimeId = 13,
+                            ShowtimeId = 100013,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 140,
+                            ShowtimeSeatId = 200140,
                             SeatId = 2,
-                            ShowtimeId = 13,
+                            ShowtimeId = 100013,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 141,
+                            ShowtimeSeatId = 200141,
                             SeatId = 3,
-                            ShowtimeId = 13,
+                            ShowtimeId = 100013,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 142,
+                            ShowtimeSeatId = 200142,
                             SeatId = 4,
-                            ShowtimeId = 13,
+                            ShowtimeId = 100013,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 143,
+                            ShowtimeSeatId = 200143,
                             SeatId = 5,
-                            ShowtimeId = 13,
+                            ShowtimeId = 100013,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 144,
+                            ShowtimeSeatId = 200144,
                             SeatId = 6,
-                            ShowtimeId = 13,
+                            ShowtimeId = 100013,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 145,
+                            ShowtimeSeatId = 200145,
                             SeatId = 7,
-                            ShowtimeId = 13,
+                            ShowtimeId = 100013,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 146,
+                            ShowtimeSeatId = 200146,
                             SeatId = 8,
-                            ShowtimeId = 13,
+                            ShowtimeId = 100013,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 147,
+                            ShowtimeSeatId = 200147,
                             SeatId = 9,
-                            ShowtimeId = 13,
+                            ShowtimeId = 100013,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 148,
+                            ShowtimeSeatId = 200148,
                             SeatId = 10,
-                            ShowtimeId = 13,
+                            ShowtimeId = 100013,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 149,
+                            ShowtimeSeatId = 200149,
                             SeatId = 11,
-                            ShowtimeId = 13,
+                            ShowtimeId = 100013,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 150,
+                            ShowtimeSeatId = 200150,
                             SeatId = 12,
-                            ShowtimeId = 13,
+                            ShowtimeId = 100013,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 151,
+                            ShowtimeSeatId = 200151,
                             SeatId = 13,
-                            ShowtimeId = 13,
+                            ShowtimeId = 100013,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 152,
+                            ShowtimeSeatId = 200152,
                             SeatId = 14,
-                            ShowtimeId = 13,
+                            ShowtimeId = 100013,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 153,
+                            ShowtimeSeatId = 200153,
                             SeatId = 15,
-                            ShowtimeId = 13,
+                            ShowtimeId = 100013,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 154,
+                            ShowtimeSeatId = 200154,
                             SeatId = 16,
-                            ShowtimeId = 14,
+                            ShowtimeId = 100014,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 155,
+                            ShowtimeSeatId = 200155,
                             SeatId = 17,
-                            ShowtimeId = 14,
+                            ShowtimeId = 100014,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 156,
+                            ShowtimeSeatId = 200156,
                             SeatId = 18,
-                            ShowtimeId = 14,
+                            ShowtimeId = 100014,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 157,
+                            ShowtimeSeatId = 200157,
                             SeatId = 19,
-                            ShowtimeId = 14,
+                            ShowtimeId = 100014,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 158,
+                            ShowtimeSeatId = 200158,
                             SeatId = 20,
-                            ShowtimeId = 14,
+                            ShowtimeId = 100014,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 159,
+                            ShowtimeSeatId = 200159,
                             SeatId = 21,
-                            ShowtimeId = 14,
+                            ShowtimeId = 100014,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 160,
+                            ShowtimeSeatId = 200160,
                             SeatId = 22,
-                            ShowtimeId = 14,
+                            ShowtimeId = 100014,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 161,
+                            ShowtimeSeatId = 200161,
                             SeatId = 23,
-                            ShowtimeId = 14,
+                            ShowtimeId = 100014,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 162,
+                            ShowtimeSeatId = 200162,
                             SeatId = 16,
-                            ShowtimeId = 15,
+                            ShowtimeId = 100015,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 163,
+                            ShowtimeSeatId = 200163,
                             SeatId = 17,
-                            ShowtimeId = 15,
+                            ShowtimeId = 100015,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 164,
+                            ShowtimeSeatId = 200164,
                             SeatId = 18,
-                            ShowtimeId = 15,
+                            ShowtimeId = 100015,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 165,
+                            ShowtimeSeatId = 200165,
                             SeatId = 19,
-                            ShowtimeId = 15,
+                            ShowtimeId = 100015,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 166,
+                            ShowtimeSeatId = 200166,
                             SeatId = 20,
-                            ShowtimeId = 15,
+                            ShowtimeId = 100015,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 167,
+                            ShowtimeSeatId = 200167,
                             SeatId = 21,
-                            ShowtimeId = 15,
+                            ShowtimeId = 100015,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 168,
+                            ShowtimeSeatId = 200168,
                             SeatId = 22,
-                            ShowtimeId = 15,
+                            ShowtimeId = 100015,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 169,
+                            ShowtimeSeatId = 200169,
                             SeatId = 23,
-                            ShowtimeId = 15,
+                            ShowtimeId = 100015,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 170,
+                            ShowtimeSeatId = 200170,
                             SeatId = 1,
-                            ShowtimeId = 16,
+                            ShowtimeId = 100016,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 171,
+                            ShowtimeSeatId = 200171,
                             SeatId = 2,
-                            ShowtimeId = 16,
+                            ShowtimeId = 100016,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 172,
+                            ShowtimeSeatId = 200172,
                             SeatId = 3,
-                            ShowtimeId = 16,
+                            ShowtimeId = 100016,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 173,
+                            ShowtimeSeatId = 200173,
                             SeatId = 4,
-                            ShowtimeId = 16,
+                            ShowtimeId = 100016,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 174,
+                            ShowtimeSeatId = 200174,
                             SeatId = 5,
-                            ShowtimeId = 16,
+                            ShowtimeId = 100016,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 175,
+                            ShowtimeSeatId = 200175,
                             SeatId = 6,
-                            ShowtimeId = 16,
+                            ShowtimeId = 100016,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 176,
+                            ShowtimeSeatId = 200176,
                             SeatId = 7,
-                            ShowtimeId = 16,
+                            ShowtimeId = 100016,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 177,
+                            ShowtimeSeatId = 200177,
                             SeatId = 8,
-                            ShowtimeId = 16,
+                            ShowtimeId = 100016,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 178,
+                            ShowtimeSeatId = 200178,
                             SeatId = 9,
-                            ShowtimeId = 16,
+                            ShowtimeId = 100016,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 179,
+                            ShowtimeSeatId = 200179,
                             SeatId = 10,
-                            ShowtimeId = 16,
+                            ShowtimeId = 100016,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 180,
+                            ShowtimeSeatId = 200180,
                             SeatId = 11,
-                            ShowtimeId = 16,
+                            ShowtimeId = 100016,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 181,
+                            ShowtimeSeatId = 200181,
                             SeatId = 12,
-                            ShowtimeId = 16,
+                            ShowtimeId = 100016,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 182,
+                            ShowtimeSeatId = 200182,
                             SeatId = 13,
-                            ShowtimeId = 16,
+                            ShowtimeId = 100016,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 183,
+                            ShowtimeSeatId = 200183,
                             SeatId = 14,
-                            ShowtimeId = 16,
+                            ShowtimeId = 100016,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 184,
+                            ShowtimeSeatId = 200184,
                             SeatId = 15,
-                            ShowtimeId = 16,
+                            ShowtimeId = 100016,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 185,
+                            ShowtimeSeatId = 200185,
                             SeatId = 1,
-                            ShowtimeId = 17,
+                            ShowtimeId = 100017,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 186,
+                            ShowtimeSeatId = 200186,
                             SeatId = 2,
-                            ShowtimeId = 17,
+                            ShowtimeId = 100017,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 187,
+                            ShowtimeSeatId = 200187,
                             SeatId = 3,
-                            ShowtimeId = 17,
+                            ShowtimeId = 100017,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 188,
+                            ShowtimeSeatId = 200188,
                             SeatId = 4,
-                            ShowtimeId = 17,
+                            ShowtimeId = 100017,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 189,
+                            ShowtimeSeatId = 200189,
                             SeatId = 5,
-                            ShowtimeId = 17,
+                            ShowtimeId = 100017,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 190,
+                            ShowtimeSeatId = 200190,
                             SeatId = 6,
-                            ShowtimeId = 17,
+                            ShowtimeId = 100017,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 191,
+                            ShowtimeSeatId = 200191,
                             SeatId = 7,
-                            ShowtimeId = 17,
+                            ShowtimeId = 100017,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 192,
+                            ShowtimeSeatId = 200192,
                             SeatId = 8,
-                            ShowtimeId = 17,
+                            ShowtimeId = 100017,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 193,
+                            ShowtimeSeatId = 200193,
                             SeatId = 9,
-                            ShowtimeId = 17,
+                            ShowtimeId = 100017,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 194,
+                            ShowtimeSeatId = 200194,
                             SeatId = 10,
-                            ShowtimeId = 17,
+                            ShowtimeId = 100017,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 195,
+                            ShowtimeSeatId = 200195,
                             SeatId = 11,
-                            ShowtimeId = 17,
+                            ShowtimeId = 100017,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 196,
+                            ShowtimeSeatId = 200196,
                             SeatId = 12,
-                            ShowtimeId = 17,
+                            ShowtimeId = 100017,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 197,
+                            ShowtimeSeatId = 200197,
                             SeatId = 13,
-                            ShowtimeId = 17,
+                            ShowtimeId = 100017,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 198,
+                            ShowtimeSeatId = 200198,
                             SeatId = 14,
-                            ShowtimeId = 17,
+                            ShowtimeId = 100017,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 199,
+                            ShowtimeSeatId = 200199,
                             SeatId = 15,
-                            ShowtimeId = 17,
+                            ShowtimeId = 100017,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 200,
+                            ShowtimeSeatId = 200200,
                             SeatId = 16,
-                            ShowtimeId = 18,
+                            ShowtimeId = 100018,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 201,
+                            ShowtimeSeatId = 200201,
                             SeatId = 17,
-                            ShowtimeId = 18,
+                            ShowtimeId = 100018,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 202,
+                            ShowtimeSeatId = 200202,
                             SeatId = 18,
-                            ShowtimeId = 18,
+                            ShowtimeId = 100018,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 203,
+                            ShowtimeSeatId = 200203,
                             SeatId = 19,
-                            ShowtimeId = 18,
+                            ShowtimeId = 100018,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 204,
+                            ShowtimeSeatId = 200204,
                             SeatId = 20,
-                            ShowtimeId = 18,
+                            ShowtimeId = 100018,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 205,
+                            ShowtimeSeatId = 200205,
                             SeatId = 21,
-                            ShowtimeId = 18,
+                            ShowtimeId = 100018,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 206,
+                            ShowtimeSeatId = 200206,
                             SeatId = 22,
-                            ShowtimeId = 18,
+                            ShowtimeId = 100018,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 207,
+                            ShowtimeSeatId = 200207,
                             SeatId = 23,
-                            ShowtimeId = 18,
+                            ShowtimeId = 100018,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 208,
+                            ShowtimeSeatId = 200208,
                             SeatId = 16,
-                            ShowtimeId = 19,
+                            ShowtimeId = 100019,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 209,
+                            ShowtimeSeatId = 200209,
                             SeatId = 17,
-                            ShowtimeId = 19,
+                            ShowtimeId = 100019,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 210,
+                            ShowtimeSeatId = 200210,
                             SeatId = 18,
-                            ShowtimeId = 19,
+                            ShowtimeId = 100019,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 211,
+                            ShowtimeSeatId = 200211,
                             SeatId = 19,
-                            ShowtimeId = 19,
+                            ShowtimeId = 100019,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 212,
+                            ShowtimeSeatId = 200212,
                             SeatId = 20,
-                            ShowtimeId = 19,
+                            ShowtimeId = 100019,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 213,
+                            ShowtimeSeatId = 200213,
                             SeatId = 21,
-                            ShowtimeId = 19,
+                            ShowtimeId = 100019,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 214,
+                            ShowtimeSeatId = 200214,
                             SeatId = 22,
-                            ShowtimeId = 19,
+                            ShowtimeId = 100019,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 215,
+                            ShowtimeSeatId = 200215,
                             SeatId = 23,
-                            ShowtimeId = 19,
+                            ShowtimeId = 100019,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 216,
+                            ShowtimeSeatId = 200216,
                             SeatId = 1,
-                            ShowtimeId = 20,
+                            ShowtimeId = 100020,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 217,
+                            ShowtimeSeatId = 200217,
                             SeatId = 2,
-                            ShowtimeId = 20,
+                            ShowtimeId = 100020,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 218,
+                            ShowtimeSeatId = 200218,
                             SeatId = 3,
-                            ShowtimeId = 20,
+                            ShowtimeId = 100020,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 219,
+                            ShowtimeSeatId = 200219,
                             SeatId = 4,
-                            ShowtimeId = 20,
+                            ShowtimeId = 100020,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 220,
+                            ShowtimeSeatId = 200220,
                             SeatId = 5,
-                            ShowtimeId = 20,
+                            ShowtimeId = 100020,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 221,
+                            ShowtimeSeatId = 200221,
                             SeatId = 6,
-                            ShowtimeId = 20,
+                            ShowtimeId = 100020,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 222,
+                            ShowtimeSeatId = 200222,
                             SeatId = 7,
-                            ShowtimeId = 20,
+                            ShowtimeId = 100020,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 223,
+                            ShowtimeSeatId = 200223,
                             SeatId = 8,
-                            ShowtimeId = 20,
+                            ShowtimeId = 100020,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 224,
+                            ShowtimeSeatId = 200224,
                             SeatId = 9,
-                            ShowtimeId = 20,
+                            ShowtimeId = 100020,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 225,
+                            ShowtimeSeatId = 200225,
                             SeatId = 10,
-                            ShowtimeId = 20,
+                            ShowtimeId = 100020,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 226,
+                            ShowtimeSeatId = 200226,
                             SeatId = 11,
-                            ShowtimeId = 20,
+                            ShowtimeId = 100020,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 227,
+                            ShowtimeSeatId = 200227,
                             SeatId = 12,
-                            ShowtimeId = 20,
+                            ShowtimeId = 100020,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 228,
+                            ShowtimeSeatId = 200228,
                             SeatId = 13,
-                            ShowtimeId = 20,
+                            ShowtimeId = 100020,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 229,
+                            ShowtimeSeatId = 200229,
                             SeatId = 14,
-                            ShowtimeId = 20,
+                            ShowtimeId = 100020,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 230,
+                            ShowtimeSeatId = 200230,
                             SeatId = 15,
-                            ShowtimeId = 20,
+                            ShowtimeId = 100020,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 231,
+                            ShowtimeSeatId = 200231,
                             SeatId = 1,
-                            ShowtimeId = 21,
+                            ShowtimeId = 100021,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 232,
+                            ShowtimeSeatId = 200232,
                             SeatId = 2,
-                            ShowtimeId = 21,
+                            ShowtimeId = 100021,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 233,
+                            ShowtimeSeatId = 200233,
                             SeatId = 3,
-                            ShowtimeId = 21,
+                            ShowtimeId = 100021,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 234,
+                            ShowtimeSeatId = 200234,
                             SeatId = 4,
-                            ShowtimeId = 21,
+                            ShowtimeId = 100021,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 235,
+                            ShowtimeSeatId = 200235,
                             SeatId = 5,
-                            ShowtimeId = 21,
+                            ShowtimeId = 100021,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 236,
+                            ShowtimeSeatId = 200236,
                             SeatId = 6,
-                            ShowtimeId = 21,
+                            ShowtimeId = 100021,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 237,
+                            ShowtimeSeatId = 200237,
                             SeatId = 7,
-                            ShowtimeId = 21,
+                            ShowtimeId = 100021,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 238,
+                            ShowtimeSeatId = 200238,
                             SeatId = 8,
-                            ShowtimeId = 21,
+                            ShowtimeId = 100021,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 239,
+                            ShowtimeSeatId = 200239,
                             SeatId = 9,
-                            ShowtimeId = 21,
+                            ShowtimeId = 100021,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 240,
+                            ShowtimeSeatId = 200240,
                             SeatId = 10,
-                            ShowtimeId = 21,
+                            ShowtimeId = 100021,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 241,
+                            ShowtimeSeatId = 200241,
                             SeatId = 11,
-                            ShowtimeId = 21,
+                            ShowtimeId = 100021,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 242,
+                            ShowtimeSeatId = 200242,
                             SeatId = 12,
-                            ShowtimeId = 21,
+                            ShowtimeId = 100021,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 243,
+                            ShowtimeSeatId = 200243,
                             SeatId = 13,
-                            ShowtimeId = 21,
+                            ShowtimeId = 100021,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 244,
+                            ShowtimeSeatId = 200244,
                             SeatId = 14,
-                            ShowtimeId = 21,
+                            ShowtimeId = 100021,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 245,
+                            ShowtimeSeatId = 200245,
                             SeatId = 15,
-                            ShowtimeId = 21,
+                            ShowtimeId = 100021,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 246,
+                            ShowtimeSeatId = 200246,
                             SeatId = 16,
-                            ShowtimeId = 22,
+                            ShowtimeId = 100022,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 247,
+                            ShowtimeSeatId = 200247,
                             SeatId = 17,
-                            ShowtimeId = 22,
+                            ShowtimeId = 100022,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 248,
+                            ShowtimeSeatId = 200248,
                             SeatId = 18,
-                            ShowtimeId = 22,
+                            ShowtimeId = 100022,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 249,
+                            ShowtimeSeatId = 200249,
                             SeatId = 19,
-                            ShowtimeId = 22,
+                            ShowtimeId = 100022,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 250,
+                            ShowtimeSeatId = 200250,
                             SeatId = 20,
-                            ShowtimeId = 22,
+                            ShowtimeId = 100022,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 251,
+                            ShowtimeSeatId = 200251,
                             SeatId = 21,
-                            ShowtimeId = 22,
+                            ShowtimeId = 100022,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 252,
+                            ShowtimeSeatId = 200252,
                             SeatId = 22,
-                            ShowtimeId = 22,
+                            ShowtimeId = 100022,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 253,
+                            ShowtimeSeatId = 200253,
                             SeatId = 23,
-                            ShowtimeId = 22,
+                            ShowtimeId = 100022,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 254,
+                            ShowtimeSeatId = 200254,
                             SeatId = 16,
-                            ShowtimeId = 23,
+                            ShowtimeId = 100023,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 255,
+                            ShowtimeSeatId = 200255,
                             SeatId = 17,
-                            ShowtimeId = 23,
+                            ShowtimeId = 100023,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 256,
+                            ShowtimeSeatId = 200256,
                             SeatId = 18,
-                            ShowtimeId = 23,
+                            ShowtimeId = 100023,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 257,
+                            ShowtimeSeatId = 200257,
                             SeatId = 19,
-                            ShowtimeId = 23,
+                            ShowtimeId = 100023,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 258,
+                            ShowtimeSeatId = 200258,
                             SeatId = 20,
-                            ShowtimeId = 23,
+                            ShowtimeId = 100023,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 259,
+                            ShowtimeSeatId = 200259,
                             SeatId = 21,
-                            ShowtimeId = 23,
+                            ShowtimeId = 100023,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 260,
+                            ShowtimeSeatId = 200260,
                             SeatId = 22,
-                            ShowtimeId = 23,
+                            ShowtimeId = 100023,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 261,
+                            ShowtimeSeatId = 200261,
                             SeatId = 23,
-                            ShowtimeId = 23,
+                            ShowtimeId = 100023,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 262,
+                            ShowtimeSeatId = 200262,
                             SeatId = 1,
-                            ShowtimeId = 24,
+                            ShowtimeId = 100024,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 263,
+                            ShowtimeSeatId = 200263,
                             SeatId = 2,
-                            ShowtimeId = 24,
+                            ShowtimeId = 100024,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 264,
+                            ShowtimeSeatId = 200264,
                             SeatId = 3,
-                            ShowtimeId = 24,
+                            ShowtimeId = 100024,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 265,
+                            ShowtimeSeatId = 200265,
                             SeatId = 4,
-                            ShowtimeId = 24,
+                            ShowtimeId = 100024,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 266,
+                            ShowtimeSeatId = 200266,
                             SeatId = 5,
-                            ShowtimeId = 24,
+                            ShowtimeId = 100024,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 267,
+                            ShowtimeSeatId = 200267,
                             SeatId = 6,
-                            ShowtimeId = 24,
+                            ShowtimeId = 100024,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 268,
+                            ShowtimeSeatId = 200268,
                             SeatId = 7,
-                            ShowtimeId = 24,
+                            ShowtimeId = 100024,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 269,
+                            ShowtimeSeatId = 200269,
                             SeatId = 8,
-                            ShowtimeId = 24,
+                            ShowtimeId = 100024,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 270,
+                            ShowtimeSeatId = 200270,
                             SeatId = 9,
-                            ShowtimeId = 24,
+                            ShowtimeId = 100024,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 271,
+                            ShowtimeSeatId = 200271,
                             SeatId = 10,
-                            ShowtimeId = 24,
+                            ShowtimeId = 100024,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 272,
+                            ShowtimeSeatId = 200272,
                             SeatId = 11,
-                            ShowtimeId = 24,
+                            ShowtimeId = 100024,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 273,
+                            ShowtimeSeatId = 200273,
                             SeatId = 12,
-                            ShowtimeId = 24,
+                            ShowtimeId = 100024,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 274,
+                            ShowtimeSeatId = 200274,
                             SeatId = 13,
-                            ShowtimeId = 24,
+                            ShowtimeId = 100024,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 275,
+                            ShowtimeSeatId = 200275,
                             SeatId = 14,
-                            ShowtimeId = 24,
+                            ShowtimeId = 100024,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 276,
+                            ShowtimeSeatId = 200276,
                             SeatId = 15,
-                            ShowtimeId = 24,
+                            ShowtimeId = 100024,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 277,
+                            ShowtimeSeatId = 200277,
                             SeatId = 1,
-                            ShowtimeId = 25,
+                            ShowtimeId = 100025,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 278,
+                            ShowtimeSeatId = 200278,
                             SeatId = 2,
-                            ShowtimeId = 25,
+                            ShowtimeId = 100025,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 279,
+                            ShowtimeSeatId = 200279,
                             SeatId = 3,
-                            ShowtimeId = 25,
+                            ShowtimeId = 100025,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 280,
+                            ShowtimeSeatId = 200280,
                             SeatId = 4,
-                            ShowtimeId = 25,
+                            ShowtimeId = 100025,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 281,
+                            ShowtimeSeatId = 200281,
                             SeatId = 5,
-                            ShowtimeId = 25,
+                            ShowtimeId = 100025,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 282,
+                            ShowtimeSeatId = 200282,
                             SeatId = 6,
-                            ShowtimeId = 25,
+                            ShowtimeId = 100025,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 283,
+                            ShowtimeSeatId = 200283,
                             SeatId = 7,
-                            ShowtimeId = 25,
+                            ShowtimeId = 100025,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 284,
+                            ShowtimeSeatId = 200284,
                             SeatId = 8,
-                            ShowtimeId = 25,
+                            ShowtimeId = 100025,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 285,
+                            ShowtimeSeatId = 200285,
                             SeatId = 9,
-                            ShowtimeId = 25,
+                            ShowtimeId = 100025,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 286,
+                            ShowtimeSeatId = 200286,
                             SeatId = 10,
-                            ShowtimeId = 25,
+                            ShowtimeId = 100025,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 287,
+                            ShowtimeSeatId = 200287,
                             SeatId = 11,
-                            ShowtimeId = 25,
+                            ShowtimeId = 100025,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 288,
+                            ShowtimeSeatId = 200288,
                             SeatId = 12,
-                            ShowtimeId = 25,
+                            ShowtimeId = 100025,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 289,
+                            ShowtimeSeatId = 200289,
                             SeatId = 13,
-                            ShowtimeId = 25,
+                            ShowtimeId = 100025,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 290,
+                            ShowtimeSeatId = 200290,
                             SeatId = 14,
-                            ShowtimeId = 25,
+                            ShowtimeId = 100025,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 291,
+                            ShowtimeSeatId = 200291,
                             SeatId = 15,
-                            ShowtimeId = 25,
+                            ShowtimeId = 100025,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 292,
+                            ShowtimeSeatId = 200292,
                             SeatId = 16,
-                            ShowtimeId = 26,
+                            ShowtimeId = 100026,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 293,
+                            ShowtimeSeatId = 200293,
                             SeatId = 17,
-                            ShowtimeId = 26,
+                            ShowtimeId = 100026,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 294,
+                            ShowtimeSeatId = 200294,
                             SeatId = 18,
-                            ShowtimeId = 26,
+                            ShowtimeId = 100026,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 295,
+                            ShowtimeSeatId = 200295,
                             SeatId = 19,
-                            ShowtimeId = 26,
+                            ShowtimeId = 100026,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 296,
+                            ShowtimeSeatId = 200296,
                             SeatId = 20,
-                            ShowtimeId = 26,
+                            ShowtimeId = 100026,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 297,
+                            ShowtimeSeatId = 200297,
                             SeatId = 21,
-                            ShowtimeId = 26,
+                            ShowtimeId = 100026,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 298,
+                            ShowtimeSeatId = 200298,
                             SeatId = 22,
-                            ShowtimeId = 26,
+                            ShowtimeId = 100026,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 299,
+                            ShowtimeSeatId = 200299,
                             SeatId = 23,
-                            ShowtimeId = 26,
+                            ShowtimeId = 100026,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 300,
+                            ShowtimeSeatId = 200300,
                             SeatId = 16,
-                            ShowtimeId = 27,
+                            ShowtimeId = 100027,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 301,
+                            ShowtimeSeatId = 200301,
                             SeatId = 17,
-                            ShowtimeId = 27,
+                            ShowtimeId = 100027,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 302,
+                            ShowtimeSeatId = 200302,
                             SeatId = 18,
-                            ShowtimeId = 27,
+                            ShowtimeId = 100027,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 303,
+                            ShowtimeSeatId = 200303,
                             SeatId = 19,
-                            ShowtimeId = 27,
+                            ShowtimeId = 100027,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 304,
+                            ShowtimeSeatId = 200304,
                             SeatId = 20,
-                            ShowtimeId = 27,
+                            ShowtimeId = 100027,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 305,
+                            ShowtimeSeatId = 200305,
                             SeatId = 21,
-                            ShowtimeId = 27,
+                            ShowtimeId = 100027,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 306,
+                            ShowtimeSeatId = 200306,
                             SeatId = 22,
-                            ShowtimeId = 27,
+                            ShowtimeId = 100027,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 307,
+                            ShowtimeSeatId = 200307,
                             SeatId = 23,
-                            ShowtimeId = 27,
+                            ShowtimeId = 100027,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 308,
+                            ShowtimeSeatId = 200308,
                             SeatId = 1,
-                            ShowtimeId = 28,
+                            ShowtimeId = 100028,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 309,
+                            ShowtimeSeatId = 200309,
                             SeatId = 2,
-                            ShowtimeId = 28,
+                            ShowtimeId = 100028,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 310,
+                            ShowtimeSeatId = 200310,
                             SeatId = 3,
-                            ShowtimeId = 28,
+                            ShowtimeId = 100028,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 311,
+                            ShowtimeSeatId = 200311,
                             SeatId = 4,
-                            ShowtimeId = 28,
+                            ShowtimeId = 100028,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 312,
+                            ShowtimeSeatId = 200312,
                             SeatId = 5,
-                            ShowtimeId = 28,
+                            ShowtimeId = 100028,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 313,
+                            ShowtimeSeatId = 200313,
                             SeatId = 6,
-                            ShowtimeId = 28,
+                            ShowtimeId = 100028,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 314,
+                            ShowtimeSeatId = 200314,
                             SeatId = 7,
-                            ShowtimeId = 28,
+                            ShowtimeId = 100028,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 315,
+                            ShowtimeSeatId = 200315,
                             SeatId = 8,
-                            ShowtimeId = 28,
+                            ShowtimeId = 100028,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 316,
+                            ShowtimeSeatId = 200316,
                             SeatId = 9,
-                            ShowtimeId = 28,
+                            ShowtimeId = 100028,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 317,
+                            ShowtimeSeatId = 200317,
                             SeatId = 10,
-                            ShowtimeId = 28,
+                            ShowtimeId = 100028,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 318,
+                            ShowtimeSeatId = 200318,
                             SeatId = 11,
-                            ShowtimeId = 28,
+                            ShowtimeId = 100028,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 319,
+                            ShowtimeSeatId = 200319,
                             SeatId = 12,
-                            ShowtimeId = 28,
+                            ShowtimeId = 100028,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 320,
+                            ShowtimeSeatId = 200320,
                             SeatId = 13,
-                            ShowtimeId = 28,
+                            ShowtimeId = 100028,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 321,
+                            ShowtimeSeatId = 200321,
                             SeatId = 14,
-                            ShowtimeId = 28,
+                            ShowtimeId = 100028,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 322,
+                            ShowtimeSeatId = 200322,
                             SeatId = 15,
-                            ShowtimeId = 28,
+                            ShowtimeId = 100028,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 323,
+                            ShowtimeSeatId = 200323,
                             SeatId = 1,
-                            ShowtimeId = 29,
+                            ShowtimeId = 100029,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 324,
+                            ShowtimeSeatId = 200324,
                             SeatId = 2,
-                            ShowtimeId = 29,
+                            ShowtimeId = 100029,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 325,
+                            ShowtimeSeatId = 200325,
                             SeatId = 3,
-                            ShowtimeId = 29,
+                            ShowtimeId = 100029,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 326,
+                            ShowtimeSeatId = 200326,
                             SeatId = 4,
-                            ShowtimeId = 29,
+                            ShowtimeId = 100029,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 327,
+                            ShowtimeSeatId = 200327,
                             SeatId = 5,
-                            ShowtimeId = 29,
+                            ShowtimeId = 100029,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 328,
+                            ShowtimeSeatId = 200328,
                             SeatId = 6,
-                            ShowtimeId = 29,
+                            ShowtimeId = 100029,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 329,
+                            ShowtimeSeatId = 200329,
                             SeatId = 7,
-                            ShowtimeId = 29,
+                            ShowtimeId = 100029,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 330,
+                            ShowtimeSeatId = 200330,
                             SeatId = 8,
-                            ShowtimeId = 29,
+                            ShowtimeId = 100029,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 331,
+                            ShowtimeSeatId = 200331,
                             SeatId = 9,
-                            ShowtimeId = 29,
+                            ShowtimeId = 100029,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 332,
+                            ShowtimeSeatId = 200332,
                             SeatId = 10,
-                            ShowtimeId = 29,
+                            ShowtimeId = 100029,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 333,
+                            ShowtimeSeatId = 200333,
                             SeatId = 11,
-                            ShowtimeId = 29,
+                            ShowtimeId = 100029,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 334,
+                            ShowtimeSeatId = 200334,
                             SeatId = 12,
-                            ShowtimeId = 29,
+                            ShowtimeId = 100029,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 335,
+                            ShowtimeSeatId = 200335,
                             SeatId = 13,
-                            ShowtimeId = 29,
+                            ShowtimeId = 100029,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 336,
+                            ShowtimeSeatId = 200336,
                             SeatId = 14,
-                            ShowtimeId = 29,
+                            ShowtimeId = 100029,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 337,
+                            ShowtimeSeatId = 200337,
                             SeatId = 15,
-                            ShowtimeId = 29,
+                            ShowtimeId = 100029,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 338,
+                            ShowtimeSeatId = 200338,
                             SeatId = 16,
-                            ShowtimeId = 30,
+                            ShowtimeId = 100030,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 339,
+                            ShowtimeSeatId = 200339,
                             SeatId = 17,
-                            ShowtimeId = 30,
+                            ShowtimeId = 100030,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 340,
+                            ShowtimeSeatId = 200340,
                             SeatId = 18,
-                            ShowtimeId = 30,
+                            ShowtimeId = 100030,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 341,
+                            ShowtimeSeatId = 200341,
                             SeatId = 19,
-                            ShowtimeId = 30,
+                            ShowtimeId = 100030,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 342,
+                            ShowtimeSeatId = 200342,
                             SeatId = 20,
-                            ShowtimeId = 30,
+                            ShowtimeId = 100030,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 343,
+                            ShowtimeSeatId = 200343,
                             SeatId = 21,
-                            ShowtimeId = 30,
+                            ShowtimeId = 100030,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 344,
+                            ShowtimeSeatId = 200344,
                             SeatId = 22,
-                            ShowtimeId = 30,
+                            ShowtimeId = 100030,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 345,
+                            ShowtimeSeatId = 200345,
                             SeatId = 23,
-                            ShowtimeId = 30,
+                            ShowtimeId = 100030,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 346,
+                            ShowtimeSeatId = 200346,
                             SeatId = 16,
-                            ShowtimeId = 31,
+                            ShowtimeId = 100031,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 347,
+                            ShowtimeSeatId = 200347,
                             SeatId = 17,
-                            ShowtimeId = 31,
+                            ShowtimeId = 100031,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 348,
+                            ShowtimeSeatId = 200348,
                             SeatId = 18,
-                            ShowtimeId = 31,
+                            ShowtimeId = 100031,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 349,
+                            ShowtimeSeatId = 200349,
                             SeatId = 19,
-                            ShowtimeId = 31,
+                            ShowtimeId = 100031,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 350,
+                            ShowtimeSeatId = 200350,
                             SeatId = 20,
-                            ShowtimeId = 31,
+                            ShowtimeId = 100031,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 351,
+                            ShowtimeSeatId = 200351,
                             SeatId = 21,
-                            ShowtimeId = 31,
+                            ShowtimeId = 100031,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 352,
+                            ShowtimeSeatId = 200352,
                             SeatId = 22,
-                            ShowtimeId = 31,
+                            ShowtimeId = 100031,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 353,
+                            ShowtimeSeatId = 200353,
                             SeatId = 23,
-                            ShowtimeId = 31,
+                            ShowtimeId = 100031,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 354,
+                            ShowtimeSeatId = 200354,
                             SeatId = 1,
-                            ShowtimeId = 32,
+                            ShowtimeId = 100032,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 355,
+                            ShowtimeSeatId = 200355,
                             SeatId = 2,
-                            ShowtimeId = 32,
+                            ShowtimeId = 100032,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 356,
+                            ShowtimeSeatId = 200356,
                             SeatId = 3,
-                            ShowtimeId = 32,
+                            ShowtimeId = 100032,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 357,
+                            ShowtimeSeatId = 200357,
                             SeatId = 4,
-                            ShowtimeId = 32,
+                            ShowtimeId = 100032,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 358,
+                            ShowtimeSeatId = 200358,
                             SeatId = 5,
-                            ShowtimeId = 32,
+                            ShowtimeId = 100032,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 359,
+                            ShowtimeSeatId = 200359,
                             SeatId = 6,
-                            ShowtimeId = 32,
+                            ShowtimeId = 100032,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 360,
+                            ShowtimeSeatId = 200360,
                             SeatId = 7,
-                            ShowtimeId = 32,
+                            ShowtimeId = 100032,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 361,
+                            ShowtimeSeatId = 200361,
                             SeatId = 8,
-                            ShowtimeId = 32,
+                            ShowtimeId = 100032,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 362,
+                            ShowtimeSeatId = 200362,
                             SeatId = 9,
-                            ShowtimeId = 32,
+                            ShowtimeId = 100032,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 363,
+                            ShowtimeSeatId = 200363,
                             SeatId = 10,
-                            ShowtimeId = 32,
+                            ShowtimeId = 100032,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 364,
+                            ShowtimeSeatId = 200364,
                             SeatId = 11,
-                            ShowtimeId = 32,
+                            ShowtimeId = 100032,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 365,
+                            ShowtimeSeatId = 200365,
                             SeatId = 12,
-                            ShowtimeId = 32,
+                            ShowtimeId = 100032,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 366,
+                            ShowtimeSeatId = 200366,
                             SeatId = 13,
-                            ShowtimeId = 32,
+                            ShowtimeId = 100032,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 367,
+                            ShowtimeSeatId = 200367,
                             SeatId = 14,
-                            ShowtimeId = 32,
+                            ShowtimeId = 100032,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 368,
+                            ShowtimeSeatId = 200368,
                             SeatId = 15,
-                            ShowtimeId = 32,
+                            ShowtimeId = 100032,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 369,
+                            ShowtimeSeatId = 200369,
                             SeatId = 1,
-                            ShowtimeId = 33,
+                            ShowtimeId = 100033,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 370,
+                            ShowtimeSeatId = 200370,
                             SeatId = 2,
-                            ShowtimeId = 33,
+                            ShowtimeId = 100033,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 371,
+                            ShowtimeSeatId = 200371,
                             SeatId = 3,
-                            ShowtimeId = 33,
+                            ShowtimeId = 100033,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 372,
+                            ShowtimeSeatId = 200372,
                             SeatId = 4,
-                            ShowtimeId = 33,
+                            ShowtimeId = 100033,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 373,
+                            ShowtimeSeatId = 200373,
                             SeatId = 5,
-                            ShowtimeId = 33,
+                            ShowtimeId = 100033,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 374,
+                            ShowtimeSeatId = 200374,
                             SeatId = 6,
-                            ShowtimeId = 33,
+                            ShowtimeId = 100033,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 375,
+                            ShowtimeSeatId = 200375,
                             SeatId = 7,
-                            ShowtimeId = 33,
+                            ShowtimeId = 100033,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 376,
+                            ShowtimeSeatId = 200376,
                             SeatId = 8,
-                            ShowtimeId = 33,
+                            ShowtimeId = 100033,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 377,
+                            ShowtimeSeatId = 200377,
                             SeatId = 9,
-                            ShowtimeId = 33,
+                            ShowtimeId = 100033,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 378,
+                            ShowtimeSeatId = 200378,
                             SeatId = 10,
-                            ShowtimeId = 33,
+                            ShowtimeId = 100033,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 379,
+                            ShowtimeSeatId = 200379,
                             SeatId = 11,
-                            ShowtimeId = 33,
+                            ShowtimeId = 100033,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 380,
+                            ShowtimeSeatId = 200380,
                             SeatId = 12,
-                            ShowtimeId = 33,
+                            ShowtimeId = 100033,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 381,
+                            ShowtimeSeatId = 200381,
                             SeatId = 13,
-                            ShowtimeId = 33,
+                            ShowtimeId = 100033,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 382,
+                            ShowtimeSeatId = 200382,
                             SeatId = 14,
-                            ShowtimeId = 33,
+                            ShowtimeId = 100033,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 383,
+                            ShowtimeSeatId = 200383,
                             SeatId = 15,
-                            ShowtimeId = 33,
+                            ShowtimeId = 100033,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 384,
+                            ShowtimeSeatId = 200384,
                             SeatId = 16,
-                            ShowtimeId = 34,
+                            ShowtimeId = 100034,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 385,
+                            ShowtimeSeatId = 200385,
                             SeatId = 17,
-                            ShowtimeId = 34,
+                            ShowtimeId = 100034,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 386,
+                            ShowtimeSeatId = 200386,
                             SeatId = 18,
-                            ShowtimeId = 34,
+                            ShowtimeId = 100034,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 387,
+                            ShowtimeSeatId = 200387,
                             SeatId = 19,
-                            ShowtimeId = 34,
+                            ShowtimeId = 100034,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 388,
+                            ShowtimeSeatId = 200388,
                             SeatId = 20,
-                            ShowtimeId = 34,
+                            ShowtimeId = 100034,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 389,
+                            ShowtimeSeatId = 200389,
                             SeatId = 21,
-                            ShowtimeId = 34,
+                            ShowtimeId = 100034,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 390,
+                            ShowtimeSeatId = 200390,
                             SeatId = 22,
-                            ShowtimeId = 34,
+                            ShowtimeId = 100034,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 391,
+                            ShowtimeSeatId = 200391,
                             SeatId = 23,
-                            ShowtimeId = 34,
+                            ShowtimeId = 100034,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 392,
+                            ShowtimeSeatId = 200392,
                             SeatId = 16,
-                            ShowtimeId = 35,
+                            ShowtimeId = 100035,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 393,
+                            ShowtimeSeatId = 200393,
                             SeatId = 17,
-                            ShowtimeId = 35,
+                            ShowtimeId = 100035,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 394,
+                            ShowtimeSeatId = 200394,
                             SeatId = 18,
-                            ShowtimeId = 35,
+                            ShowtimeId = 100035,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 395,
+                            ShowtimeSeatId = 200395,
                             SeatId = 19,
-                            ShowtimeId = 35,
+                            ShowtimeId = 100035,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 396,
+                            ShowtimeSeatId = 200396,
                             SeatId = 20,
-                            ShowtimeId = 35,
+                            ShowtimeId = 100035,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 397,
+                            ShowtimeSeatId = 200397,
                             SeatId = 21,
-                            ShowtimeId = 35,
+                            ShowtimeId = 100035,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 398,
+                            ShowtimeSeatId = 200398,
                             SeatId = 22,
-                            ShowtimeId = 35,
+                            ShowtimeId = 100035,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 399,
+                            ShowtimeSeatId = 200399,
                             SeatId = 23,
-                            ShowtimeId = 35,
+                            ShowtimeId = 100035,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 400,
+                            ShowtimeSeatId = 200400,
                             SeatId = 1,
-                            ShowtimeId = 36,
+                            ShowtimeId = 100036,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 401,
+                            ShowtimeSeatId = 200401,
                             SeatId = 2,
-                            ShowtimeId = 36,
+                            ShowtimeId = 100036,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 402,
+                            ShowtimeSeatId = 200402,
                             SeatId = 3,
-                            ShowtimeId = 36,
+                            ShowtimeId = 100036,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 403,
+                            ShowtimeSeatId = 200403,
                             SeatId = 4,
-                            ShowtimeId = 36,
+                            ShowtimeId = 100036,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 404,
+                            ShowtimeSeatId = 200404,
                             SeatId = 5,
-                            ShowtimeId = 36,
+                            ShowtimeId = 100036,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 405,
+                            ShowtimeSeatId = 200405,
                             SeatId = 6,
-                            ShowtimeId = 36,
+                            ShowtimeId = 100036,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 406,
+                            ShowtimeSeatId = 200406,
                             SeatId = 7,
-                            ShowtimeId = 36,
+                            ShowtimeId = 100036,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 407,
+                            ShowtimeSeatId = 200407,
                             SeatId = 8,
-                            ShowtimeId = 36,
+                            ShowtimeId = 100036,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 408,
+                            ShowtimeSeatId = 200408,
                             SeatId = 9,
-                            ShowtimeId = 36,
+                            ShowtimeId = 100036,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 409,
+                            ShowtimeSeatId = 200409,
                             SeatId = 10,
-                            ShowtimeId = 36,
+                            ShowtimeId = 100036,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 410,
+                            ShowtimeSeatId = 200410,
                             SeatId = 11,
-                            ShowtimeId = 36,
+                            ShowtimeId = 100036,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 411,
+                            ShowtimeSeatId = 200411,
                             SeatId = 12,
-                            ShowtimeId = 36,
+                            ShowtimeId = 100036,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 412,
+                            ShowtimeSeatId = 200412,
                             SeatId = 13,
-                            ShowtimeId = 36,
+                            ShowtimeId = 100036,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 413,
+                            ShowtimeSeatId = 200413,
                             SeatId = 14,
-                            ShowtimeId = 36,
+                            ShowtimeId = 100036,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 414,
+                            ShowtimeSeatId = 200414,
                             SeatId = 15,
-                            ShowtimeId = 36,
+                            ShowtimeId = 100036,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 415,
+                            ShowtimeSeatId = 200415,
                             SeatId = 1,
-                            ShowtimeId = 37,
+                            ShowtimeId = 100037,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 416,
+                            ShowtimeSeatId = 200416,
                             SeatId = 2,
-                            ShowtimeId = 37,
+                            ShowtimeId = 100037,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 417,
+                            ShowtimeSeatId = 200417,
                             SeatId = 3,
-                            ShowtimeId = 37,
+                            ShowtimeId = 100037,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 418,
+                            ShowtimeSeatId = 200418,
                             SeatId = 4,
-                            ShowtimeId = 37,
+                            ShowtimeId = 100037,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 419,
+                            ShowtimeSeatId = 200419,
                             SeatId = 5,
-                            ShowtimeId = 37,
+                            ShowtimeId = 100037,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 420,
+                            ShowtimeSeatId = 200420,
                             SeatId = 6,
-                            ShowtimeId = 37,
+                            ShowtimeId = 100037,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 421,
+                            ShowtimeSeatId = 200421,
                             SeatId = 7,
-                            ShowtimeId = 37,
+                            ShowtimeId = 100037,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 422,
+                            ShowtimeSeatId = 200422,
                             SeatId = 8,
-                            ShowtimeId = 37,
+                            ShowtimeId = 100037,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 423,
+                            ShowtimeSeatId = 200423,
                             SeatId = 9,
-                            ShowtimeId = 37,
+                            ShowtimeId = 100037,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 424,
+                            ShowtimeSeatId = 200424,
                             SeatId = 10,
-                            ShowtimeId = 37,
+                            ShowtimeId = 100037,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 425,
+                            ShowtimeSeatId = 200425,
                             SeatId = 11,
-                            ShowtimeId = 37,
+                            ShowtimeId = 100037,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 426,
+                            ShowtimeSeatId = 200426,
                             SeatId = 12,
-                            ShowtimeId = 37,
+                            ShowtimeId = 100037,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 427,
+                            ShowtimeSeatId = 200427,
                             SeatId = 13,
-                            ShowtimeId = 37,
+                            ShowtimeId = 100037,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 428,
+                            ShowtimeSeatId = 200428,
                             SeatId = 14,
-                            ShowtimeId = 37,
+                            ShowtimeId = 100037,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 429,
+                            ShowtimeSeatId = 200429,
                             SeatId = 15,
-                            ShowtimeId = 37,
+                            ShowtimeId = 100037,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 430,
+                            ShowtimeSeatId = 200430,
                             SeatId = 16,
-                            ShowtimeId = 38,
+                            ShowtimeId = 100038,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 431,
+                            ShowtimeSeatId = 200431,
                             SeatId = 17,
-                            ShowtimeId = 38,
+                            ShowtimeId = 100038,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 432,
+                            ShowtimeSeatId = 200432,
                             SeatId = 18,
-                            ShowtimeId = 38,
+                            ShowtimeId = 100038,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 433,
+                            ShowtimeSeatId = 200433,
                             SeatId = 19,
-                            ShowtimeId = 38,
+                            ShowtimeId = 100038,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 434,
+                            ShowtimeSeatId = 200434,
                             SeatId = 20,
-                            ShowtimeId = 38,
+                            ShowtimeId = 100038,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 435,
+                            ShowtimeSeatId = 200435,
                             SeatId = 21,
-                            ShowtimeId = 38,
+                            ShowtimeId = 100038,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 436,
+                            ShowtimeSeatId = 200436,
                             SeatId = 22,
-                            ShowtimeId = 38,
+                            ShowtimeId = 100038,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 437,
+                            ShowtimeSeatId = 200437,
                             SeatId = 23,
-                            ShowtimeId = 38,
+                            ShowtimeId = 100038,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 438,
+                            ShowtimeSeatId = 200438,
                             SeatId = 16,
-                            ShowtimeId = 39,
+                            ShowtimeId = 100039,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 439,
+                            ShowtimeSeatId = 200439,
                             SeatId = 17,
-                            ShowtimeId = 39,
+                            ShowtimeId = 100039,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 440,
+                            ShowtimeSeatId = 200440,
                             SeatId = 18,
-                            ShowtimeId = 39,
+                            ShowtimeId = 100039,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 441,
+                            ShowtimeSeatId = 200441,
                             SeatId = 19,
-                            ShowtimeId = 39,
+                            ShowtimeId = 100039,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 442,
+                            ShowtimeSeatId = 200442,
                             SeatId = 20,
-                            ShowtimeId = 39,
+                            ShowtimeId = 100039,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 443,
+                            ShowtimeSeatId = 200443,
                             SeatId = 21,
-                            ShowtimeId = 39,
+                            ShowtimeId = 100039,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 444,
+                            ShowtimeSeatId = 200444,
                             SeatId = 22,
-                            ShowtimeId = 39,
+                            ShowtimeId = 100039,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 445,
+                            ShowtimeSeatId = 200445,
                             SeatId = 23,
-                            ShowtimeId = 39,
+                            ShowtimeId = 100039,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 446,
+                            ShowtimeSeatId = 200446,
                             SeatId = 1,
-                            ShowtimeId = 40,
+                            ShowtimeId = 100040,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 447,
+                            ShowtimeSeatId = 200447,
                             SeatId = 2,
-                            ShowtimeId = 40,
+                            ShowtimeId = 100040,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 448,
+                            ShowtimeSeatId = 200448,
                             SeatId = 3,
-                            ShowtimeId = 40,
+                            ShowtimeId = 100040,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 449,
+                            ShowtimeSeatId = 200449,
                             SeatId = 4,
-                            ShowtimeId = 40,
+                            ShowtimeId = 100040,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 450,
+                            ShowtimeSeatId = 200450,
                             SeatId = 5,
-                            ShowtimeId = 40,
+                            ShowtimeId = 100040,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 451,
+                            ShowtimeSeatId = 200451,
                             SeatId = 6,
-                            ShowtimeId = 40,
+                            ShowtimeId = 100040,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 452,
+                            ShowtimeSeatId = 200452,
                             SeatId = 7,
-                            ShowtimeId = 40,
+                            ShowtimeId = 100040,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 453,
+                            ShowtimeSeatId = 200453,
                             SeatId = 8,
-                            ShowtimeId = 40,
+                            ShowtimeId = 100040,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 454,
+                            ShowtimeSeatId = 200454,
                             SeatId = 9,
-                            ShowtimeId = 40,
+                            ShowtimeId = 100040,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 455,
+                            ShowtimeSeatId = 200455,
                             SeatId = 10,
-                            ShowtimeId = 40,
+                            ShowtimeId = 100040,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 456,
+                            ShowtimeSeatId = 200456,
                             SeatId = 11,
-                            ShowtimeId = 40,
+                            ShowtimeId = 100040,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 457,
+                            ShowtimeSeatId = 200457,
                             SeatId = 12,
-                            ShowtimeId = 40,
+                            ShowtimeId = 100040,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 458,
+                            ShowtimeSeatId = 200458,
                             SeatId = 13,
-                            ShowtimeId = 40,
+                            ShowtimeId = 100040,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 459,
+                            ShowtimeSeatId = 200459,
                             SeatId = 14,
-                            ShowtimeId = 40,
+                            ShowtimeId = 100040,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 460,
+                            ShowtimeSeatId = 200460,
                             SeatId = 15,
-                            ShowtimeId = 40,
+                            ShowtimeId = 100040,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 461,
+                            ShowtimeSeatId = 200461,
                             SeatId = 1,
-                            ShowtimeId = 41,
+                            ShowtimeId = 100041,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 462,
+                            ShowtimeSeatId = 200462,
                             SeatId = 2,
-                            ShowtimeId = 41,
+                            ShowtimeId = 100041,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 463,
+                            ShowtimeSeatId = 200463,
                             SeatId = 3,
-                            ShowtimeId = 41,
+                            ShowtimeId = 100041,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 464,
+                            ShowtimeSeatId = 200464,
                             SeatId = 4,
-                            ShowtimeId = 41,
+                            ShowtimeId = 100041,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 465,
+                            ShowtimeSeatId = 200465,
                             SeatId = 5,
-                            ShowtimeId = 41,
+                            ShowtimeId = 100041,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 466,
+                            ShowtimeSeatId = 200466,
                             SeatId = 6,
-                            ShowtimeId = 41,
+                            ShowtimeId = 100041,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 467,
+                            ShowtimeSeatId = 200467,
                             SeatId = 7,
-                            ShowtimeId = 41,
+                            ShowtimeId = 100041,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 468,
+                            ShowtimeSeatId = 200468,
                             SeatId = 8,
-                            ShowtimeId = 41,
+                            ShowtimeId = 100041,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 469,
+                            ShowtimeSeatId = 200469,
                             SeatId = 9,
-                            ShowtimeId = 41,
+                            ShowtimeId = 100041,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 470,
+                            ShowtimeSeatId = 200470,
                             SeatId = 10,
-                            ShowtimeId = 41,
+                            ShowtimeId = 100041,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 471,
+                            ShowtimeSeatId = 200471,
                             SeatId = 11,
-                            ShowtimeId = 41,
+                            ShowtimeId = 100041,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 472,
+                            ShowtimeSeatId = 200472,
                             SeatId = 12,
-                            ShowtimeId = 41,
+                            ShowtimeId = 100041,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 473,
+                            ShowtimeSeatId = 200473,
                             SeatId = 13,
-                            ShowtimeId = 41,
+                            ShowtimeId = 100041,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 474,
+                            ShowtimeSeatId = 200474,
                             SeatId = 14,
-                            ShowtimeId = 41,
+                            ShowtimeId = 100041,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 475,
+                            ShowtimeSeatId = 200475,
                             SeatId = 15,
-                            ShowtimeId = 41,
+                            ShowtimeId = 100041,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 476,
+                            ShowtimeSeatId = 200476,
                             SeatId = 16,
-                            ShowtimeId = 42,
+                            ShowtimeId = 100042,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 477,
+                            ShowtimeSeatId = 200477,
                             SeatId = 17,
-                            ShowtimeId = 42,
+                            ShowtimeId = 100042,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 478,
+                            ShowtimeSeatId = 200478,
                             SeatId = 18,
-                            ShowtimeId = 42,
+                            ShowtimeId = 100042,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 479,
+                            ShowtimeSeatId = 200479,
                             SeatId = 19,
-                            ShowtimeId = 42,
+                            ShowtimeId = 100042,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 480,
+                            ShowtimeSeatId = 200480,
                             SeatId = 20,
-                            ShowtimeId = 42,
+                            ShowtimeId = 100042,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 481,
+                            ShowtimeSeatId = 200481,
                             SeatId = 21,
-                            ShowtimeId = 42,
+                            ShowtimeId = 100042,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 482,
+                            ShowtimeSeatId = 200482,
                             SeatId = 22,
-                            ShowtimeId = 42,
+                            ShowtimeId = 100042,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 483,
+                            ShowtimeSeatId = 200483,
                             SeatId = 23,
-                            ShowtimeId = 42,
+                            ShowtimeId = 100042,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 484,
+                            ShowtimeSeatId = 200484,
                             SeatId = 16,
-                            ShowtimeId = 43,
+                            ShowtimeId = 100043,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 485,
+                            ShowtimeSeatId = 200485,
                             SeatId = 17,
-                            ShowtimeId = 43,
+                            ShowtimeId = 100043,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 486,
+                            ShowtimeSeatId = 200486,
                             SeatId = 18,
-                            ShowtimeId = 43,
+                            ShowtimeId = 100043,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 487,
+                            ShowtimeSeatId = 200487,
                             SeatId = 19,
-                            ShowtimeId = 43,
+                            ShowtimeId = 100043,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 488,
+                            ShowtimeSeatId = 200488,
                             SeatId = 20,
-                            ShowtimeId = 43,
+                            ShowtimeId = 100043,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 489,
+                            ShowtimeSeatId = 200489,
                             SeatId = 21,
-                            ShowtimeId = 43,
+                            ShowtimeId = 100043,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 490,
+                            ShowtimeSeatId = 200490,
                             SeatId = 22,
-                            ShowtimeId = 43,
+                            ShowtimeId = 100043,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 491,
+                            ShowtimeSeatId = 200491,
                             SeatId = 23,
-                            ShowtimeId = 43,
+                            ShowtimeId = 100043,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 492,
+                            ShowtimeSeatId = 200492,
                             SeatId = 1,
-                            ShowtimeId = 44,
+                            ShowtimeId = 100044,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 493,
+                            ShowtimeSeatId = 200493,
                             SeatId = 2,
-                            ShowtimeId = 44,
+                            ShowtimeId = 100044,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 494,
+                            ShowtimeSeatId = 200494,
                             SeatId = 3,
-                            ShowtimeId = 44,
+                            ShowtimeId = 100044,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 495,
+                            ShowtimeSeatId = 200495,
                             SeatId = 4,
-                            ShowtimeId = 44,
+                            ShowtimeId = 100044,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 496,
+                            ShowtimeSeatId = 200496,
                             SeatId = 5,
-                            ShowtimeId = 44,
+                            ShowtimeId = 100044,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 497,
+                            ShowtimeSeatId = 200497,
                             SeatId = 6,
-                            ShowtimeId = 44,
+                            ShowtimeId = 100044,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 498,
+                            ShowtimeSeatId = 200498,
                             SeatId = 7,
-                            ShowtimeId = 44,
+                            ShowtimeId = 100044,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 499,
+                            ShowtimeSeatId = 200499,
                             SeatId = 8,
-                            ShowtimeId = 44,
+                            ShowtimeId = 100044,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 500,
+                            ShowtimeSeatId = 200500,
                             SeatId = 9,
-                            ShowtimeId = 44,
+                            ShowtimeId = 100044,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 501,
+                            ShowtimeSeatId = 200501,
                             SeatId = 10,
-                            ShowtimeId = 44,
+                            ShowtimeId = 100044,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 502,
+                            ShowtimeSeatId = 200502,
                             SeatId = 11,
-                            ShowtimeId = 44,
+                            ShowtimeId = 100044,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 503,
+                            ShowtimeSeatId = 200503,
                             SeatId = 12,
-                            ShowtimeId = 44,
+                            ShowtimeId = 100044,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 504,
+                            ShowtimeSeatId = 200504,
                             SeatId = 13,
-                            ShowtimeId = 44,
+                            ShowtimeId = 100044,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 505,
+                            ShowtimeSeatId = 200505,
                             SeatId = 14,
-                            ShowtimeId = 44,
+                            ShowtimeId = 100044,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 506,
+                            ShowtimeSeatId = 200506,
                             SeatId = 15,
-                            ShowtimeId = 44,
+                            ShowtimeId = 100044,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 507,
+                            ShowtimeSeatId = 200507,
                             SeatId = 1,
-                            ShowtimeId = 45,
+                            ShowtimeId = 100045,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 508,
+                            ShowtimeSeatId = 200508,
                             SeatId = 2,
-                            ShowtimeId = 45,
+                            ShowtimeId = 100045,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 509,
+                            ShowtimeSeatId = 200509,
                             SeatId = 3,
-                            ShowtimeId = 45,
+                            ShowtimeId = 100045,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 510,
+                            ShowtimeSeatId = 200510,
                             SeatId = 4,
-                            ShowtimeId = 45,
+                            ShowtimeId = 100045,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 511,
+                            ShowtimeSeatId = 200511,
                             SeatId = 5,
-                            ShowtimeId = 45,
+                            ShowtimeId = 100045,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 512,
+                            ShowtimeSeatId = 200512,
                             SeatId = 6,
-                            ShowtimeId = 45,
+                            ShowtimeId = 100045,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 513,
+                            ShowtimeSeatId = 200513,
                             SeatId = 7,
-                            ShowtimeId = 45,
+                            ShowtimeId = 100045,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 514,
+                            ShowtimeSeatId = 200514,
                             SeatId = 8,
-                            ShowtimeId = 45,
+                            ShowtimeId = 100045,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 515,
+                            ShowtimeSeatId = 200515,
                             SeatId = 9,
-                            ShowtimeId = 45,
+                            ShowtimeId = 100045,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 516,
+                            ShowtimeSeatId = 200516,
                             SeatId = 10,
-                            ShowtimeId = 45,
+                            ShowtimeId = 100045,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 517,
+                            ShowtimeSeatId = 200517,
                             SeatId = 11,
-                            ShowtimeId = 45,
+                            ShowtimeId = 100045,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 518,
+                            ShowtimeSeatId = 200518,
                             SeatId = 12,
-                            ShowtimeId = 45,
+                            ShowtimeId = 100045,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 519,
+                            ShowtimeSeatId = 200519,
                             SeatId = 13,
-                            ShowtimeId = 45,
+                            ShowtimeId = 100045,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 520,
+                            ShowtimeSeatId = 200520,
                             SeatId = 14,
-                            ShowtimeId = 45,
+                            ShowtimeId = 100045,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 521,
+                            ShowtimeSeatId = 200521,
                             SeatId = 15,
-                            ShowtimeId = 45,
+                            ShowtimeId = 100045,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 522,
+                            ShowtimeSeatId = 200522,
                             SeatId = 16,
-                            ShowtimeId = 46,
+                            ShowtimeId = 100046,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 523,
+                            ShowtimeSeatId = 200523,
                             SeatId = 17,
-                            ShowtimeId = 46,
+                            ShowtimeId = 100046,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 524,
+                            ShowtimeSeatId = 200524,
                             SeatId = 18,
-                            ShowtimeId = 46,
+                            ShowtimeId = 100046,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 525,
+                            ShowtimeSeatId = 200525,
                             SeatId = 19,
-                            ShowtimeId = 46,
+                            ShowtimeId = 100046,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 526,
+                            ShowtimeSeatId = 200526,
                             SeatId = 20,
-                            ShowtimeId = 46,
+                            ShowtimeId = 100046,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 527,
+                            ShowtimeSeatId = 200527,
                             SeatId = 21,
-                            ShowtimeId = 46,
+                            ShowtimeId = 100046,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 528,
+                            ShowtimeSeatId = 200528,
                             SeatId = 22,
-                            ShowtimeId = 46,
+                            ShowtimeId = 100046,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 529,
+                            ShowtimeSeatId = 200529,
                             SeatId = 23,
-                            ShowtimeId = 46,
+                            ShowtimeId = 100046,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 530,
+                            ShowtimeSeatId = 200530,
                             SeatId = 16,
-                            ShowtimeId = 47,
+                            ShowtimeId = 100047,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 531,
+                            ShowtimeSeatId = 200531,
                             SeatId = 17,
-                            ShowtimeId = 47,
+                            ShowtimeId = 100047,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 532,
+                            ShowtimeSeatId = 200532,
                             SeatId = 18,
-                            ShowtimeId = 47,
+                            ShowtimeId = 100047,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 533,
+                            ShowtimeSeatId = 200533,
                             SeatId = 19,
-                            ShowtimeId = 47,
+                            ShowtimeId = 100047,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 534,
+                            ShowtimeSeatId = 200534,
                             SeatId = 20,
-                            ShowtimeId = 47,
+                            ShowtimeId = 100047,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 535,
+                            ShowtimeSeatId = 200535,
                             SeatId = 21,
-                            ShowtimeId = 47,
+                            ShowtimeId = 100047,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 536,
+                            ShowtimeSeatId = 200536,
                             SeatId = 22,
-                            ShowtimeId = 47,
+                            ShowtimeId = 100047,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 537,
+                            ShowtimeSeatId = 200537,
                             SeatId = 23,
-                            ShowtimeId = 47,
+                            ShowtimeId = 100047,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 538,
+                            ShowtimeSeatId = 200538,
                             SeatId = 1,
-                            ShowtimeId = 48,
+                            ShowtimeId = 100048,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 539,
+                            ShowtimeSeatId = 200539,
                             SeatId = 2,
-                            ShowtimeId = 48,
+                            ShowtimeId = 100048,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 540,
+                            ShowtimeSeatId = 200540,
                             SeatId = 3,
-                            ShowtimeId = 48,
+                            ShowtimeId = 100048,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 541,
+                            ShowtimeSeatId = 200541,
                             SeatId = 4,
-                            ShowtimeId = 48,
+                            ShowtimeId = 100048,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 542,
+                            ShowtimeSeatId = 200542,
                             SeatId = 5,
-                            ShowtimeId = 48,
+                            ShowtimeId = 100048,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 543,
+                            ShowtimeSeatId = 200543,
                             SeatId = 6,
-                            ShowtimeId = 48,
+                            ShowtimeId = 100048,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 544,
+                            ShowtimeSeatId = 200544,
                             SeatId = 7,
-                            ShowtimeId = 48,
+                            ShowtimeId = 100048,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 545,
+                            ShowtimeSeatId = 200545,
                             SeatId = 8,
-                            ShowtimeId = 48,
+                            ShowtimeId = 100048,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 546,
+                            ShowtimeSeatId = 200546,
                             SeatId = 9,
-                            ShowtimeId = 48,
+                            ShowtimeId = 100048,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 547,
+                            ShowtimeSeatId = 200547,
                             SeatId = 10,
-                            ShowtimeId = 48,
+                            ShowtimeId = 100048,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 548,
+                            ShowtimeSeatId = 200548,
                             SeatId = 11,
-                            ShowtimeId = 48,
+                            ShowtimeId = 100048,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 549,
+                            ShowtimeSeatId = 200549,
                             SeatId = 12,
-                            ShowtimeId = 48,
+                            ShowtimeId = 100048,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 550,
+                            ShowtimeSeatId = 200550,
                             SeatId = 13,
-                            ShowtimeId = 48,
+                            ShowtimeId = 100048,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 551,
+                            ShowtimeSeatId = 200551,
                             SeatId = 14,
-                            ShowtimeId = 48,
+                            ShowtimeId = 100048,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 552,
+                            ShowtimeSeatId = 200552,
                             SeatId = 15,
-                            ShowtimeId = 48,
+                            ShowtimeId = 100048,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 553,
+                            ShowtimeSeatId = 200553,
                             SeatId = 1,
-                            ShowtimeId = 49,
+                            ShowtimeId = 100049,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 554,
+                            ShowtimeSeatId = 200554,
                             SeatId = 2,
-                            ShowtimeId = 49,
+                            ShowtimeId = 100049,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 555,
+                            ShowtimeSeatId = 200555,
                             SeatId = 3,
-                            ShowtimeId = 49,
+                            ShowtimeId = 100049,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 556,
+                            ShowtimeSeatId = 200556,
                             SeatId = 4,
-                            ShowtimeId = 49,
+                            ShowtimeId = 100049,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 557,
+                            ShowtimeSeatId = 200557,
                             SeatId = 5,
-                            ShowtimeId = 49,
+                            ShowtimeId = 100049,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 558,
+                            ShowtimeSeatId = 200558,
                             SeatId = 6,
-                            ShowtimeId = 49,
+                            ShowtimeId = 100049,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 559,
+                            ShowtimeSeatId = 200559,
                             SeatId = 7,
-                            ShowtimeId = 49,
+                            ShowtimeId = 100049,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 560,
+                            ShowtimeSeatId = 200560,
                             SeatId = 8,
-                            ShowtimeId = 49,
+                            ShowtimeId = 100049,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 561,
+                            ShowtimeSeatId = 200561,
                             SeatId = 9,
-                            ShowtimeId = 49,
+                            ShowtimeId = 100049,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 562,
+                            ShowtimeSeatId = 200562,
                             SeatId = 10,
-                            ShowtimeId = 49,
+                            ShowtimeId = 100049,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 563,
+                            ShowtimeSeatId = 200563,
                             SeatId = 11,
-                            ShowtimeId = 49,
+                            ShowtimeId = 100049,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 564,
+                            ShowtimeSeatId = 200564,
                             SeatId = 12,
-                            ShowtimeId = 49,
+                            ShowtimeId = 100049,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 565,
+                            ShowtimeSeatId = 200565,
                             SeatId = 13,
-                            ShowtimeId = 49,
+                            ShowtimeId = 100049,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 566,
+                            ShowtimeSeatId = 200566,
                             SeatId = 14,
-                            ShowtimeId = 49,
+                            ShowtimeId = 100049,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 567,
+                            ShowtimeSeatId = 200567,
                             SeatId = 15,
-                            ShowtimeId = 49,
+                            ShowtimeId = 100049,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 568,
+                            ShowtimeSeatId = 200568,
                             SeatId = 16,
-                            ShowtimeId = 50,
+                            ShowtimeId = 100050,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 569,
+                            ShowtimeSeatId = 200569,
                             SeatId = 17,
-                            ShowtimeId = 50,
+                            ShowtimeId = 100050,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 570,
+                            ShowtimeSeatId = 200570,
                             SeatId = 18,
-                            ShowtimeId = 50,
+                            ShowtimeId = 100050,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 571,
+                            ShowtimeSeatId = 200571,
                             SeatId = 19,
-                            ShowtimeId = 50,
+                            ShowtimeId = 100050,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 572,
+                            ShowtimeSeatId = 200572,
                             SeatId = 20,
-                            ShowtimeId = 50,
+                            ShowtimeId = 100050,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 573,
+                            ShowtimeSeatId = 200573,
                             SeatId = 21,
-                            ShowtimeId = 50,
+                            ShowtimeId = 100050,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 574,
+                            ShowtimeSeatId = 200574,
                             SeatId = 22,
-                            ShowtimeId = 50,
+                            ShowtimeId = 100050,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 575,
+                            ShowtimeSeatId = 200575,
                             SeatId = 23,
-                            ShowtimeId = 50,
+                            ShowtimeId = 100050,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 576,
+                            ShowtimeSeatId = 200576,
                             SeatId = 16,
-                            ShowtimeId = 51,
+                            ShowtimeId = 100051,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 577,
+                            ShowtimeSeatId = 200577,
                             SeatId = 17,
-                            ShowtimeId = 51,
+                            ShowtimeId = 100051,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 578,
+                            ShowtimeSeatId = 200578,
                             SeatId = 18,
-                            ShowtimeId = 51,
+                            ShowtimeId = 100051,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 579,
+                            ShowtimeSeatId = 200579,
                             SeatId = 19,
-                            ShowtimeId = 51,
+                            ShowtimeId = 100051,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 580,
+                            ShowtimeSeatId = 200580,
                             SeatId = 20,
-                            ShowtimeId = 51,
+                            ShowtimeId = 100051,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 581,
+                            ShowtimeSeatId = 200581,
                             SeatId = 21,
-                            ShowtimeId = 51,
+                            ShowtimeId = 100051,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 582,
+                            ShowtimeSeatId = 200582,
                             SeatId = 22,
-                            ShowtimeId = 51,
+                            ShowtimeId = 100051,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 583,
+                            ShowtimeSeatId = 200583,
                             SeatId = 23,
-                            ShowtimeId = 51,
+                            ShowtimeId = 100051,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 584,
+                            ShowtimeSeatId = 200584,
                             SeatId = 1,
-                            ShowtimeId = 52,
+                            ShowtimeId = 100052,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 585,
+                            ShowtimeSeatId = 200585,
                             SeatId = 2,
-                            ShowtimeId = 52,
+                            ShowtimeId = 100052,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 586,
+                            ShowtimeSeatId = 200586,
                             SeatId = 3,
-                            ShowtimeId = 52,
+                            ShowtimeId = 100052,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 587,
+                            ShowtimeSeatId = 200587,
                             SeatId = 4,
-                            ShowtimeId = 52,
+                            ShowtimeId = 100052,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 588,
+                            ShowtimeSeatId = 200588,
                             SeatId = 5,
-                            ShowtimeId = 52,
+                            ShowtimeId = 100052,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 589,
+                            ShowtimeSeatId = 200589,
                             SeatId = 6,
-                            ShowtimeId = 52,
+                            ShowtimeId = 100052,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 590,
+                            ShowtimeSeatId = 200590,
                             SeatId = 7,
-                            ShowtimeId = 52,
+                            ShowtimeId = 100052,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 591,
+                            ShowtimeSeatId = 200591,
                             SeatId = 8,
-                            ShowtimeId = 52,
+                            ShowtimeId = 100052,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 592,
+                            ShowtimeSeatId = 200592,
                             SeatId = 9,
-                            ShowtimeId = 52,
+                            ShowtimeId = 100052,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 593,
+                            ShowtimeSeatId = 200593,
                             SeatId = 10,
-                            ShowtimeId = 52,
+                            ShowtimeId = 100052,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 594,
+                            ShowtimeSeatId = 200594,
                             SeatId = 11,
-                            ShowtimeId = 52,
+                            ShowtimeId = 100052,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 595,
+                            ShowtimeSeatId = 200595,
                             SeatId = 12,
-                            ShowtimeId = 52,
+                            ShowtimeId = 100052,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 596,
+                            ShowtimeSeatId = 200596,
                             SeatId = 13,
-                            ShowtimeId = 52,
+                            ShowtimeId = 100052,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 597,
+                            ShowtimeSeatId = 200597,
                             SeatId = 14,
-                            ShowtimeId = 52,
+                            ShowtimeId = 100052,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 598,
+                            ShowtimeSeatId = 200598,
                             SeatId = 15,
-                            ShowtimeId = 52,
+                            ShowtimeId = 100052,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 599,
+                            ShowtimeSeatId = 200599,
                             SeatId = 1,
-                            ShowtimeId = 53,
+                            ShowtimeId = 100053,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 600,
+                            ShowtimeSeatId = 200600,
                             SeatId = 2,
-                            ShowtimeId = 53,
+                            ShowtimeId = 100053,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 601,
+                            ShowtimeSeatId = 200601,
                             SeatId = 3,
-                            ShowtimeId = 53,
+                            ShowtimeId = 100053,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 602,
+                            ShowtimeSeatId = 200602,
                             SeatId = 4,
-                            ShowtimeId = 53,
+                            ShowtimeId = 100053,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 603,
+                            ShowtimeSeatId = 200603,
                             SeatId = 5,
-                            ShowtimeId = 53,
+                            ShowtimeId = 100053,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 604,
+                            ShowtimeSeatId = 200604,
                             SeatId = 6,
-                            ShowtimeId = 53,
+                            ShowtimeId = 100053,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 605,
+                            ShowtimeSeatId = 200605,
                             SeatId = 7,
-                            ShowtimeId = 53,
+                            ShowtimeId = 100053,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 606,
+                            ShowtimeSeatId = 200606,
                             SeatId = 8,
-                            ShowtimeId = 53,
+                            ShowtimeId = 100053,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 607,
+                            ShowtimeSeatId = 200607,
                             SeatId = 9,
-                            ShowtimeId = 53,
+                            ShowtimeId = 100053,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 608,
+                            ShowtimeSeatId = 200608,
                             SeatId = 10,
-                            ShowtimeId = 53,
+                            ShowtimeId = 100053,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 609,
+                            ShowtimeSeatId = 200609,
                             SeatId = 11,
-                            ShowtimeId = 53,
+                            ShowtimeId = 100053,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 610,
+                            ShowtimeSeatId = 200610,
                             SeatId = 12,
-                            ShowtimeId = 53,
+                            ShowtimeId = 100053,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 611,
+                            ShowtimeSeatId = 200611,
                             SeatId = 13,
-                            ShowtimeId = 53,
+                            ShowtimeId = 100053,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 612,
+                            ShowtimeSeatId = 200612,
                             SeatId = 14,
-                            ShowtimeId = 53,
+                            ShowtimeId = 100053,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 613,
+                            ShowtimeSeatId = 200613,
                             SeatId = 15,
-                            ShowtimeId = 53,
+                            ShowtimeId = 100053,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 614,
+                            ShowtimeSeatId = 200614,
                             SeatId = 16,
-                            ShowtimeId = 54,
+                            ShowtimeId = 100054,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 615,
+                            ShowtimeSeatId = 200615,
                             SeatId = 17,
-                            ShowtimeId = 54,
+                            ShowtimeId = 100054,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 616,
+                            ShowtimeSeatId = 200616,
                             SeatId = 18,
-                            ShowtimeId = 54,
+                            ShowtimeId = 100054,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 617,
+                            ShowtimeSeatId = 200617,
                             SeatId = 19,
-                            ShowtimeId = 54,
+                            ShowtimeId = 100054,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 618,
+                            ShowtimeSeatId = 200618,
                             SeatId = 20,
-                            ShowtimeId = 54,
+                            ShowtimeId = 100054,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 619,
+                            ShowtimeSeatId = 200619,
                             SeatId = 21,
-                            ShowtimeId = 54,
+                            ShowtimeId = 100054,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 620,
+                            ShowtimeSeatId = 200620,
                             SeatId = 22,
-                            ShowtimeId = 54,
+                            ShowtimeId = 100054,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 621,
+                            ShowtimeSeatId = 200621,
                             SeatId = 23,
-                            ShowtimeId = 54,
+                            ShowtimeId = 100054,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 622,
+                            ShowtimeSeatId = 200622,
                             SeatId = 16,
-                            ShowtimeId = 55,
+                            ShowtimeId = 100055,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 623,
+                            ShowtimeSeatId = 200623,
                             SeatId = 17,
-                            ShowtimeId = 55,
+                            ShowtimeId = 100055,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 624,
+                            ShowtimeSeatId = 200624,
                             SeatId = 18,
-                            ShowtimeId = 55,
+                            ShowtimeId = 100055,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 625,
+                            ShowtimeSeatId = 200625,
                             SeatId = 19,
-                            ShowtimeId = 55,
+                            ShowtimeId = 100055,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 626,
+                            ShowtimeSeatId = 200626,
                             SeatId = 20,
-                            ShowtimeId = 55,
+                            ShowtimeId = 100055,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 627,
+                            ShowtimeSeatId = 200627,
                             SeatId = 21,
-                            ShowtimeId = 55,
+                            ShowtimeId = 100055,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 628,
+                            ShowtimeSeatId = 200628,
                             SeatId = 22,
-                            ShowtimeId = 55,
+                            ShowtimeId = 100055,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 629,
+                            ShowtimeSeatId = 200629,
                             SeatId = 23,
-                            ShowtimeId = 55,
+                            ShowtimeId = 100055,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 630,
+                            ShowtimeSeatId = 200630,
                             SeatId = 1,
-                            ShowtimeId = 56,
+                            ShowtimeId = 100056,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 631,
+                            ShowtimeSeatId = 200631,
                             SeatId = 2,
-                            ShowtimeId = 56,
+                            ShowtimeId = 100056,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 632,
+                            ShowtimeSeatId = 200632,
                             SeatId = 3,
-                            ShowtimeId = 56,
+                            ShowtimeId = 100056,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 633,
+                            ShowtimeSeatId = 200633,
                             SeatId = 4,
-                            ShowtimeId = 56,
+                            ShowtimeId = 100056,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 634,
+                            ShowtimeSeatId = 200634,
                             SeatId = 5,
-                            ShowtimeId = 56,
+                            ShowtimeId = 100056,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 635,
+                            ShowtimeSeatId = 200635,
                             SeatId = 6,
-                            ShowtimeId = 56,
+                            ShowtimeId = 100056,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 636,
+                            ShowtimeSeatId = 200636,
                             SeatId = 7,
-                            ShowtimeId = 56,
+                            ShowtimeId = 100056,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 637,
+                            ShowtimeSeatId = 200637,
                             SeatId = 8,
-                            ShowtimeId = 56,
+                            ShowtimeId = 100056,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 638,
+                            ShowtimeSeatId = 200638,
                             SeatId = 9,
-                            ShowtimeId = 56,
+                            ShowtimeId = 100056,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 639,
+                            ShowtimeSeatId = 200639,
                             SeatId = 10,
-                            ShowtimeId = 56,
+                            ShowtimeId = 100056,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 640,
+                            ShowtimeSeatId = 200640,
                             SeatId = 11,
-                            ShowtimeId = 56,
+                            ShowtimeId = 100056,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 641,
+                            ShowtimeSeatId = 200641,
                             SeatId = 12,
-                            ShowtimeId = 56,
+                            ShowtimeId = 100056,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 642,
+                            ShowtimeSeatId = 200642,
                             SeatId = 13,
-                            ShowtimeId = 56,
+                            ShowtimeId = 100056,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 643,
+                            ShowtimeSeatId = 200643,
                             SeatId = 14,
-                            ShowtimeId = 56,
+                            ShowtimeId = 100056,
                             Status = "Trống"
                         },
                         new
                         {
-                            ShowtimeSeatId = 644,
+                            ShowtimeSeatId = 200644,
                             SeatId = 15,
-                            ShowtimeId = 56,
+                            ShowtimeId = 100056,
                             Status = "Trống"
                         });
                 });

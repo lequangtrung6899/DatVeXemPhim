@@ -278,7 +278,7 @@ public class BookingController : BaseController
 
             decimal total = ticketTotal + comboTotal;
             int? voucherId = null;
-            var code = (voucherCode ?? string.Empty).Trim();
+            var code = (voucherCode ?? string.Empty).Trim().ToUpperInvariant();
             if (!string.IsNullOrEmpty(code))
             {
                 var today = DateTime.Now.Date;

@@ -6,15 +6,19 @@
 <section class="hero">
     @for (var i = 0; i < Model.Hero.Count; i++)
     {
-        <div class="hero-slide @(i == 0 ? "active" : "")" data-idx="@i"
-             style="background-image: linear-gradient(135deg, hsl(@((i * 67) % 360),45%,18%), hsl(@((i * 67 + 40) % 360),40%,10%));"></div>
+        var m = Model.Hero[i];
+        var imageUrl = !string.IsNullOrEmpty(m.BannerUrl) ? m.BannerUrl : m.PosterUrl;
+        var bgStyle = !string.IsNullOrEmpty(imageUrl)
+            ? $"background-image: url('{imageUrl}');"
+            : $"background-image: linear-gradient(135deg, hsl({(i * 67) % 360},45%,18%), hsl({(i * 67 + 40) % 360},40%,10%));";
+        <div class="hero-slide @(i == 0 ? "active" : "")" data-idx="@i" style="@bgStyle"></div>
     }
-    <div class="container hero-content">
-        @if (Model.Hero.Count > 0)
-        {
-            var m = Model.Hero[0];
-            var desc = m.Description ?? "";
-            var shortDesc = desc.Length > 160 ? desc.Substring(0, 160) + "…" : desc;
+    @for (var i = 0; i < Model.Hero.Count; i++)
+    {
+        var m = Model.Hero[i];
+        var desc = m.Description ?? "";
+        var shortDesc = desc.Length > 160 ? desc.Substring(0, 160) + "…" : desc;
+        <div class="container hero-content @(i == 0 ? "active" : "")" data-idx="@i">
             <span class="hero-badge">🔥 Đang chiếu</span>
             <h1 class="hero-title">@m.Title</h1>
             <div class="hero-meta">
@@ -30,8 +34,8 @@
                 <a href="/phim/@m.MovieId" class="btn btn-primary">🎟️ Đặt vé ngay</a>
                 <a href="/phim/@m.MovieId" class="btn btn-ghost">Xem chi tiết</a>
             </div>
-        }
-    </div>
+        </div>
+    }
     <div class="hero-dots">
         @for (var i = 0; i < Model.Hero.Count; i++)
         {
@@ -93,12 +97,15 @@
 @section Scripts {
     <script>
         const slides = document.querySelectorAll('.hero-slide');
+        const contents = document.querySelectorAll('.hero-content');
         const dots = document.querySelectorAll('.hero-dots span');
         let idx = 0;
         function show(i) {
             slides.forEach(s => s.classList.remove('active'));
+            contents.forEach(c => c.classList.remove('active'));
             dots.forEach(d => d.classList.remove('active'));
             slides[i]?.classList.add('active');
+            contents[i]?.classList.add('active');
             dots[i]?.classList.add('active');
         }
         dots.forEach(d => d.addEventListener('click', () => { idx = parseInt(d.dataset.idx); show(idx); }));

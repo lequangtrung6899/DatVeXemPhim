@@ -17,8 +17,8 @@
     <p style="font-size:12.5px; color:#9aa0ad; margin-top:6px;">Số này chỉ mang tính tham khảo — số ghế thật sự được quản lý ở màn hình "Quản lý ghế".</p>
 
     <div class="admin-check">
+        <input type="checkbox" name="isActive" value="true" checked="@Model.IsActive">
         <input type="hidden" name="isActive" value="false">
-        <input type="checkbox" name="isActive" value="true" checked="@Model.IsActive" onclick="this.previousElementSibling.disabled=this.checked">
         <label style="margin:0;">Đang hoạt động</label>
     </div>
 

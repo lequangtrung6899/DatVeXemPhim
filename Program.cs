@@ -31,6 +31,9 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddMemoryCache();
 builder.Services.AddHttpClient<OmdbService>();
 
+// Dịch Plot/Genre/Awards từ OMDb (tiếng Anh) sang tiếng Việt qua MyMemory (miễn phí, không cần key).
+builder.Services.AddHttpClient<TranslationService>();
+
 var app = builder.Build();
 
 // ---- Code First: apply any pending EF Core migrations automatically on startup ----

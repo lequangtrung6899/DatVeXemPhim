@@ -10,10 +10,12 @@ namespace DatVeXemPhim.Controllers;
 public class MoviesController : BaseController
 {
     private readonly OmdbService _omdb;
+    private readonly TranslationService _translator;
 
-    public MoviesController(ApplicationDbContext db, OmdbService omdb) : base(db)
+    public MoviesController(ApplicationDbContext db, OmdbService omdb, TranslationService translator) : base(db)
     {
         _omdb = omdb;
+        _translator = translator;
     }
 
     // GET /phim?status=...&genre=...
@@ -112,6 +114,14 @@ public class MoviesController : BaseController
 
         var omdbInfo = await _omdb.GetByTitleAsync(movie.Title);
 
+        string? translatedPlot = null, translatedGenre = null, translatedAwards = null;
+        if (omdbInfo != null)
+        {
+            translatedPlot = await _translator.ToVietnameseAsync(omdbInfo.Plot);
+            translatedGenre = await _translator.ToVietnameseAsync(omdbInfo.Genre);
+            translatedAwards = await _translator.ToVietnameseAsync(omdbInfo.Awards);
+        }
+
         var vm = new MovieDetailVM
         {
             Title = movie.Title,
@@ -120,7 +130,10 @@ public class MoviesController : BaseController
             Reviews = reviews,
             Related = related,
             ReviewSubmitted = review == "ok",
-            Omdb = omdbInfo
+            Omdb = omdbInfo,
+            TranslatedPlot = translatedPlot,
+            TranslatedGenre = translatedGenre,
+            TranslatedAwards = translatedAwards
         };
 
         return View(vm);

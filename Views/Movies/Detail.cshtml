@@ -81,13 +81,7 @@
                     <div class="label">Thời lượng</div>
                 </div>
             </div>
-            <p class="movie-desc">@movie.Description</p>
-            @if (!string.IsNullOrEmpty(Model.Omdb?.Plot) && Model.Omdb.Plot != "N/A")
-            {
-                <p class="movie-desc movie-desc-original">
-                    <span class="imdb-label">Mô tả gốc (IMDb, tiếng Anh):</span> @Model.Omdb.Plot
-                </p>
-            }
+            <p class="movie-desc">@(!string.IsNullOrEmpty(Model.TranslatedPlot) ? Model.TranslatedPlot : movie.Description)</p>
             <div style="display:flex; gap:10px; flex-wrap:wrap;">
                 <a href="#suat-chieu" class="btn btn-primary">🎟️ Chọn suất chiếu</a>
                 <a href="https://www.youtube.com/results?search_query=@Uri.EscapeDataString(movie.Title + " trailer chính thức")"
@@ -106,7 +100,7 @@
             <div class="imdb-info">
                 @if (!string.IsNullOrEmpty(Model.Omdb.Genre) && Model.Omdb.Genre != "N/A")
                 {
-                    <div class="imdb-row"><span class="imdb-label">Thể loại (IMDb)</span><span>@Model.Omdb.Genre</span></div>
+                    <div class="imdb-row"><span class="imdb-label">Thể loại (IMDb)</span><span>@(!string.IsNullOrEmpty(Model.TranslatedGenre) ? Model.TranslatedGenre : Model.Omdb.Genre)</span></div>
                 }
                 @if (!string.IsNullOrEmpty(Model.Omdb.Director) && Model.Omdb.Director != "N/A")
                 {
@@ -134,7 +128,7 @@
                 }
                 @if (!string.IsNullOrEmpty(Model.Omdb.Awards) && Model.Omdb.Awards != "N/A")
                 {
-                    <div class="imdb-row"><span class="imdb-label">Giải thưởng</span><span>@Model.Omdb.Awards</span></div>
+                    <div class="imdb-row"><span class="imdb-label">Giải thưởng</span><span>@(!string.IsNullOrEmpty(Model.TranslatedAwards) ? Model.TranslatedAwards : Model.Omdb.Awards)</span></div>
                 }
                 @if (!string.IsNullOrEmpty(Model.Omdb.BoxOffice) && Model.Omdb.BoxOffice != "N/A")
                 {
@@ -227,7 +221,10 @@
             {
                 <div class="review-card">
                     <div class="review-head">
-                        <span class="review-name">@r.FullName</span>
+                        <div class="review-name-group">
+                            <span class="review-avatar">@r.FullName.Substring(0, 1).ToUpper()</span>
+                            <span class="review-name">@r.FullName</span>
+                        </div>
                         <span class="stars">@(new string('★', r.Rating))@(new string('☆', 5 - r.Rating))</span>
                     </div>
                     <p class="review-body">@r.Comment</p>

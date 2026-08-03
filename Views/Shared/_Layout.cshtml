@@ -1,6 +1,10 @@
 @{
     var customer = ViewBag.Customer as Customer;
     var path = (string)(ViewBag.Path ?? "/");
+    var currentStatus = Context.Request.Query["status"].ToString();
+    var isMoviesListPage = path == "/phim";
+    var isNowShowingActive = isMoviesListPage && (string.IsNullOrEmpty(currentStatus) || currentStatus == "Đang chiếu");
+    var isComingSoonActive = isMoviesListPage && currentStatus == "Sắp chiếu";
 }
 <!DOCTYPE html>
 <html lang="vi">
@@ -18,14 +22,14 @@
                 <span>Dat<span class="brand-sub">Ve</span>XemPhim</span>
             </a>
             <nav class="main-nav">
-                <a href="/phim?status=Đang chiếu" class="@(path.StartsWith("/phim") ? "active" : "")">Phim đang chiếu</a>
-                <a href="/phim?status=Sắp chiếu">Phim sắp chiếu</a>
-                <a href="/#rap">Cụm rạp</a>
+                <a href="/phim?status=Đang chiếu" class="@(isNowShowingActive ? "active" : "")">Phim đang chiếu</a>
+                <a href="/phim?status=Sắp chiếu" class="@(isComingSoonActive ? "active" : "")">Phim sắp chiếu</a>
                 <a href="/#uu-dai">Ưu đãi</a>
             </nav>
-            <form class="search-form" action="/tim-kiem" method="get">
+            <form class="search-form" action="/tim-kiem" method="get" id="searchForm" autocomplete="off">
                 <button type="submit" aria-label="Tìm kiếm">🔍</button>
-                <input type="text" name="q" placeholder="Tìm phim...">
+                <input type="text" name="q" id="searchInput" placeholder="Tìm phim...">
+                <div class="search-suggest" id="searchSuggest"></div>
             </form>
             <div class="header-actions">
                 @if (customer != null)
@@ -93,5 +97,77 @@
     </footer>
 
     @RenderSection("Scripts", required: false)
+
+    <script>
+        (function () {
+            const input = document.getElementById('searchInput');
+            const box = document.getElementById('searchSuggest');
+            if (!input || !box) return;
+
+            let debounceTimer = null;
+            let items = [];
+            let activeIndex = -1;
+
+            function hide() { box.classList.remove('open'); box.innerHTML = ''; items = []; activeIndex = -1; }
+
+            function render(movies) {
+                items = movies;
+                activeIndex = -1;
+                if (movies.length === 0) { hide(); return; }
+
+                box.innerHTML = movies.map((m, i) => `
+                    <a href="/phim/${m.id}" class="search-suggest-item" data-idx="${i}">
+                        <img src="${m.posterUrl || ''}" onerror="this.style.visibility='hidden'" alt="">
+                        <div class="search-suggest-info">
+                            <span class="search-suggest-title">${escapeHtml(m.title)}</span>
+                            <span class="search-suggest-meta">${m.duration} phút · ${escapeHtml(m.status)}</span>
+                        </div>
+                    </a>
+                `).join('');
+                box.classList.add('open');
+            }
+
+            function escapeHtml(s) {
+                const d = document.createElement('div');
+                d.textContent = s;
+                return d.innerHTML;
+            }
+
+            function highlight(idx) {
+                const links = box.querySelectorAll('.search-suggest-item');
+                links.forEach(l => l.classList.remove('active'));
+                if (idx >= 0 && idx < links.length) {
+                    links[idx].classList.add('active');
+                    links[idx].scrollIntoView({ block: 'nearest' });
+                }
+                activeIndex = idx;
+            }
+
+            input.addEventListener('input', () => {
+                const q = input.value.trim();
+                clearTimeout(debounceTimer);
+                if (q.length < 2) { hide(); return; }
+                debounceTimer = setTimeout(async () => {
+                    try {
+                        const res = await fetch(`/tim-kiem/goi-y?q=${encodeURIComponent(q)}`);
+                        const data = await res.json();
+                        render(data);
+                    } catch (e) { hide(); }
+                }, 250);
+            });
+
+            input.addEventListener('keydown', (e) => {
+                if (!box.classList.contains('open')) return;
+                if (e.key === 'ArrowDown') { e.preventDefault(); highlight(Math.min(activeIndex + 1, items.length - 1)); }
+                else if (e.key === 'ArrowUp') { e.preventDefault(); highlight(Math.max(activeIndex - 1, 0)); }
+                else if (e.key === 'Enter' && activeIndex >= 0) { e.preventDefault(); window.location.href = `/phim/${items[activeIndex].id}`; }
+                else if (e.key === 'Escape') { hide(); }
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('#searchForm')) hide();
+            });
+        })();
+    </script>
 </body>
 </html>

@@ -33,7 +33,7 @@
     <input type="datetime-local" name="endTime" value="@s.EndTime.ToString("yyyy-MM-ddTHH:mm")" required>
 
     <label>Giá vé cơ bản (ghế Thường)</label>
-    <input type="number" name="ticketPrice" value="@s.TicketPrice" min="0" step="1000" required>
+    <input type="number" name="ticketPrice" value="@s.TicketPrice.ToString(System.Globalization.CultureInfo.InvariantCulture)" min="0" step="1000" required>
 
     <label>Trạng thái</label>
     <select name="status">
