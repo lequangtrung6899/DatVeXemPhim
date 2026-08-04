@@ -1,6 +1,8 @@
 using DatVeXemPhim.Data;
 using DatVeXemPhim.Services;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
+using Microsoft.AspNetCore.Localization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -47,6 +49,24 @@ using (var scope = app.Services.CreateScope())
 }
 
 // ---- Middleware pipeline ----
+
+// QUAN TRỌNG: ép văn hóa (culture) "en-US" cho MỌI request, bất kể máy chủ/máy dev
+// đang đặt vùng miền gì (vd: Windows tiếng Việt = "vi-VN"). Nếu không có dòng này,
+// khi máy chạy ở "vi-VN" (dùng dấu PHẨY làm dấu thập phân, dấu CHẤM làm dấu phân
+// cách nghìn), ASP.NET Core sẽ hiểu sai các giá trị decimal gửi lên từ input số
+// (input number của HTML luôn dùng dấu CHẤM làm dấu thập phân, không phụ thuộc
+// ngôn ngữ) — vd chuỗi "2000000.00" bị đọc thành 200000000 (thêm 2 số 0, x100)
+// thay vì đúng là 2000000.00. Đây là nguyên nhân gốc của lỗi "giá tiền tự nhân
+// thêm số 0 mỗi lần lưu" ở Combo/Voucher/Suất chiếu.
+var invariantCulture = new CultureInfo("en-US");
+var localizationOptions = new RequestLocalizationOptions
+{
+    DefaultRequestCulture = new RequestCulture(invariantCulture),
+    SupportedCultures = new[] { invariantCulture },
+    SupportedUICultures = new[] { invariantCulture }
+};
+app.UseRequestLocalization(localizationOptions);
+
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");

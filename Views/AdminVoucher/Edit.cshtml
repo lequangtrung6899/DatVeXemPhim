@@ -19,10 +19,10 @@
     </select>
 
     <label>Giá trị giảm (% hoặc VNĐ tùy loại)</label>
-    <input type="number" name="discountValue" value="@Model.DiscountValue.ToString(System.Globalization.CultureInfo.InvariantCulture)" min="0" step="1" required>
+    <input type="number" name="discountValue" value="@Model.DiscountValue.ToString("0.####", System.Globalization.CultureInfo.InvariantCulture)" min="0" step="1" required>
 
     <label>Giá trị đơn hàng tối thiểu</label>
-    <input type="number" name="minOrderAmount" value="@Model.MinOrderAmount.ToString(System.Globalization.CultureInfo.InvariantCulture)" min="0" step="1000" required>
+    <input type="number" name="minOrderAmount" value="@Model.MinOrderAmount.ToString("0.####", System.Globalization.CultureInfo.InvariantCulture)" min="0" step="1000" required>
 
     <label>Ngày bắt đầu</label>
     <input type="date" name="startDate" value="@Model.StartDate.ToString("yyyy-MM-dd")" required>

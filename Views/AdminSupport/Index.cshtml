@@ -88,7 +88,7 @@
             @Html.AntiForgeryToken()
             <h2 style="font-size:15px; margin-top:0;">Hỗ trợ hủy vé / hoàn tiền</h2>
             <label>Số tiền hoàn (mặc định bằng tổng tiền vé)</label>
-            <input type="number" name="refundAmount" value="@t.TotalAmount" min="0" step="1000">
+            <input type="number" name="refundAmount" value="@t.TotalAmount.ToString("0.####", System.Globalization.CultureInfo.InvariantCulture)" min="0" step="1000">
             <div class="admin-actions">
                 <button type="submit" class="btn btn-primary admin-link-danger">Hủy vé cho khách &amp; đánh dấu hoàn tiền</button>
             </div>
