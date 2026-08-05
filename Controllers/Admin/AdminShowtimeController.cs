@@ -35,11 +35,25 @@ public class AdminShowtimeController : AdminBaseController
     [HttpGet, Route("/quan-tri/suat-chieu/them")]
     public async Task<IActionResult> Create()
     {
+        var rooms = await Db.Rooms.Where(r => r.IsActive).OrderBy(r => r.RoomName).ToListAsync();
+        var movies = await Db.Movies.Where(m => m.Status != "Ngừng chiếu").OrderBy(m => m.Title).ToListAsync();
+
+        if (rooms.Count == 0)
+        {
+            TempData["Error"] = "Chưa có phòng chiếu nào đang hoạt động — vào \"Quản lý phòng chiếu\" và bật \"Đang hoạt động\" cho ít nhất 1 phòng trước khi tạo suất chiếu.";
+            return Redirect("/quan-tri/phong-chieu");
+        }
+        if (movies.Count == 0)
+        {
+            TempData["Error"] = "Không có phim nào ở trạng thái \"Đang chiếu\"/\"Sắp chiếu\" để tạo suất chiếu — kiểm tra lại \"Quản lý phim\".";
+            return Redirect("/quan-tri/phim");
+        }
+
         var vm = new AdminShowtimeEditVM
         {
             Showtime = new Showtime { StartTime = DateTime.Now.AddHours(1), EndTime = DateTime.Now.AddHours(3) },
-            Movies = await Db.Movies.Where(m => m.Status != "Ngừng chiếu").OrderBy(m => m.Title).ToListAsync(),
-            Rooms = await Db.Rooms.Where(r => r.IsActive).OrderBy(r => r.RoomName).ToListAsync()
+            Movies = movies,
+            Rooms = rooms
         };
         return View("Edit", vm);
     }

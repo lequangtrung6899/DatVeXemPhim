@@ -13,6 +13,8 @@
     <title>@ViewData["Title"] · Quản trị DatVeXemPhim</title>
     <link rel="stylesheet" href="~/css/style.css">
     <link rel="stylesheet" href="~/css/admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.css">
+    <link rel="stylesheet" href="~/css/admin-datepicker.css">
 </head>
 <body class="admin-body">
     <div class="admin-shell">
@@ -76,5 +78,35 @@
             </main>
         </div>
     </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.js"></script>
+    <script>
+        // Tự động nâng cấp mọi ô <input type="date"> và <input type="datetime-local">
+        // trong khu quản trị thành lịch chọn ngày/giờ đẹp (Flatpickr) — áp dụng chung
+        // cho toàn bộ trang, không cần chỉnh từng form riêng lẻ.
+        document.querySelectorAll('input[type="date"]').forEach(el => {
+            el.setAttribute('type', 'text');
+            flatpickr(el, {
+                dateFormat: "Y-m-d",
+                altInput: true,
+                altFormat: "d/m/Y",
+                allowInput: true,
+                locale: { firstDayOfWeek: 1 }
+            });
+        });
+
+        document.querySelectorAll('input[type="datetime-local"]').forEach(el => {
+            el.setAttribute('type', 'text');
+            flatpickr(el, {
+                enableTime: true,
+                time_24hr: true,
+                dateFormat: "Y-m-d\\TH:i",
+                altInput: true,
+                altFormat: "d/m/Y H:i",
+                allowInput: true,
+                locale: { firstDayOfWeek: 1 }
+            });
+        });
+    </script>
 </body>
 </html>
