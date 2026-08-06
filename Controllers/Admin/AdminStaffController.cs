@@ -1,6 +1,7 @@
 using DatVeXemPhim.Data;
 using DatVeXemPhim.Models;
 using DatVeXemPhim.Models.ViewModels;
+using DatVeXemPhim.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -64,6 +65,18 @@ public class AdminStaffController : AdminBaseController
             return Redirect(userId == 0 ? "/quan-tri/nhan-vien/them" : $"/quan-tri/nhan-vien/{userId}/sua");
         }
 
+        // Validate tối thiểu ở server: tài khoản mới bắt buộc phải có mật khẩu (>= 6 ký tự).
+        if (userId == 0 && (string.IsNullOrWhiteSpace(password) || password.Length < 6))
+        {
+            TempData["Error"] = "Mật khẩu cho tài khoản mới phải có ít nhất 6 ký tự.";
+            return Redirect("/quan-tri/nhan-vien/them");
+        }
+        if (!string.IsNullOrEmpty(password) && password.Length < 6)
+        {
+            TempData["Error"] = "Mật khẩu mới phải có ít nhất 6 ký tự.";
+            return Redirect($"/quan-tri/nhan-vien/{userId}/sua");
+        }
+
         if (userId == 0)
         {
             Db.Users.Add(new User
@@ -74,8 +87,7 @@ public class AdminStaffController : AdminBaseController
                 Phone = phone,
                 RoleId = roleId,
                 IsActive = isActive,
-                // Demo password storage, consistent with the customer-facing Register() action.
-                PasswordHash = "demo$" + (string.IsNullOrEmpty(password) ? "changeme" : password),
+                PasswordHash = PasswordHasherHelper.Hash(password!),
                 CreatedAt = DateTime.Now
             });
             TempData["Success"] = "Đã thêm tài khoản nhân viên mới.";
@@ -92,7 +104,7 @@ public class AdminStaffController : AdminBaseController
             user.IsActive = isActive;
             if (!string.IsNullOrEmpty(password))
             {
-                user.PasswordHash = "demo$" + password;
+                user.PasswordHash = PasswordHasherHelper.Hash(password);
             }
             TempData["Success"] = "Đã cập nhật tài khoản nhân viên.";
         }

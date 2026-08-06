@@ -8,6 +8,7 @@ public class ApplicationDbContext : DbContext
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
     public DbSet<Combo> Combos => Set<Combo>();
+    public DbSet<ContactMessage> ContactMessages => Set<ContactMessage>();
     public DbSet<Customer> Customers => Set<Customer>();
     public DbSet<Genre> Genres => Set<Genre>();
     public DbSet<MovieGenre> MovieGenres => Set<MovieGenre>();
@@ -222,9 +223,11 @@ public class ApplicationDbContext : DbContext
             new Seat { SeatId = 23, RoomId = 2, RowLabel = "B", ColumnNumber = 4, SeatType = "Đôi" }
         );
 
+        // Mật khẩu demo cho MỌI tài khoản seed bên dưới (User lẫn Customer) là "123456"
+        // (đã băm bằng PasswordHasherHelper — xem Services/PasswordHasherHelper.cs).
         modelBuilder.Entity<User>().HasData(
-            new User { UserId = 1, Username = "admin01", PasswordHash = "$2a$hash_admin01", FullName = "Nguyễn Văn Quản", Email = "admin01@rapphim.vn", Phone = "0900000001", RoleId = 2, IsActive = true, CreatedAt = new DateTime(2026,7,9,15,25,8,577) },
-            new User { UserId = 2, Username = "staff01", PasswordHash = "$2a$hash_staff01", FullName = "Trần Thị Nhân Viên", Email = "staff01@rapphim.vn", Phone = "0900000002", RoleId = 1, IsActive = true, CreatedAt = new DateTime(2026,7,9,15,25,8,577) }
+            new User { UserId = 1, Username = "admin01", PasswordHash = "100000.CHbfym1v7fmbKrh7bi/tSw==.hOJV2nu7uA6qiEAqU5BkCXQ7lpThnQOAvqosUHxby2M=", FullName = "Nguyễn Văn Quản", Email = "admin01@rapphim.vn", Phone = "0900000001", RoleId = 2, IsActive = true, CreatedAt = new DateTime(2026,7,9,15,25,8,577) },
+            new User { UserId = 2, Username = "staff01", PasswordHash = "100000.glxfROvxJ6dnkFPGXnwJDw==.KWyDIAdywy5y/vUCO3btYzxO/5Vj0DU7KqD29qqZl1A=", FullName = "Trần Thị Nhân Viên", Email = "staff01@rapphim.vn", Phone = "0900000002", RoleId = 1, IsActive = true, CreatedAt = new DateTime(2026,7,9,15,25,8,577) }
         );
 
         modelBuilder.Entity<Voucher>().HasData(
@@ -238,9 +241,9 @@ public class ApplicationDbContext : DbContext
         );
 
         modelBuilder.Entity<Customer>().HasData(
-            new Customer { CustomerId = 1, FullName = "Lê Văn An", Email = "levanan@gmail.com", PasswordHash = "$2a$hash_cust01", Phone = "0911111111", LoyaltyPoint = 150, MembershipRank = "Thành viên Bạc", IsActive = true, CreatedAt = new DateTime(2026,7,9,15,25,8,577) },
-            new Customer { CustomerId = 2, FullName = "Phạm Thị Bình", Email = "phambinh@gmail.com", PasswordHash = "$2a$hash_cust02", Phone = "0922222222", LoyaltyPoint = 0, MembershipRank = "Thành viên mới", IsActive = true, CreatedAt = new DateTime(2026,7,9,15,25,8,577) },
-            new Customer { CustomerId = 3, FullName = "Hoàng Minh Châu", Email = "hoangchau@gmail.com", PasswordHash = "$2a$hash_cust03", Phone = "0933333333", LoyaltyPoint = 500, MembershipRank = "Thành viên Vàng", IsActive = true, CreatedAt = new DateTime(2026,7,9,15,25,8,577) }
+            new Customer { CustomerId = 1, FullName = "Lê Văn An", Email = "levanan@gmail.com", PasswordHash = "100000.4SgTxqKC1i7w9NcxXcVMug==.d1OwkzA/BzT14g9XjJUynl6I2Q8E89AWKCNl5kH24Fs=", Phone = "0911111111", LoyaltyPoint = 150, MembershipRank = "Thành viên Bạc", IsActive = true, CreatedAt = new DateTime(2026,7,9,15,25,8,577) },
+            new Customer { CustomerId = 2, FullName = "Phạm Thị Bình", Email = "phambinh@gmail.com", PasswordHash = "100000.kxJLGbkx9ggbzb7IS9HeXA==.+y/EWaZsaqW7VX9EkiBhxYCZrYAKVhvyy1KOlQeYAl0=", Phone = "0922222222", LoyaltyPoint = 0, MembershipRank = "Thành viên mới", IsActive = true, CreatedAt = new DateTime(2026,7,9,15,25,8,577) },
+            new Customer { CustomerId = 3, FullName = "Hoàng Minh Châu", Email = "hoangchau@gmail.com", PasswordHash = "100000.wfRv+xtcdWvsuJNlQKaVPg==.mMtChUK9eHp8Bx41+z/gcGMh6HGquvH0jiqTjHbOml4=", Phone = "0933333333", LoyaltyPoint = 500, MembershipRank = "Thành viên Vàng", IsActive = true, CreatedAt = new DateTime(2026,7,9,15,25,8,577) }
         );
 
         modelBuilder.Entity<Movie>().HasData(

@@ -7,14 +7,39 @@
 <div class="container">
     <div class="ticket-card">
         <div class="print-only invoice-header">
-            <strong>🎬 DatVeXemPhim</strong>
+            <strong>🎬 PhimHay</strong>
             <span>Hóa đơn vé #@Model.TicketId — in lúc @DateTime.Now.ToString("dd/MM/yyyy HH:mm")</span>
         </div>
-        <div class="ticket-top">
-            <div class="ticket-check">✓</div>
-            <h2 style="margin:0 0 6px;">Đặt vé thành công!</h2>
-            <p style="color:var(--text-dim); font-size:14px;">Vé #@Model.TicketId đã được xác nhận</p>
-        </div>
+
+        @if (Model.JustCancelled)
+        {
+            <div class="form-error no-print" style="background:rgba(76,217,100,.12); border-color:#2f9e44; color:#8ce99a;">
+                Đã hủy vé thành công. Ghế đã được giải phóng và tiền sẽ được hoàn lại (mô phỏng).
+            </div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="form-error no-print">@TempData["Error"]</div>
+        }
+
+        @if (Model.Status == "Đã hủy")
+        {
+            <div class="ticket-top">
+                <div class="ticket-check" style="background:var(--red, #e03131);">✕</div>
+                <h2 style="margin:0 0 6px;">Vé đã bị hủy</h2>
+                <p style="color:var(--text-dim); font-size:14px;">
+                    Vé #@Model.TicketId đã hủy@(Model.RefundAmount != null ? $" — số tiền hoàn lại: {formatVND(Model.RefundAmount.Value)}" : "")
+                </p>
+            </div>
+        }
+        else
+        {
+            <div class="ticket-top">
+                <div class="ticket-check">✓</div>
+                <h2 style="margin:0 0 6px;">Đặt vé thành công!</h2>
+                <p style="color:var(--text-dim); font-size:14px;">Vé #@Model.TicketId đã được xác nhận</p>
+            </div>
+        }
         <div class="ticket-body">
             <h3 style="margin:0 0 4px;">@Model.MovieTitle</h3>
             <p style="color:var(--text-dim); font-size:13.5px; margin:0 0 16px;">@Model.RoomName</p>
@@ -28,17 +53,40 @@
 
             <div class="ticket-divider"></div>
 
-            <div class="ticket-row"><span class="label">Trạng thái</span><span style="color:var(--green); font-weight:700;">@Model.Status</span></div>
+            <div class="ticket-row"><span class="label">Trạng thái</span><span style="color:@(Model.Status == "Đã hủy" ? "var(--red, #e03131)" : "var(--green)"); font-weight:700;">@Model.Status</span></div>
+            <div class="ticket-row"><span class="label">Phương thức</span><span>@Model.PaymentMethod</span></div>
             <div class="ticket-row" style="font-size:17px; font-weight:800;"><span>Tổng thanh toán</span><span style="color:var(--accent);">@formatVND(Model.TotalAmount)</span></div>
 
-            <div class="qr-block">
-                <div style="width:140px; height:140px; margin:0 auto; background:repeating-conic-gradient(#fff 0% 25%, #0b0e17 0% 50%) 0 0/20px 20px; border-radius:10px;"></div>
-                <p style="font-size:12px; color:var(--text-dimmer); margin-top:10px;">Xuất trình mã này tại quầy để nhận vé</p>
-            </div>
+            <p class="no-print" style="font-size:12px; color:var(--text-dimmer); margin-top:-4px;">
+                ⓘ Đây là hệ thống thanh toán mô phỏng cho mục đích học tập — không có cổng thanh toán thật
+                (VNPay/Momo/ZaloPay) nào được gọi và không có giao dịch tiền thật nào xảy ra.
+            </p>
+
+            @if (Model.Status != "Đã hủy")
+            {
+                <div class="qr-block">
+                    <div style="width:140px; height:140px; margin:0 auto; background:repeating-conic-gradient(#fff 0% 25%, #0b0e17 0% 50%) 0 0/20px 20px; border-radius:10px;"></div>
+                    <p style="font-size:12px; color:var(--text-dimmer); margin-top:10px;">Xuất trình mã này tại quầy để nhận vé</p>
+                </div>
+            }
+
+            @if (Model.CanCancel)
+            {
+                <p class="no-print" style="font-size:12.5px; color:var(--text-dimmer); margin-top:18px;">
+                    Bạn có thể hủy vé miễn phí trước giờ chiếu tối thiểu @Model.CancelCutoffHours giờ.
+                </p>
+            }
 
             <div class="ticket-actions no-print">
                 <a href="/tai-khoan/ve-cua-toi" class="btn btn-primary btn-block">Xem vé của tôi</a>
                 <button type="button" class="btn btn-ghost btn-block" onclick="window.print()">🖨️ In hóa đơn</button>
+                @if (Model.CanCancel)
+                {
+                    <form method="post" action="/ve/@Model.TicketId/huy" onsubmit="return confirm('Bạn chắc chắn muốn hủy vé #@Model.TicketId? Ghế sẽ được giải phóng và không thể hoàn tác.');">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-danger btn-block">Hủy vé</button>
+                    </form>
+                }
             </div>
         </div>
     </div>

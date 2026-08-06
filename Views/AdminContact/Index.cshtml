@@ -1,0 +1,75 @@
+@model List<DatVeXemPhim.Models.ContactMessage>
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Yêu cầu liên hệ";
+    string status = ViewBag.Status;
+}
+<h1>Yêu cầu liên hệ</h1>
+
+<form method="get" class="admin-search-form" style="margin-bottom:16px;">
+    <select name="status" onchange="this.form.submit()">
+        @foreach (var s in new[] { "Chờ xử lý", "Đã xử lý", "Tất cả" })
+        {
+            <option value="@s" selected="@(status == s)">@s</option>
+        }
+    </select>
+</form>
+
+@if (Model.Count == 0)
+{
+    <div class="admin-empty">Không có yêu cầu liên hệ nào ở trạng thái này.</div>
+}
+else
+{
+    <table class="admin-table">
+        <thead><tr><th>Khách hàng</th><th>Liên hệ</th><th>Chủ đề</th><th>Nội dung</th><th>Ngày gửi</th><th>Trạng thái</th><th></th></tr></thead>
+        <tbody>
+            @foreach (var m in Model)
+            {
+                <tr>
+                    <td>@m.FullName</td>
+                    <td>
+                        <div>@m.Email</div>
+                        @if (!string.IsNullOrEmpty(m.Phone))
+                        {
+                            <div style="color:var(--text-dim); font-size:12.5px;">@m.Phone</div>
+                        }
+                    </td>
+                    <td>@m.Subject</td>
+                    <td style="max-width:280px;">@m.Message</td>
+                    <td>@m.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>
+                        @if (m.IsResolved)
+                        {
+                            <span class="admin-badge admin-badge-ok">Đã xử lý</span>
+                        }
+                        else
+                        {
+                            <span class="admin-badge admin-badge-warn">Chờ xử lý</span>
+                        }
+                    </td>
+                    <td>
+                        @if (!m.IsResolved)
+                        {
+                            <form class="admin-inline-form" method="post" action="/quan-tri/lien-he/@m.ContactMessageId/da-xu-ly">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-ghost btn-sm">Đánh dấu đã xử lý</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <form class="admin-inline-form" method="post" action="/quan-tri/lien-he/@m.ContactMessageId/chua-xu-ly">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-ghost btn-sm">Mở lại</button>
+                            </form>
+                        }
+                        <form class="admin-inline-form" method="post" action="/quan-tri/lien-he/@m.ContactMessageId/xoa" onsubmit="return confirm('Xóa yêu cầu liên hệ này?');">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-ghost btn-sm admin-link-danger">Xóa</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

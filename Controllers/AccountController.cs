@@ -1,6 +1,7 @@
 using DatVeXemPhim.Data;
 using DatVeXemPhim.Models;
 using DatVeXemPhim.Models.ViewModels;
+using DatVeXemPhim.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,23 +19,31 @@ public class AccountController : BaseController
     }
 
     // POST /dang-nhap
-    // Demo auth, mirroring the original Express app: any password is accepted for a known email.
     [HttpPost, Route("/dang-nhap")]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Login(string email, string password, string? next)
+    public async Task<IActionResult> Login(LoginVM form, string? next)
     {
-        var customer = await Db.Customers.FirstOrDefaultAsync(c => c.Email == email);
-        if (customer != null)
+        form.Next = next ?? "/";
+
+        if (!ModelState.IsValid)
         {
-            SignIn(customer.CustomerId);
-            return Redirect(string.IsNullOrEmpty(next) ? "/" : next);
+            form.Error = string.Join(" ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
+            return View(form);
         }
 
-        return View(new LoginVM
+        var customer = await Db.Customers.FirstOrDefaultAsync(c => c.Email == form.Email);
+
+        // Cố tình dùng chung một thông báo lỗi cho cả hai trường hợp "email không tồn tại"
+        // và "sai mật khẩu" — tránh lộ thông tin tài khoản nào đã đăng ký (user enumeration).
+        if (customer is null || !customer.IsActive || !PasswordHasherHelper.Verify(customer.PasswordHash, form.Password))
         {
-            Error = "Email không tồn tại. Hãy đăng ký tài khoản mới.",
-            Next = next ?? "/"
-        });
+            form.Error = "Email hoặc mật khẩu không đúng.";
+            form.Password = string.Empty;
+            return View(form);
+        }
+
+        SignIn(customer.CustomerId);
+        return Redirect(string.IsNullOrEmpty(form.Next) ? "/" : form.Next);
     }
 
     // GET /dang-ky
@@ -44,20 +53,29 @@ public class AccountController : BaseController
     // POST /dang-ky
     [HttpPost, Route("/dang-ky")]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Register(string fullName, string email, string? phone, string password)
+    public async Task<IActionResult> Register(RegisterVM form)
     {
-        var existing = await Db.Customers.AnyAsync(c => c.Email == email);
+        if (!ModelState.IsValid)
+        {
+            form.Error = string.Join(" ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
+            form.Password = string.Empty;
+            return View(form);
+        }
+
+        var existing = await Db.Customers.AnyAsync(c => c.Email == form.Email);
         if (existing)
         {
-            return View(new RegisterVM { Error = "Email đã được sử dụng." });
+            form.Error = "Email đã được sử dụng.";
+            form.Password = string.Empty;
+            return View(form);
         }
 
         var customer = new Customer
         {
-            FullName = fullName,
-            Email = email,
-            PasswordHash = "demo$" + password, // demo only — not a real hash
-            Phone = phone,
+            FullName = form.FullName.Trim(),
+            Email = form.Email.Trim(),
+            PasswordHash = PasswordHasherHelper.Hash(form.Password),
+            Phone = string.IsNullOrWhiteSpace(form.Phone) ? null : form.Phone.Trim(),
             LoyaltyPoint = 0,
             MembershipRank = "Thành viên mới",
             IsActive = true,

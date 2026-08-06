@@ -1,5 +1,6 @@
 using DatVeXemPhim.Data;
 using DatVeXemPhim.Models.ViewModels;
+using DatVeXemPhim.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,26 +19,32 @@ public class AdminAccountController : AdminBaseController
     }
 
     // POST /quan-tri/dang-nhap
-    // Demo auth, mirroring the customer-facing AccountController: any password is accepted
-    // for a known, active username. Swap in real password hashing before going to production.
     [HttpPost, Route("/quan-tri/dang-nhap")]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Login(string username, string password, string? next)
+    public async Task<IActionResult> Login(AdminLoginVM form, string? next)
     {
-        var staff = await Db.Users.Include(u => u.Role)
-            .FirstOrDefaultAsync(u => u.Username == username && u.IsActive);
+        form.Next = next ?? "/quan-tri";
 
-        if (staff != null)
+        if (!ModelState.IsValid)
         {
-            SignIn(staff.UserId);
-            return Redirect(string.IsNullOrEmpty(next) ? "/quan-tri" : next);
+            form.Error = string.Join(" ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
+            return View(form);
         }
 
-        return View(new AdminLoginVM
+        var staff = await Db.Users.Include(u => u.Role)
+            .FirstOrDefaultAsync(u => u.Username == form.Username && u.IsActive);
+
+        // Thông báo lỗi chung cho cả "sai tài khoản" và "sai mật khẩu" để tránh lộ
+        // thông tin tài khoản nào tồn tại trong hệ thống.
+        if (staff is null || !PasswordHasherHelper.Verify(staff.PasswordHash, form.Password))
         {
-            Error = "Tên đăng nhập không tồn tại hoặc tài khoản đã bị khóa.",
-            Next = next ?? "/quan-tri"
-        });
+            form.Error = "Tên đăng nhập hoặc mật khẩu không đúng, hoặc tài khoản đã bị khóa.";
+            form.Password = string.Empty;
+            return View(form);
+        }
+
+        SignIn(staff.UserId);
+        return Redirect(string.IsNullOrEmpty(form.Next) ? "/quan-tri" : form.Next);
     }
 
     [HttpPost, Route("/quan-tri/dang-xuat")]

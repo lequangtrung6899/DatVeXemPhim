@@ -6,7 +6,7 @@
 <div class="container auth-wrap">
     <div class="auth-card">
         <h1>Đăng nhập</h1>
-        <p class="sub">Chào mừng trở lại DatVeXemPhim</p>
+        <p class="sub">Chào mừng trở lại PhimHay</p>
         @if (Model.Error != null)
         {
             <div class="form-error">@Model.Error</div>
@@ -16,7 +16,7 @@
             <input type="hidden" name="next" value="@Model.Next">
             <div class="field">
                 <label>Email</label>
-                <input type="email" name="email" placeholder="ban@email.com" required>
+                <input type="email" name="email" value="@Model.Email" placeholder="ban@email.com" required>
             </div>
             <div class="field">
                 <label>Mật khẩu</label>
@@ -24,7 +24,7 @@
             </div>
             <button class="btn btn-primary btn-block" type="submit">Đăng nhập</button>
         </form>
-        <p class="demo-note">Demo: dùng email <strong>levanan@gmail.com</strong> (hoặc bất kỳ email nào đã đăng ký) với mật khẩu bất kỳ.</p>
+        <p class="demo-note">Demo: email <strong>levanan@gmail.com</strong> (hoặc tài khoản bất kỳ đã đăng ký), mật khẩu <strong>123456</strong>.</p>
         <div class="auth-alt">Chưa có tài khoản? <a href="/dang-ky">Đăng ký ngay</a></div>
         <div class="auth-alt" style="margin-top:6px; font-size:12.5px; opacity:.75;">
             Bạn là Nhân viên/Quản trị viên? <a href="/quan-tri/dang-nhap">Đăng nhập tại đây</a>

@@ -1,0 +1,43 @@
+@{
+    ViewData["Title"] = "Chính sách đổi/trả vé";
+}
+
+<div class="container" style="padding-top:32px; padding-bottom:60px; max-width:820px;">
+    <div class="section-head">
+        <h1 class="section-title">Chính sách đổi/trả vé</h1>
+    </div>
+
+    <div class="review-card" style="padding:22px 24px; line-height:1.7; font-size:14.5px;">
+        <h3 style="margin-top:0;">1. Điều kiện hủy vé</h3>
+        <p>
+            Khách hàng có thể tự hủy vé đã đặt trong mục <a href="/tai-khoan/ve-cua-toi" style="color:var(--accent); font-weight:600;">"Vé của tôi"</a>
+            khi đáp ứng đủ hai điều kiện sau:
+        </p>
+        <ul style="padding-left:20px; color:var(--text-dim);">
+            <li>Vé đang ở trạng thái <strong style="color:var(--text);">"Đã thanh toán"</strong> (vé đã hủy trước đó không thể hủy lại).</li>
+            <li>Suất chiếu chưa bắt đầu trong vòng <strong style="color:var(--text);">2 giờ</strong> tới, tính từ thời điểm bấm hủy.</li>
+        </ul>
+
+        <h3>2. Hoàn tiền</h3>
+        <p>
+            Vé hủy đúng hạn được hoàn <strong style="color:var(--text);">100%</strong> số tiền đã thanh toán. Vì hệ thống thanh toán
+            hiện là <strong style="color:var(--text);">mô phỏng</strong> (chưa tích hợp cổng thanh toán thật), việc "hoàn tiền" chỉ mang
+            tính ghi nhận trạng thái trong hệ thống, không có giao dịch chuyển khoản/thẻ thật nào được thực hiện.
+        </p>
+
+        <h3>3. Ghế và điểm tích lũy</h3>
+        <p>Khi hủy vé thành công, hệ thống sẽ tự động:</p>
+        <ul style="padding-left:20px; color:var(--text-dim);">
+            <li>Giải phóng lại (các) ghế đã đặt để khách hàng khác có thể đặt.</li>
+            <li>Hoàn lại mã giảm giá (nếu vé có sử dụng voucher) để bạn dùng cho lần đặt khác.</li>
+            <li>Thu hồi lại số điểm tích lũy đã cộng từ đơn hàng đó và tính lại hạng thành viên tương ứng.</li>
+        </ul>
+
+        <h3>4. Sau giờ cắt (2 giờ trước suất chiếu)</h3>
+        <p>
+            Nếu bạn cần hỗ trợ hủy/đổi vé sát giờ chiếu vì lý do đặc biệt, vui lòng
+            <a href="/ho-tro/lien-he" style="color:var(--accent); font-weight:600;">liên hệ bộ phận hỗ trợ</a> —
+            nhân viên có thể xử lý thủ công tại quầy trong một số trường hợp.
+        </p>
+    </div>
+</div>

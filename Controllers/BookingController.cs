@@ -335,11 +335,15 @@ public class BookingController : BaseController
                 });
             }
 
+            // LƯU Ý: đây là thanh toán MÔ PHỎNG cho mục đích học tập/báo cáo — không có cổng
+            // thanh toán thật (VNPay/Momo/ZaloPay) nào được gọi, không có giao dịch tiền thật
+            // nào xảy ra. Vé được đánh dấu "Đã thanh toán" ngay lập tức, mã giao dịch bắt đầu
+            // bằng tiền tố "DEMO" để phân biệt rõ với giao dịch thật khi đọc dữ liệu.
             Db.Payments.Add(new Payment
             {
                 TicketId = ticket.TicketId,
                 Amount = total,
-                PaymentMethod = "Thanh toán online",
+                PaymentMethod = "Thanh toán online (mô phỏng)",
                 PaymentStatus = "Thành công",
                 TransactionCode = "DEMO" + ticket.TicketId + DateTime.Now.Ticks.ToString()[^6..],
                 PaymentDate = DateTime.Now

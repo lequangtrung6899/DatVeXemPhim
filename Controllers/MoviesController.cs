@@ -148,12 +148,23 @@ public class MoviesController : BaseController
         var customer = await GetCurrentCustomerAsync();
         if (customer is null) return Redirect($"/dang-nhap?next=/phim/{id}");
 
+        // Validate ở server — không tin dữ liệu người dùng gửi lên (điểm đánh giá phải 1–5,
+        // nội dung không được rỗng/quá dài, phim phải tồn tại) dù giao diện có ràng buộc sẵn.
+        var movieExists = await Db.Movies.AnyAsync(m => m.MovieId == id);
+        if (!movieExists) return NotFound();
+
+        if (rating < 1 || rating > 5 || string.IsNullOrWhiteSpace(comment) || comment.Trim().Length > 1000)
+        {
+            TempData["Error"] = "Đánh giá không hợp lệ: điểm phải từ 1–5 sao và nội dung không được để trống (tối đa 1000 ký tự).";
+            return Redirect($"/phim/{id}");
+        }
+
         Db.Reviews.Add(new Review
         {
             MovieId = id,
             CustomerId = customer.CustomerId,
             Rating = rating,
-            Comment = comment,
+            Comment = comment.Trim(),
             Status = "Chờ duyệt",
             CreatedAt = DateTime.Now
         });

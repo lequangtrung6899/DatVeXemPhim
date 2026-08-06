@@ -116,6 +116,11 @@
                 <button type="submit" class="btn btn-primary btn-block" style="margin-top:18px;" id="submitBtn" disabled="@(!Model.IsLoggedIn)">
                     @(Model.IsLoggedIn ? "Xác nhận đặt vé" : "Đăng nhập để đặt vé")
                 </button>
+                <p style="font-size:11.5px; color:var(--text-dimmer); margin-top:10px; line-height:1.5;">
+                    ⓘ Thanh toán trong hệ thống này là <strong>mô phỏng</strong> cho mục đích học tập —
+                    chưa tích hợp cổng thanh toán thật (VNPay/Momo/ZaloPay). Nhấn "Xác nhận đặt vé" sẽ
+                    đánh dấu vé là đã thanh toán mà không có giao dịch tiền thật nào xảy ra.
+                </p>
             </div>
         </div>
     </div>

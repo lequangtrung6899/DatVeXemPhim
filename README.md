@@ -1,3 +1,18 @@
+## 🔐 Về đăng nhập & mật khẩu (đã sửa)
+
+Mật khẩu giờ được băm thật bằng PBKDF2-HMACSHA256 (`Services/PasswordHasherHelper.cs`, dùng
+`Rfc2898DeriveBytes` có sẵn trong .NET — không cần thêm gói NuGet). Toàn bộ tài khoản seed sẵn
+(2 tài khoản `User` + 3 tài khoản `Customer`) dùng chung mật khẩu demo **`123456`**.
+
+## ⚠️ Về quy trình thanh toán (dành cho phần báo cáo)
+
+Chức năng thanh toán trong dự án (`BookingController.Confirm`) là **thanh toán mô phỏng**,
+phục vụ mục đích học tập/báo cáo — **không** tích hợp cổng thanh toán thật nào (VNPay, Momo,
+ZaloPay, ...). Khi khách hàng bấm "Xác nhận đặt vé", hệ thống tự động đánh dấu vé là
+"Đã thanh toán" và tạo một bản ghi `Payment` với mã giao dịch có tiền tố `DEMO...`, không có
+giao dịch tiền thật nào được thực hiện. Nếu báo cáo có mục mô tả "quy trình thanh toán", cần
+ghi rõ đây là mô phỏng, không phải tích hợp cổng thanh toán thực tế.
+
 # DatVeXemPhim — Ghi chú Code First (EF Core Migrations)
 
 Dự án đã được chuyển từ **Database First** (chạy tay `Database/DatVeXemPhim.sql`) sang

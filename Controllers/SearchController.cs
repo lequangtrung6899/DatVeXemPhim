@@ -27,6 +27,22 @@ public class SearchController : BaseController
                 vm.Movies.Add(await MovieQueryHelper.AttachGenresAndRatingAsync(Db, m));
         }
 
+        // Gợi ý tìm kiếm: hiển thị khi khách chưa nhập từ khóa nào, hoặc không tìm thấy
+        // kết quả phù hợp — tránh trang trắng, đồng thời gợi ý luôn các phim đang hot.
+        if (string.IsNullOrEmpty(query) || vm.Movies.Count == 0)
+        {
+            var suggested = await Db.Movies
+                .Where(m => m.Status == "Đang chiếu")
+                .OrderByDescending(m => m.ReleaseDate)
+                .Take(6)
+                .ToListAsync();
+
+            foreach (var m in suggested)
+                vm.SuggestedMovies.Add(await MovieQueryHelper.AttachGenresAndRatingAsync(Db, m));
+
+            vm.PopularKeywords = suggested.Select(m => m.Title).Distinct().Take(6).ToList();
+        }
+
         return View(vm);
     }
 

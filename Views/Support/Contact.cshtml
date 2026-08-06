@@ -1,0 +1,63 @@
+@model ContactFormVM
+@{
+    ViewData["Title"] = "Liên hệ";
+}
+
+<div class="container" style="padding-top:32px; padding-bottom:60px;">
+    <div class="section-head">
+        <h1 class="section-title">Liên hệ</h1>
+    </div>
+
+    <div class="booking-layout">
+        <div>
+            @if (Model.Sent)
+            {
+                <div class="form-error" style="background:rgba(61,220,132,.12); border-color:var(--green); color:#8ce99a;">
+                    Cảm ơn bạn đã liên hệ! Chúng tôi đã nhận được yêu cầu của bạn và sẽ phản hồi sớm nhất có thể.
+                </div>
+            }
+            @if (Model.Error != null)
+            {
+                <div class="form-error">@Model.Error</div>
+            }
+
+            <form class="auth-card" method="post" action="/ho-tro/lien-he" style="max-width:none;">
+                @Html.AntiForgeryToken()
+                <div class="field" style="margin-bottom:14px;">
+                    <label>Họ và tên</label>
+                    <input type="text" name="fullName" value="@Model.FullName" required maxlength="150">
+                </div>
+                <div class="field" style="margin-bottom:14px;">
+                    <label>Email</label>
+                    <input type="email" name="email" value="@Model.Email" required maxlength="255">
+                </div>
+                <div class="field" style="margin-bottom:14px;">
+                    <label>Số điện thoại (không bắt buộc)</label>
+                    <input type="tel" name="phone" value="@Model.Phone" maxlength="20">
+                </div>
+                <div class="field" style="margin-bottom:14px;">
+                    <label>Chủ đề</label>
+                    <input type="text" name="subject" value="@Model.Subject" required maxlength="200" placeholder="VD: Hỏi về vé #1024">
+                </div>
+                <div class="field" style="margin-bottom:18px;">
+                    <label>Nội dung</label>
+                    <textarea name="message" required maxlength="2000" rows="6" placeholder="Mô tả yêu cầu của bạn...">@Model.Message</textarea>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Gửi yêu cầu</button>
+            </form>
+        </div>
+
+        <div>
+            <div class="summary-card">
+                <h3>Thông tin liên hệ</h3>
+                <div class="summary-row"><span>Hotline</span><strong>1900 6017</strong></div>
+                <div class="summary-row"><span>Email</span><strong>hotro@phimhay.vn</strong></div>
+                <div class="summary-row"><span>Giờ làm việc</span><strong>8:00 – 22:00 hằng ngày</strong></div>
+                <p style="font-size:12.5px; color:var(--text-dimmer); margin-top:14px; line-height:1.6;">
+                    Với các yêu cầu liên quan đến vé đã đặt, vui lòng ghi rõ mã vé trong phần "Chủ đề"
+                    để được hỗ trợ nhanh hơn.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

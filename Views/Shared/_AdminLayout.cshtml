@@ -10,7 +10,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewData["Title"] · Quản trị DatVeXemPhim</title>
+    <title>@ViewData["Title"] · Quản trị PhimHay</title>
     <link rel="stylesheet" href="~/css/style.css">
     <link rel="stylesheet" href="~/css/admin.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.css">
@@ -41,6 +41,7 @@
                 <div class="admin-nav-group">Khách hàng &amp; hỗ trợ</div>
                 <a href="/quan-tri/khach-hang" class="@(IsActive("/quan-tri/khach-hang") ? "active" : "")">Quản lý khách hàng</a>
                 <a href="/quan-tri/ho-tro" class="@(IsActive("/quan-tri/ho-tro") ? "active" : "")">Hỗ trợ khách hàng</a>
+                <a href="/quan-tri/lien-he" class="@(IsActive("/quan-tri/lien-he") ? "active" : "")">Yêu cầu liên hệ</a>
 
                 @if (isAdminRole)
                 {

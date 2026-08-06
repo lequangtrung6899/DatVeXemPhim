@@ -15,19 +15,19 @@
             @Html.AntiForgeryToken()
             <div class="field">
                 <label>Họ và tên</label>
-                <input type="text" name="fullName" placeholder="Nguyễn Văn A" required>
+                <input type="text" name="fullName" value="@Model.FullName" placeholder="Nguyễn Văn A" required>
             </div>
             <div class="field">
                 <label>Email</label>
-                <input type="email" name="email" placeholder="ban@email.com" required>
+                <input type="email" name="email" value="@Model.Email" placeholder="ban@email.com" required>
             </div>
             <div class="field">
                 <label>Số điện thoại</label>
-                <input type="text" name="phone" placeholder="09xxxxxxxx">
+                <input type="text" name="phone" value="@Model.Phone" placeholder="09xxxxxxxx">
             </div>
             <div class="field">
                 <label>Mật khẩu</label>
-                <input type="password" name="password" placeholder="••••••••" required>
+                <input type="password" name="password" placeholder="Tối thiểu 6 ký tự" required minlength="6">
             </div>
             <button class="btn btn-primary btn-block" type="submit">Đăng ký</button>
         </form>

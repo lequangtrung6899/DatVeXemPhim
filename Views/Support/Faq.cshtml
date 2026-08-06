@@ -1,0 +1,34 @@
+@{
+    ViewData["Title"] = "Câu hỏi thường gặp";
+}
+
+<div class="container" style="padding-top:32px; padding-bottom:60px; max-width:820px;">
+    <div class="section-head">
+        <h1 class="section-title">Câu hỏi thường gặp</h1>
+    </div>
+
+    <div style="display:flex; flex-direction:column; gap:12px;">
+        @{
+            var faqs = new (string Q, string A)[]
+            {
+                ("Làm sao để đặt vé xem phim?", "Chọn phim bạn muốn xem, chọn suất chiếu, chọn ghế trên sơ đồ rạp, chọn thêm combo bắp nước (nếu muốn), rồi bấm \"Xác nhận đặt vé\". Bạn cần đăng nhập trước khi đặt vé."),
+                ("Tôi có thể giữ ghế trong bao lâu trước khi phải thanh toán?", "Khi bạn chọn ghế, hệ thống sẽ giữ tạm ghế đó cho bạn trong 5 phút. Nếu quá thời gian này mà chưa xác nhận đặt vé, ghế sẽ được nhả lại để người khác có thể đặt."),
+                ("Tôi có thể hủy vé đã đặt không?", "Có. Vào mục \"Vé của tôi\" > chọn vé cần hủy > bấm \"Hủy vé\". Vé chỉ có thể tự hủy khi còn ở trạng thái \"Đã thanh toán\" và suất chiếu chưa bắt đầu trong vòng 2 giờ tới. Xem chi tiết ở trang Chính sách đổi/trả vé."),
+                ("Thanh toán trên website có an toàn không?", "Đây là hệ thống thanh toán mô phỏng phục vụ mục đích học tập/demo — không có giao dịch tiền thật nào được thực hiện và chưa tích hợp cổng thanh toán thật (VNPay/Momo/ZaloPay)."),
+                ("Làm sao để nhận ưu đãi thành viên?", "Mỗi lần đặt vé thành công, bạn được cộng điểm tích lũy theo tổng giá trị đơn hàng. Khi đủ điểm, hạng thành viên của bạn sẽ tự động nâng lên (Bạc, Vàng, Kim Cương) và mở khoá thêm ưu đãi."),
+                ("Tôi quên mã vé/mã giao dịch thì tra cứu ở đâu?", "Vào mục \"Vé của tôi\" để xem lại toàn bộ vé đã đặt kèm mã vé, trạng thái và tổng tiền."),
+            };
+        }
+        @foreach (var (q, a) in faqs)
+        {
+            <details class="review-card" style="padding:16px 20px;">
+                <summary style="cursor:pointer; font-weight:700; list-style:none;">@q</summary>
+                <p style="color:var(--text-dim); font-size:14px; margin:10px 0 0; line-height:1.6;">@a</p>
+            </details>
+        }
+    </div>
+
+    <p style="margin-top:28px; color:var(--text-dim); font-size:14px;">
+        Không tìm thấy câu trả lời bạn cần? <a href="/ho-tro/lien-he" style="color:var(--accent); font-weight:600;">Liên hệ với chúng tôi</a>.
+    </p>
+</div>

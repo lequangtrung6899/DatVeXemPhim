@@ -8,7 +8,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đăng nhập quản trị · DatVeXemPhim</title>
+    <title>Đăng nhập quản trị · PhimHay</title>
     <link rel="stylesheet" href="~/css/style.css">
     <link rel="stylesheet" href="~/css/admin.css">
 </head>
@@ -26,12 +26,15 @@
             }
 
             <label>Tên đăng nhập</label>
-            <input type="text" name="username" required autofocus>
+            <input type="text" name="username" value="@Model.Username" required autofocus>
 
             <label>Mật khẩu</label>
             <input type="password" name="password" required>
 
             <button type="submit" class="btn btn-primary btn-block">Đăng nhập</button>
+            <p style="font-size:12px; color:var(--text-dimmer); text-align:center; margin-top:10px;">
+                Demo: <strong>admin01</strong> / <strong>staff01</strong>, mật khẩu <strong>123456</strong>.
+            </p>
 
             <div class="auth-alt" style="margin-top:14px; text-align:center; font-size:13px;">
                 <a href="/">← Về trang chủ</a> · <a href="/dang-nhap">Đăng nhập tài khoản khách hàng</a>

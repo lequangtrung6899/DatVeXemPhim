@@ -193,6 +193,10 @@
 
         @if (customer != null)
         {
+            @if (TempData["Error"] != null)
+            {
+                <div class="form-error" style="margin-bottom:14px;">@TempData["Error"]</div>
+            }
             <form class="review-form" action="/phim/@movie.MovieId/review" method="post" style="margin-bottom:24px;">
                 @Html.AntiForgeryToken()
                 <div class="rating-select">

@@ -207,6 +207,12 @@ button { font-family: inherit; cursor: pointer; }
   border: 1px solid var(--border);
 }
 .btn-ghost:hover { border-color: var(--accent); }
+.btn-danger {
+  background: rgba(224, 49, 49, .12);
+  color: #ff8787;
+  border: 1px solid #e03131;
+}
+.btn-danger:hover { background: rgba(224, 49, 49, .22); }
 .btn-block { width: 100%; }
 .btn-sm { padding: 7px 14px; font-size: 13px; }
 .btn:disabled { opacity: .45; cursor: not-allowed; }
@@ -714,6 +720,11 @@ button { font-family: inherit; cursor: pointer; }
   color: var(--text); padding: 11px 14px; font-size: 14px; outline: none;
 }
 .field input:focus { border-color: var(--accent); }
+.field textarea {
+  width: 100%; background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 9px;
+  color: var(--text); padding: 11px 14px; font-size: 14px; outline: none; font-family: inherit; resize: vertical;
+}
+.field textarea:focus { border-color: var(--accent); }
 .form-error { background: rgba(255,77,94,.12); border: 1px solid var(--accent); color: #ffb3ba; padding: 10px 14px; border-radius: 8px; font-size: 13.5px; margin-bottom: 16px; }
 .auth-alt { text-align: center; margin-top: 18px; font-size: 13.5px; color: var(--text-dim); }
 .auth-alt a { color: var(--accent); font-weight: 600; }
@@ -740,6 +751,7 @@ button { font-family: inherit; cursor: pointer; }
 @media (max-width: 960px) {
   .main-nav { display: none; }
   .search-form { display: none; }
+  .search-form.page-search-form { display: flex; width: 100%; }
   .movie-hero-grid { grid-template-columns: 160px 1fr; gap: 20px; }
   .movie-poster-lg { max-width: 160px; }
   .movie-title-lg { font-size: 24px; }
