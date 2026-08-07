@@ -1,5 +1,6 @@
 using DatVeXemPhim.Data;
 using DatVeXemPhim.Models;
+using DatVeXemPhim.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,12 +9,21 @@ namespace DatVeXemPhim.Controllers.Admin;
 // Ca sử dụng "Quản lý Voucher".
 public class AdminVoucherController : AdminBaseController
 {
+    private const int PageSize = 6;
+
     public AdminVoucherController(ApplicationDbContext db) : base(db) { }
 
     [HttpGet, Route("/quan-tri/voucher")]
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(int page = 1)
     {
-        var vouchers = await Db.Vouchers.OrderByDescending(v => v.StartDate).ToListAsync();
+        var query = Db.Vouchers.OrderByDescending(v => v.StartDate);
+        var totalCount = await query.CountAsync();
+        var totalPages = Math.Max(1, (int)Math.Ceiling(totalCount / (double)PageSize));
+        page = Math.Clamp(page, 1, totalPages);
+
+        var vouchers = await query.Skip((page - 1) * PageSize).Take(PageSize).ToListAsync();
+
+        ViewBag.Pagination = new PaginationVM { Page = page, TotalPages = totalPages, BaseUrl = "/quan-tri/voucher?" };
         return View(vouchers);
     }
 
@@ -49,37 +59,59 @@ public class AdminVoucherController : AdminBaseController
             return Redirect(voucherId == 0 ? "/quan-tri/voucher/them" : $"/quan-tri/voucher/{voucherId}/sua");
         }
 
+        var isAdmin = await IsAdminRoleAsync();
+        var dto = new VoucherChangeDto
+        {
+            Code = code, DiscountType = discountType, DiscountValue = discountValue, MinOrderAmount = minOrderAmount,
+            StartDate = startDate, EndDate = endDate, UsageLimit = usageLimit, IsActive = isActive
+        };
+
         if (voucherId == 0)
         {
-            Db.Vouchers.Add(new Voucher
+            if (isAdmin)
             {
-                Code = code,
-                DiscountType = discountType,
-                DiscountValue = discountValue,
-                MinOrderAmount = minOrderAmount,
-                StartDate = startDate,
-                EndDate = endDate,
-                UsageLimit = usageLimit,
-                UsedCount = 0,
-                IsActive = isActive
-            });
-            TempData["Success"] = "Đã thêm voucher mới.";
+                Db.Vouchers.Add(new Voucher
+                {
+                    Code = code, DiscountType = discountType, DiscountValue = discountValue, MinOrderAmount = minOrderAmount,
+                    StartDate = startDate, EndDate = endDate, UsageLimit = usageLimit, UsedCount = 0, IsActive = isActive
+                });
+                await Db.SaveChangesAsync();
+                TempData["Success"] = "Đã thêm voucher mới.";
+            }
+            else
+            {
+                // Voucher là nơi dễ bị lạm quyền nhất (nhân viên có thể tự tạo mã giảm giá
+                // cho bản thân/người quen) nên LUÔN phải qua Admin duyệt, không có ngoại lệ.
+                await SubmitPendingChangeAsync("Voucher", null, "Create", dto,
+                    $"Thêm voucher mới '{code}' — giảm {(discountType == "Phần trăm" ? discountValue + "%" : FormatVND(discountValue))}");
+                TempData["Success"] = "Đã gửi yêu cầu thêm voucher mới — chờ Quản trị viên duyệt.";
+            }
         }
         else
         {
             var voucher = await Db.Vouchers.FindAsync(voucherId);
             if (voucher is null) return NotFound();
-            voucher.Code = code;
-            voucher.DiscountType = discountType;
-            voucher.DiscountValue = discountValue;
-            voucher.MinOrderAmount = minOrderAmount;
-            voucher.StartDate = startDate;
-            voucher.EndDate = endDate;
-            voucher.UsageLimit = usageLimit;
-            voucher.IsActive = isActive;
-            TempData["Success"] = "Đã cập nhật voucher.";
+
+            if (isAdmin)
+            {
+                voucher.Code = code;
+                voucher.DiscountType = discountType;
+                voucher.DiscountValue = discountValue;
+                voucher.MinOrderAmount = minOrderAmount;
+                voucher.StartDate = startDate;
+                voucher.EndDate = endDate;
+                voucher.UsageLimit = usageLimit;
+                voucher.IsActive = isActive;
+                await Db.SaveChangesAsync();
+                TempData["Success"] = "Đã cập nhật voucher.";
+            }
+            else
+            {
+                await SubmitPendingChangeAsync("Voucher", voucher.VoucherId, "Update", dto,
+                    $"Sửa voucher '{voucher.Code}': giảm {(voucher.DiscountType == "Phần trăm" ? voucher.DiscountValue + "%" : FormatVND(voucher.DiscountValue))} → {(discountType == "Phần trăm" ? discountValue + "%" : FormatVND(discountValue))}");
+                TempData["Success"] = "Đã gửi yêu cầu sửa voucher — chờ Quản trị viên duyệt.";
+            }
         }
-        await Db.SaveChangesAsync();
         return Redirect("/quan-tri/voucher");
     }
 
@@ -97,9 +129,17 @@ public class AdminVoucherController : AdminBaseController
             return Redirect("/quan-tri/voucher");
         }
 
-        Db.Vouchers.Remove(voucher);
-        await Db.SaveChangesAsync();
-        TempData["Success"] = "Đã xóa voucher.";
+        if (await IsAdminRoleAsync())
+        {
+            Db.Vouchers.Remove(voucher);
+            await Db.SaveChangesAsync();
+            TempData["Success"] = "Đã xóa voucher.";
+        }
+        else
+        {
+            await SubmitPendingChangeAsync("Voucher", voucher.VoucherId, "Delete", (object?)null, $"Xóa voucher '{voucher.Code}'");
+            TempData["Success"] = "Đã gửi yêu cầu xóa voucher — chờ Quản trị viên duyệt.";
+        }
         return Redirect("/quan-tri/voucher");
     }
 }

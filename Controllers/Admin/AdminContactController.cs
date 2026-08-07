@@ -1,4 +1,5 @@
 using DatVeXemPhim.Data;
+using DatVeXemPhim.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,11 +9,13 @@ namespace DatVeXemPhim.Controllers.Admin;
 // khách hàng gửi qua /ho-tro/lien-he và đánh dấu đã xử lý.
 public class AdminContactController : AdminBaseController
 {
+    private const int PageSize = 6;
+
     public AdminContactController(ApplicationDbContext db) : base(db) { }
 
     // GET /quan-tri/lien-he?status=Chờ xử lý|Đã xử lý|Tất cả
     [HttpGet, Route("/quan-tri/lien-he")]
-    public async Task<IActionResult> Index(string? status)
+    public async Task<IActionResult> Index(string? status, int page = 1)
     {
         var effectiveStatus = string.IsNullOrWhiteSpace(status) ? "Chờ xử lý" : status;
 
@@ -24,9 +27,20 @@ public class AdminContactController : AdminBaseController
             _ => query
         };
 
-        var messages = await query.OrderByDescending(m => m.CreatedAt).ToListAsync();
+        var totalCount = await query.CountAsync();
+        var totalPages = Math.Max(1, (int)Math.Ceiling(totalCount / (double)PageSize));
+        page = Math.Clamp(page, 1, totalPages);
+
+        var messages = await query.OrderByDescending(m => m.CreatedAt)
+            .Skip((page - 1) * PageSize).Take(PageSize).ToListAsync();
 
         ViewBag.Status = effectiveStatus;
+        ViewBag.Pagination = new PaginationVM
+        {
+            Page = page,
+            TotalPages = totalPages,
+            BaseUrl = $"/quan-tri/lien-he?status={Uri.EscapeDataString(effectiveStatus)}&"
+        };
         return View(messages);
     }
 

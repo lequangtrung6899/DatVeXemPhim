@@ -9,12 +9,21 @@ namespace DatVeXemPhim.Controllers.Admin;
 // Ca sử dụng "Quản lý phòng chiếu" và "Quản lý ghế".
 public class AdminRoomController : AdminBaseController
 {
+    private const int PageSize = 6;
+
     public AdminRoomController(ApplicationDbContext db) : base(db) { }
 
     [HttpGet, Route("/quan-tri/phong-chieu")]
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(int page = 1)
     {
-        var rooms = await Db.Rooms.OrderBy(r => r.RoomName).ToListAsync();
+        var query = Db.Rooms.OrderBy(r => r.RoomName);
+        var totalCount = await query.CountAsync();
+        var totalPages = Math.Max(1, (int)Math.Ceiling(totalCount / (double)PageSize));
+        page = Math.Clamp(page, 1, totalPages);
+
+        var rooms = await query.Skip((page - 1) * PageSize).Take(PageSize).ToListAsync();
+
+        ViewBag.Pagination = new PaginationVM { Page = page, TotalPages = totalPages, BaseUrl = "/quan-tri/phong-chieu?" };
         return View(rooms);
     }
 
@@ -33,21 +42,46 @@ public class AdminRoomController : AdminBaseController
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Save(int roomId, string roomName, int totalSeats, bool isActive)
     {
+        roomName = roomName.Trim();
+        var isAdmin = await IsAdminRoleAsync();
+
         if (roomId == 0)
         {
-            Db.Rooms.Add(new Room { RoomName = roomName.Trim(), TotalSeats = totalSeats, IsActive = isActive });
-            TempData["Success"] = "Đã thêm phòng chiếu mới. Hãy thêm ghế cho phòng ở bước tiếp theo.";
+            if (isAdmin)
+            {
+                Db.Rooms.Add(new Room { RoomName = roomName, TotalSeats = totalSeats, IsActive = isActive });
+                await Db.SaveChangesAsync();
+                TempData["Success"] = "Đã thêm phòng chiếu mới. Hãy thêm ghế cho phòng ở bước tiếp theo.";
+            }
+            else
+            {
+                await SubmitPendingChangeAsync("Room", null, "Create",
+                    new RoomChangeDto { RoomName = roomName, TotalSeats = totalSeats, IsActive = isActive },
+                    $"Thêm phòng chiếu mới '{roomName}'");
+                TempData["Success"] = "Đã gửi yêu cầu thêm phòng chiếu mới — chờ Quản trị viên duyệt.";
+            }
         }
         else
         {
             var room = await Db.Rooms.FindAsync(roomId);
             if (room is null) return NotFound();
-            room.RoomName = roomName.Trim();
-            room.TotalSeats = totalSeats;
-            room.IsActive = isActive;
-            TempData["Success"] = "Đã cập nhật phòng chiếu.";
+
+            if (isAdmin)
+            {
+                room.RoomName = roomName;
+                room.TotalSeats = totalSeats;
+                room.IsActive = isActive;
+                await Db.SaveChangesAsync();
+                TempData["Success"] = "Đã cập nhật phòng chiếu.";
+            }
+            else
+            {
+                await SubmitPendingChangeAsync("Room", room.RoomId, "Update",
+                    new RoomChangeDto { RoomName = roomName, TotalSeats = totalSeats, IsActive = isActive },
+                    $"Sửa phòng chiếu '{room.RoomName}' → '{roomName}'");
+                TempData["Success"] = "Đã gửi yêu cầu sửa phòng chiếu — chờ Quản trị viên duyệt.";
+            }
         }
-        await Db.SaveChangesAsync();
         return Redirect("/quan-tri/phong-chieu");
     }
 
@@ -65,13 +99,28 @@ public class AdminRoomController : AdminBaseController
             return Redirect("/quan-tri/phong-chieu");
         }
 
-        var seats = Db.Seats.Where(s => s.RoomId == id);
-        Db.Seats.RemoveRange(seats);
-        Db.Rooms.Remove(room);
-        await Db.SaveChangesAsync();
-        TempData["Success"] = "Đã xóa phòng chiếu.";
+        if (await IsAdminRoleAsync())
+        {
+            var seats = Db.Seats.Where(s => s.RoomId == id);
+            Db.Seats.RemoveRange(seats);
+            Db.Rooms.Remove(room);
+            await Db.SaveChangesAsync();
+            TempData["Success"] = "Đã xóa phòng chiếu.";
+        }
+        else
+        {
+            await SubmitPendingChangeAsync("Room", room.RoomId, "Delete", (object?)null, $"Xóa phòng chiếu '{room.RoomName}'");
+            TempData["Success"] = "Đã gửi yêu cầu xóa phòng chiếu — chờ Quản trị viên duyệt.";
+        }
         return Redirect("/quan-tri/phong-chieu");
     }
+
+    // Ghi chú: Quản lý GHẾ (bên dưới — GenerateGrid/AddSeat/DeleteSeat) CHỦ Ý không qua
+    // hàng đợi duyệt. Đây là thao tác kỹ thuật/cấu hình vật lý (không ảnh hưởng tiền bạc
+    // hay dữ liệu khách hàng như Combo/Voucher), thường làm 1 lần lúc khởi tạo phòng, và
+    // nếu phải chờ Admin duyệt từng ghế một sẽ rất bất tiện khi tạo lưới hàng chục ghế.
+    // Rủi ro lạm quyền ở đây thấp — hậu quả tệ nhất là sơ đồ ghế sai, dễ phát hiện và sửa
+    // ngay lập tức khi xem lại phòng, không âm thầm gây hại như voucher giả hay hủy vé khống.
 
     // ---- Seats management (Ca sử dụng "Quản lý ghế") ----
 

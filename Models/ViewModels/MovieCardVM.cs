@@ -14,6 +14,7 @@ public class MovieCardVM
     public DateTime ReleaseDate { get; set; }
     public DateTime? EndDate { get; set; }
     public string Status { get; set; } = string.Empty;
+    public bool ShowOnBanner { get; set; }
 
     public List<string> Genres { get; set; } = new();
     public double? AvgRating { get; set; }
@@ -30,6 +31,7 @@ public class MovieCardVM
         ReleaseDate = m.ReleaseDate,
         EndDate = m.EndDate,
         Status = m.Status,
+        ShowOnBanner = m.ShowOnBanner,
         Genres = genres,
         AvgRating = avgRating,
         ReviewCount = reviewCount

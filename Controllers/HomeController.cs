@@ -13,18 +13,31 @@ public class HomeController : BaseController
     [Route("/")]
     public async Task<IActionResult> Index()
     {
+        // Chỉ hiển thị phim đã được Admin duyệt cho khách hàng (phim do Nhân viên thêm/sửa
+        // đang "Chờ duyệt" hoặc bị "Từ chối" sẽ không xuất hiện ở đây — xem AdminMovieController).
         var nowShowing = await MovieQueryHelper.GetMoviesWithGenresAsync(
-            Db, Db.Movies.Where(m => m.Status == "Đang chiếu").OrderByDescending(m => m.ReleaseDate));
+            Db, Db.Movies.Where(m => m.Status == "Đang chiếu" && m.ApprovalStatus == "Đã duyệt")
+                .OrderByDescending(m => m.ReleaseDate));
 
         var comingSoon = await MovieQueryHelper.GetMoviesWithGenresAsync(
-            Db, Db.Movies.Where(m => m.Status == "Sắp chiếu").OrderBy(m => m.ReleaseDate));
+            Db, Db.Movies.Where(m => m.Status == "Sắp chiếu" && m.ApprovalStatus == "Đã duyệt")
+                .OrderBy(m => m.ReleaseDate));
+
+        // Banner (hero) trang chủ: ưu tiên các phim được Admin/Nhân viên chọn thủ công
+        // (Movie.ShowOnBanner) trong "Quản lý phim". Nếu chưa ai chọn phim nào, tự động
+        // lấy tạm 5 phim đang chiếu mới nhất để banner không bị trống.
+        var hero = nowShowing.Where(m => m.ShowOnBanner).Take(5).ToList();
+        if (hero.Count == 0)
+        {
+            hero = nowShowing.Take(5).ToList();
+        }
 
         var vm = new HomeVM
         {
             Title = "Trang chủ",
             NowShowing = nowShowing,
             ComingSoon = comingSoon,
-            Hero = nowShowing.Take(5).ToList()
+            Hero = hero
         };
 
         return View(vm);

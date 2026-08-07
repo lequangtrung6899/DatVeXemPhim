@@ -1,0 +1,182 @@
+@model DatVeXemPhim.Models.ViewModels.CartVM
+@{
+    ViewData["Title"] = "Giỏ hàng";
+    var formatVND = (Func<decimal, string>)ViewBag.FormatVND;
+}
+
+<div class="container" style="padding-top:32px;">
+    <div class="section-head">
+        <div>
+            <h1 class="section-title">Giỏ hàng</h1>
+            <p style="color:var(--text-dim); font-size:14px; margin-top:6px;">Kiểm tra lại lựa chọn, nhập hoặc chọn mã giảm giá — tiền được tính lại ngay lập tức.</p>
+        </div>
+        <a href="/" class="section-link">← Tiếp tục chọn phim</a>
+    </div>
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="form-error">@TempData["Error"]</div>
+    }
+
+    @if (Model.Items.Count == 0)
+    {
+        <div class="cart-empty">
+            <p style="font-size:16px; margin-bottom:14px;">🛒 Giỏ hàng của bạn đang trống.</p>
+            <a href="/" class="btn btn-primary">Khám phá phim đang chiếu</a>
+        </div>
+    }
+    else
+    {
+        <div class="booking-layout">
+            <div id="cartItems">
+                @foreach (var item in Model.Items)
+                {
+                    <div class="cart-item-card" data-ticket-id="@item.TicketId">
+                        @if (!string.IsNullOrEmpty(item.PosterUrl))
+                        {
+                            <img src="@item.PosterUrl" class="cart-item-poster" alt="@item.MovieTitle">
+                        }
+                        <div class="cart-item-body">
+                            <h4>@item.MovieTitle</h4>
+                            <div class="cart-item-meta">
+                                @item.RoomName · @item.StartTime.ToString("dddd, dd/MM/yyyy HH:mm", new System.Globalization.CultureInfo("vi-VN"))
+                            </div>
+                            <div class="cart-item-line"><span>Ghế: @string.Join(", ", item.Seats.Select(s => s.RowLabel + s.ColumnNumber))</span><span>@formatVND(item.Seats.Sum(s => s.Price))</span></div>
+                            @foreach (var c in item.Combos)
+                            {
+                                <div class="cart-item-line"><span>@c.ComboName x@c.Quantity</span><span>@formatVND(c.Price * c.Quantity)</span></div>
+                            }
+                            <div class="cart-item-foot">
+                                <form method="post" action="/gio-hang/xoa/@item.TicketId" onsubmit="return confirm('Bỏ vé này khỏi giỏ hàng? Ghế đã giữ sẽ được giải phóng.');">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="cart-item-remove">Bỏ khỏi giỏ hàng</button>
+                                </form>
+                                <span class="subtotal">@formatVND(item.Subtotal)</span>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <div>
+                <div class="summary-card">
+                    <h3>Tóm tắt đơn hàng</h3>
+                    <div class="summary-row"><span>Tạm tính</span><strong id="cartSubtotal">@formatVND(Model.Subtotal)</strong></div>
+                    <div class="summary-row" id="discountRow" style="@(Model.Discount > 0 ? "" : "display:none;")">
+                        <span>Giảm giá (<span id="appliedCode">@Model.AppliedVoucherCode</span>)</span>
+                        <strong id="cartDiscount" style="color:#69db7c;">-@formatVND(Model.Discount)</strong>
+                    </div>
+
+                    <div class="voucher-input">
+                        <input type="text" id="voucherCodeInput" placeholder="Nhập mã giảm giá..." value="@Model.AppliedVoucherCode">
+                        <button type="button" id="applyVoucherBtn" class="btn btn-ghost">Áp dụng</button>
+                    </div>
+                    <div id="voucherMessage" style="font-size:12px; margin:-8px 0 10px; min-height:14px;"></div>
+
+                    @if (Model.AppliedVoucherCode != null)
+                    {
+                        <button type="button" id="removeVoucherBtn" class="cart-item-remove" style="margin:-6px 0 10px;">Bỏ áp dụng mã "@Model.AppliedVoucherCode"</button>
+                    }
+
+                    @if (Model.AvailableVouchers.Count > 0)
+                    {
+                        <p style="font-size:12px; color:var(--text-dimmer); margin:10px 0 4px;">Hoặc chọn nhanh:</p>
+                        <div class="voucher-list">
+                            @foreach (var v in Model.AvailableVouchers)
+                            {
+                                var discountText = v.DiscountType == "Phần trăm" ? $"-{v.DiscountValue:0.##}%" : $"-{formatVND(v.DiscountValue)}";
+                                <div class="voucher-chip @(Model.AppliedVoucherCode == v.Code ? "applied" : "") @(v.Eligible ? "" : "ineligible")"
+                                     data-code="@v.Code" title="@(v.Eligible ? "" : $"Cần tối thiểu {formatVND(v.MinOrderAmount)}")">
+                                    <span><span class="code">@v.Code</span> <span class="meta">(@discountText)</span></span>
+                                    <span class="meta">Tối thiểu @formatVND(v.MinOrderAmount)</span>
+                                </div>
+                            }
+                        </div>
+                    }
+
+                    <div class="summary-total">
+                        <span>Tổng cộng</span>
+                        <span class="val" id="cartTotal">@formatVND(Model.Total)</span>
+                    </div>
+
+                    <a href="/thanh-toan" class="btn btn-primary btn-block" style="margin-top:18px;">Tiến hành thanh toán</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        const applyBtn = document.getElementById('applyVoucherBtn');
+        const removeBtn = document.getElementById('removeVoucherBtn');
+        const codeInput = document.getElementById('voucherCodeInput');
+        const msgEl = document.getElementById('voucherMessage');
+
+        function antiForgeryToken() {
+            return document.querySelector('input[name="__RequestVerificationToken"]').value;
+        }
+
+        function formatVND(n) { return Math.round(n).toLocaleString('vi-VN') + '₫'; }
+
+        function renderResult(data) {
+            document.getElementById('cartSubtotal').textContent = data.subtotalText;
+            document.getElementById('cartTotal').textContent = data.totalText;
+            const discountRow = document.getElementById('discountRow');
+            if (data.discount > 0) {
+                discountRow.style.display = '';
+                document.getElementById('cartDiscount').textContent = data.discountText;
+                document.getElementById('appliedCode').textContent = data.code || '';
+            } else {
+                discountRow.style.display = 'none';
+            }
+            msgEl.textContent = data.message || '';
+            msgEl.style.color = data.ok ? '#69db7c' : '#ffb3ba';
+            document.querySelectorAll('.voucher-chip').forEach(chip => {
+                chip.classList.toggle('applied', data.ok && chip.dataset.code === data.code);
+            });
+        }
+
+        async function applyVoucher(code) {
+            try {
+                const res = await fetch('/gio-hang/ap-dung-voucher', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'RequestVerificationToken': antiForgeryToken() },
+                    body: JSON.stringify({ code })
+                });
+                const data = await res.json();
+                renderResult(data);
+                if (data.ok) location.reload();
+            } catch (e) {
+                console.error('Không thể áp dụng voucher:', e);
+            }
+        }
+
+        if (applyBtn) {
+            applyBtn.addEventListener('click', () => {
+                const code = codeInput.value.trim();
+                if (!code) { msgEl.textContent = 'Vui lòng nhập mã giảm giá.'; msgEl.style.color = '#ffb3ba'; return; }
+                applyVoucher(code);
+            });
+        }
+
+        document.querySelectorAll('.voucher-chip:not(.ineligible)').forEach(chip => {
+            chip.addEventListener('click', () => applyVoucher(chip.dataset.code));
+        });
+
+        if (removeBtn) {
+            removeBtn.addEventListener('click', async () => {
+                try {
+                    const res = await fetch('/gio-hang/bo-voucher', {
+                        method: 'POST',
+                        headers: { 'RequestVerificationToken': antiForgeryToken() }
+                    });
+                    const data = await res.json();
+                    location.reload();
+                } catch (e) {
+                    console.error('Không thể bỏ voucher:', e);
+                }
+            });
+        }
+    </script>
+}

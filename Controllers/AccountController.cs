@@ -114,7 +114,7 @@ public class AccountController : BaseController
 
         var tickets = await Db.Tickets
             .Include(t => t.Showtime).ThenInclude(s => s.Movie)
-            .Where(t => t.CustomerId == customer.CustomerId)
+            .Where(t => t.CustomerId == customer.CustomerId && t.Status != "Chờ thanh toán")
             .OrderByDescending(t => t.BookingDate)
             .Select(t => new MyTicketRow
             {

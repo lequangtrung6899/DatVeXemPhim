@@ -216,10 +216,14 @@ public class BookingController : BaseController
     }
 
     // POST /dat-ve/{showtimeId}/xac-nhan
+    // Thêm lựa chọn ghế + combo vào GIỎ HÀNG (vé ở trạng thái "Chờ thanh toán"),
+    // KHÔNG tạo Payment/tính voucher ở đây nữa — voucher chỉ được áp dụng và tính
+    // lại tiền ngay trong Giỏ hàng (xem CartController), còn thanh toán thật diễn
+    // ra ở bước riêng có QR ngân hàng (xem PaymentController).
     [HttpPost]
     [Route("/dat-ve/{showtimeId:int}/xac-nhan")]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Confirm(int showtimeId, [FromForm] List<int> seats, [FromForm] Dictionary<string, string>? combos, [FromForm] string? voucherCode)
+    public async Task<IActionResult> Confirm(int showtimeId, [FromForm] List<int> seats, [FromForm] Dictionary<string, string>? combos)
     {
         var customer = await GetCurrentCustomerAsync();
         if (customer is null) return Redirect($"/dang-nhap?next=/dat-ve/{showtimeId}");
@@ -277,36 +281,18 @@ public class BookingController : BaseController
             }
 
             decimal total = ticketTotal + comboTotal;
-            int? voucherId = null;
-            var code = (voucherCode ?? string.Empty).Trim().ToUpperInvariant();
-            if (!string.IsNullOrEmpty(code))
-            {
-                var today = DateTime.Now.Date;
-                var voucher = await Db.Vouchers.FirstOrDefaultAsync(v =>
-                    v.Code == code && v.IsActive &&
-                    today >= v.StartDate.Date && today <= v.EndDate.Date &&
-                    v.UsedCount < v.UsageLimit);
 
-                if (voucher != null && total >= voucher.MinOrderAmount)
-                {
-                    voucherId = voucher.VoucherId;
-                    total -= voucher.DiscountType == "Phần trăm"
-                        ? total * (voucher.DiscountValue / 100)
-                        : voucher.DiscountValue;
-                    total = Math.Max(0, total);
-                    voucher.UsedCount += 1;
-                }
-            }
-
+            // Vé được tạo với trạng thái "Chờ thanh toán" = một món trong GIỎ HÀNG.
+            // Ghế được đánh dấu "Đã đặt" ngay để giữ chỗ chắc chắn (không ai khác đặt
+            // trùng), voucher/thanh toán thật sẽ xử lý ở bước sau trong Giỏ hàng/Thanh toán.
             var ticket = new Ticket
             {
                 CustomerId = customer.CustomerId,
                 ShowtimeId = showtimeId,
-                VoucherId = voucherId,
+                VoucherId = null,
                 TotalAmount = total,
-                Status = "Đã thanh toán",
-                BookingDate = DateTime.Now,
-                ConfirmedAt = DateTime.Now
+                Status = "Chờ thanh toán",
+                BookingDate = DateTime.Now
             };
             Db.Tickets.Add(ticket);
             await Db.SaveChangesAsync(); // need TicketId
@@ -335,27 +321,10 @@ public class BookingController : BaseController
                 });
             }
 
-            // LƯU Ý: đây là thanh toán MÔ PHỎNG cho mục đích học tập/báo cáo — không có cổng
-            // thanh toán thật (VNPay/Momo/ZaloPay) nào được gọi, không có giao dịch tiền thật
-            // nào xảy ra. Vé được đánh dấu "Đã thanh toán" ngay lập tức, mã giao dịch bắt đầu
-            // bằng tiền tố "DEMO" để phân biệt rõ với giao dịch thật khi đọc dữ liệu.
-            Db.Payments.Add(new Payment
-            {
-                TicketId = ticket.TicketId,
-                Amount = total,
-                PaymentMethod = "Thanh toán online (mô phỏng)",
-                PaymentStatus = "Thành công",
-                TransactionCode = "DEMO" + ticket.TicketId + DateTime.Now.Ticks.ToString()[^6..],
-                PaymentDate = DateTime.Now
-            });
-
-            customer.LoyaltyPoint += (int)Math.Floor(total / 10000);
-            MembershipRankHelper.RecalculateRank(customer);
-
             await Db.SaveChangesAsync();
             await tx.CommitAsync();
 
-            return Redirect($"/ve/{ticket.TicketId}");
+            return Redirect("/gio-hang");
         }
         catch
         {

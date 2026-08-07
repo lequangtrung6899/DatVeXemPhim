@@ -747,6 +747,40 @@ button { font-family: inherit; cursor: pointer; }
 .mt-0 { margin-top: 0; }
 .text-center { text-align: center; }
 
+/* ---------- Cart & Payment ---------- */
+.cart-item-card {
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 20px; margin-bottom: 16px; display: flex; gap: 16px;
+}
+.cart-item-poster { width: 72px; height: 104px; object-fit: cover; border-radius: 8px; flex-shrink: 0; background: var(--bg-elevated); }
+.cart-item-body { flex: 1; min-width: 0; }
+.cart-item-body h4 { margin: 0 0 4px; font-size: 15.5px; }
+.cart-item-meta { font-size: 12.5px; color: var(--text-dim); margin-bottom: 10px; }
+.cart-item-line { display: flex; justify-content: space-between; font-size: 13px; color: var(--text-dim); margin-bottom: 4px; }
+.cart-item-foot { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--border); }
+.cart-item-foot .subtotal { font-weight: 800; color: var(--accent); }
+.cart-item-remove { background: none; border: none; color: var(--text-dimmer); font-size: 12.5px; cursor: pointer; text-decoration: underline; }
+.cart-item-remove:hover { color: #ffb3ba; }
+
+.voucher-list { display: flex; flex-direction: column; gap: 8px; margin: 10px 0 14px; max-height: 220px; overflow-y: auto; }
+.voucher-chip {
+  border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; font-size: 12.5px;
+  display: flex; justify-content: space-between; align-items: center; cursor: pointer; background: var(--bg-elevated);
+}
+.voucher-chip:hover { border-color: var(--accent); }
+.voucher-chip.applied { border-color: var(--accent); background: rgba(255,77,94,.1); }
+.voucher-chip.ineligible { opacity: .45; cursor: not-allowed; }
+.voucher-chip .code { font-weight: 700; }
+.voucher-chip .meta { color: var(--text-dimmer); }
+.cart-empty { text-align: center; padding: 60px 20px; color: var(--text-dim); }
+
+.qr-payment-card {
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; text-align: center;
+}
+.qr-payment-card img { width: 220px; height: 220px; border-radius: 12px; background: #fff; padding: 8px; }
+.bank-info-row { display: flex; justify-content: space-between; font-size: 13.5px; padding: 7px 0; border-top: 1px solid var(--border); text-align: left; }
+.bank-info-row .label { color: var(--text-dim); }
+
 /* ---------- Responsive ---------- */
 @media (max-width: 960px) {
   .main-nav { display: none; }
@@ -760,4 +794,5 @@ button { font-family: inherit; cursor: pointer; }
   .hero { height: 460px; }
   .hero-title { font-size: 30px; }
   .footer-grid { grid-template-columns: 1fr 1fr; }
+  .cart-item-card { flex-direction: column; }
 }

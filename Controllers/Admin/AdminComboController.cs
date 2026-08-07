@@ -1,5 +1,6 @@
 using DatVeXemPhim.Data;
 using DatVeXemPhim.Models;
+using DatVeXemPhim.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,12 +9,21 @@ namespace DatVeXemPhim.Controllers.Admin;
 // Ca sử dụng "Quản lý Combo".
 public class AdminComboController : AdminBaseController
 {
+    private const int PageSize = 6;
+
     public AdminComboController(ApplicationDbContext db) : base(db) { }
 
     [HttpGet, Route("/quan-tri/combo")]
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(int page = 1)
     {
-        var combos = await Db.Combos.OrderBy(c => c.ComboName).ToListAsync();
+        var query = Db.Combos.OrderBy(c => c.ComboName);
+        var totalCount = await query.CountAsync();
+        var totalPages = Math.Max(1, (int)Math.Ceiling(totalCount / (double)PageSize));
+        page = Math.Clamp(page, 1, totalPages);
+
+        var combos = await query.Skip((page - 1) * PageSize).Take(PageSize).ToListAsync();
+
+        ViewBag.Pagination = new PaginationVM { Page = page, TotalPages = totalPages, BaseUrl = "/quan-tri/combo?" };
         return View(combos);
     }
 
@@ -32,22 +42,47 @@ public class AdminComboController : AdminBaseController
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Save(int comboId, string comboName, string? description, decimal price, bool isActive)
     {
+        var isAdmin = await IsAdminRoleAsync();
+        comboName = comboName.Trim();
+
         if (comboId == 0)
         {
-            Db.Combos.Add(new Combo { ComboName = comboName.Trim(), Description = description, Price = price, IsActive = isActive });
-            TempData["Success"] = "Đã thêm combo mới.";
+            if (isAdmin)
+            {
+                Db.Combos.Add(new Combo { ComboName = comboName, Description = description, Price = price, IsActive = isActive });
+                await Db.SaveChangesAsync();
+                TempData["Success"] = "Đã thêm combo mới.";
+            }
+            else
+            {
+                await SubmitPendingChangeAsync("Combo", null, "Create",
+                    new ComboChangeDto { ComboName = comboName, Description = description, Price = price, IsActive = isActive },
+                    $"Thêm combo mới '{comboName}' — giá {FormatVND(price)}");
+                TempData["Success"] = "Đã gửi yêu cầu thêm combo mới — chờ Quản trị viên duyệt.";
+            }
         }
         else
         {
             var combo = await Db.Combos.FindAsync(comboId);
             if (combo is null) return NotFound();
-            combo.ComboName = comboName.Trim();
-            combo.Description = description;
-            combo.Price = price;
-            combo.IsActive = isActive;
-            TempData["Success"] = "Đã cập nhật combo.";
+
+            if (isAdmin)
+            {
+                combo.ComboName = comboName;
+                combo.Description = description;
+                combo.Price = price;
+                combo.IsActive = isActive;
+                await Db.SaveChangesAsync();
+                TempData["Success"] = "Đã cập nhật combo.";
+            }
+            else
+            {
+                await SubmitPendingChangeAsync("Combo", combo.ComboId, "Update",
+                    new ComboChangeDto { ComboName = comboName, Description = description, Price = price, IsActive = isActive },
+                    $"Sửa combo '{combo.ComboName}': giá {FormatVND(combo.Price)} → {FormatVND(price)}");
+                TempData["Success"] = "Đã gửi yêu cầu sửa combo — chờ Quản trị viên duyệt.";
+            }
         }
-        await Db.SaveChangesAsync();
         return Redirect("/quan-tri/combo");
     }
 
@@ -65,9 +100,17 @@ public class AdminComboController : AdminBaseController
             return Redirect("/quan-tri/combo");
         }
 
-        Db.Combos.Remove(combo);
-        await Db.SaveChangesAsync();
-        TempData["Success"] = "Đã xóa combo.";
+        if (await IsAdminRoleAsync())
+        {
+            Db.Combos.Remove(combo);
+            await Db.SaveChangesAsync();
+            TempData["Success"] = "Đã xóa combo.";
+        }
+        else
+        {
+            await SubmitPendingChangeAsync("Combo", combo.ComboId, "Delete", (object?)null, $"Xóa combo '{combo.ComboName}'");
+            TempData["Success"] = "Đã gửi yêu cầu xóa combo — chờ Quản trị viên duyệt.";
+        }
         return Redirect("/quan-tri/combo");
     }
 }

@@ -66,4 +66,5 @@ else
             }
         </tbody>
     </table>
+    @await Html.PartialAsync("_AdminPagination", (PaginationVM)ViewBag.Pagination)
 }

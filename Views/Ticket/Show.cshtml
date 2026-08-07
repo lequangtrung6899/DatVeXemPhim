@@ -11,11 +11,16 @@
             <span>Hóa đơn vé #@Model.TicketId — in lúc @DateTime.Now.ToString("dd/MM/yyyy HH:mm")</span>
         </div>
 
-        @if (Model.JustCancelled)
+        @if (Model.JustRequestedRefund)
         {
-            <div class="form-error no-print" style="background:rgba(76,217,100,.12); border-color:#2f9e44; color:#8ce99a;">
-                Đã hủy vé thành công. Ghế đã được giải phóng và tiền sẽ được hoàn lại (mô phỏng).
+            <div class="form-error no-print" style="background:rgba(255,184,77,.12); border-color:#a67c00; color:#ffd699;">
+                Đã gửi yêu cầu hoàn tiền. Vé sẽ chỉ thực sự bị hủy và tiền chỉ thực sự được hoàn sau khi
+                <strong>cả nhân viên và quản trị viên</strong> xét duyệt yêu cầu này.
             </div>
+        }
+        @if (TempData["Success"] != null)
+        {
+            <div class="form-error no-print" style="background:rgba(76,217,100,.12); border-color:#2f9e44; color:#8ce99a;">@TempData["Success"]</div>
         }
         @if (TempData["Error"] != null)
         {
@@ -28,7 +33,18 @@
                 <div class="ticket-check" style="background:var(--red, #e03131);">✕</div>
                 <h2 style="margin:0 0 6px;">Vé đã bị hủy</h2>
                 <p style="color:var(--text-dim); font-size:14px;">
-                    Vé #@Model.TicketId đã hủy@(Model.RefundAmount != null ? $" — số tiền hoàn lại: {formatVND(Model.RefundAmount.Value)}" : "")
+                    Vé #@Model.TicketId đã hủy@(Model.RefundAmount != null ? $" — số tiền đã hoàn: {formatVND(Model.RefundAmount.Value)}" : "")
+                </p>
+            </div>
+        }
+        else if (Model.Status == "Đang chờ hoàn tiền")
+        {
+            <div class="ticket-top">
+                <div class="ticket-check" style="background:#a67c00;">⏳</div>
+                <h2 style="margin:0 0 6px;">Đang chờ duyệt hoàn tiền</h2>
+                <p style="color:var(--text-dim); font-size:14px;">
+                    Vé #@Model.TicketId đang chờ xét duyệt
+                    (@(Model.RefundRequestStatus == "Chờ admin duyệt" ? "đã qua bước Nhân viên, đang chờ Admin duyệt lần cuối" : "chờ Nhân viên duyệt")).
                 </p>
             </div>
         }
@@ -53,16 +69,23 @@
 
             <div class="ticket-divider"></div>
 
-            <div class="ticket-row"><span class="label">Trạng thái</span><span style="color:@(Model.Status == "Đã hủy" ? "var(--red, #e03131)" : "var(--green)"); font-weight:700;">@Model.Status</span></div>
+            <div class="ticket-row"><span class="label">Trạng thái</span><span style="color:@(Model.Status == "Đã hủy" ? "var(--red, #e03131)" : (Model.Status == "Đang chờ hoàn tiền" ? "#ffd699" : "var(--green)")); font-weight:700;">@Model.Status</span></div>
             <div class="ticket-row"><span class="label">Phương thức</span><span>@Model.PaymentMethod</span></div>
             <div class="ticket-row" style="font-size:17px; font-weight:800;"><span>Tổng thanh toán</span><span style="color:var(--accent);">@formatVND(Model.TotalAmount)</span></div>
 
+            @if (Model.RefundRequestStatus == "Từ chối" && !string.IsNullOrWhiteSpace(Model.RefundRejectReason))
+            {
+                <p class="no-print" style="font-size:12.5px; color:#ff8787; margin-top:-4px;">
+                    Yêu cầu hoàn tiền trước đó đã bị từ chối — Lý do: @Model.RefundRejectReason
+                </p>
+            }
+
             <p class="no-print" style="font-size:12px; color:var(--text-dimmer); margin-top:-4px;">
-                ⓘ Đây là hệ thống thanh toán mô phỏng cho mục đích học tập — không có cổng thanh toán thật
-                (VNPay/Momo/ZaloPay) nào được gọi và không có giao dịch tiền thật nào xảy ra.
+                ⓘ Đây là hệ thống thanh toán mô phỏng cho mục đích học tập — không có giao dịch ngân hàng
+                thật nào xảy ra ngoài việc quét mã QR để tự động điền số tiền.
             </p>
 
-            @if (Model.Status != "Đã hủy")
+            @if (Model.Status != "Đã hủy" && Model.Status != "Đang chờ hoàn tiền")
             {
                 <div class="qr-block">
                     <div style="width:140px; height:140px; margin:0 auto; background:repeating-conic-gradient(#fff 0% 25%, #0b0e17 0% 50%) 0 0/20px 20px; border-radius:10px;"></div>
@@ -73,7 +96,8 @@
             @if (Model.CanCancel)
             {
                 <p class="no-print" style="font-size:12.5px; color:var(--text-dimmer); margin-top:18px;">
-                    Bạn có thể hủy vé miễn phí trước giờ chiếu tối thiểu @Model.CancelCutoffHours giờ.
+                    Bạn có thể gửi yêu cầu hoàn tiền miễn phí trước giờ chiếu tối thiểu @Model.CancelCutoffHours giờ.
+                    Tiền chỉ thực sự được hoàn sau khi nhân viên và quản trị viên xét duyệt.
                 </p>
             }
 
@@ -82,9 +106,9 @@
                 <button type="button" class="btn btn-ghost btn-block" onclick="window.print()">🖨️ In hóa đơn</button>
                 @if (Model.CanCancel)
                 {
-                    <form method="post" action="/ve/@Model.TicketId/huy" onsubmit="return confirm('Bạn chắc chắn muốn hủy vé #@Model.TicketId? Ghế sẽ được giải phóng và không thể hoàn tác.');">
+                    <form method="post" action="/ve/@Model.TicketId/huy" onsubmit="return confirm('Gửi yêu cầu hoàn tiền cho vé #@Model.TicketId? Vé chỉ thực sự bị hủy sau khi được nhân viên và quản trị viên duyệt.');">
                         @Html.AntiForgeryToken()
-                        <button type="submit" class="btn btn-danger btn-block">Hủy vé</button>
+                        <button type="submit" class="btn btn-danger btn-block">Yêu cầu hoàn tiền / hủy vé</button>
                     </form>
                 }
             </div>

@@ -67,6 +67,21 @@ public class AdminRoleController : AdminBaseController
             return Redirect("/quan-tri/vai-tro");
         }
 
+        // An toàn hệ thống: toàn bộ khu quản trị phân biệt Admin/Nhân viên bằng cách so sánh
+        // CHUỖI RoleName == "Admin" (xem AdminBaseController.IsAdminRoleAsync). Nếu vai trò
+        // "Admin" bị đổi tên, MỌI tài khoản Admin sẽ ngay lập tức mất hết quyền Admin (không ai
+        // đăng nhập được vào Quản lý vai trò/Quản lý nhân viên nữa) — một dạng tự khóa hệ thống.
+        // Vì vậy chặn đổi tên vai trò "Admin" ngay tại đây.
+        if (roleId != 0)
+        {
+            var target = await Db.Roles.FindAsync(roleId);
+            if (target != null && target.RoleName == "Admin" && roleName.Trim() != "Admin")
+            {
+                TempData["Error"] = "Không thể đổi tên vai trò \"Admin\": hệ thống phân quyền dựa vào đúng tên này, đổi tên sẽ khiến mọi Quản trị viên bị mất quyền.";
+                return Redirect("/quan-tri/vai-tro");
+            }
+        }
+
         if (roleId == 0)
         {
             Db.Roles.Add(new Role { RoleName = roleName.Trim() });
@@ -92,6 +107,15 @@ public class AdminRoleController : AdminBaseController
 
         var role = await Db.Roles.FindAsync(id);
         if (role is null) return NotFound();
+
+        // Không cho xóa vai trò "Admin" — dù không còn ai gán vai trò này, xóa nó đi nghĩa là
+        // vĩnh viễn không thể tạo thêm tài khoản Admin nào nữa (không còn RoleId nào được hệ
+        // thống công nhận là Admin), khóa chết luôn khu vực "Quản trị hệ thống".
+        if (role.RoleName == "Admin")
+        {
+            TempData["Error"] = "Không thể xóa vai trò \"Admin\" — đây là vai trò gốc của hệ thống.";
+            return Redirect("/quan-tri/vai-tro");
+        }
 
         var inUse = await Db.Users.AnyAsync(u => u.RoleId == id);
         if (inUse)

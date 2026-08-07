@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DatVeXemPhim.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260806033308_baomat")]
-    partial class baomat
+    [Migration("20260807054834_initialcreate")]
+    partial class initialcreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -263,6 +263,11 @@ namespace DatVeXemPhim.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MovieId"), 1L, 1);
 
+                    b.Property<string>("ApprovalStatus")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
                     b.Property<string>("BannerUrl")
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
@@ -279,6 +284,12 @@ namespace DatVeXemPhim.Migrations
                     b.Property<DateTime?>("EndDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("HasPendingEdit")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("PendingChangesJson")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("PosterUrl")
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
@@ -286,10 +297,22 @@ namespace DatVeXemPhim.Migrations
                     b.Property<DateTime>("ReleaseDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime?>("ReviewedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("ReviewedBy")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("ShowOnBanner")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
+
+                    b.Property<int?>("SubmittedBy")
+                        .HasColumnType("int");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -304,411 +327,516 @@ namespace DatVeXemPhim.Migrations
                         new
                         {
                             MovieId = 1,
+                            ApprovalStatus = "Đã duyệt",
                             CreatedAt = new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified),
                             Description = "Ethan Hunt và đội IMF đối mặt nhiệm vụ nguy hiểm nhất sự nghiệp trong phần cuối của loạt phim gián điệp hành động kinh điển.",
                             Duration = 170,
                             EndDate = new DateTime(2026, 9, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            HasPendingEdit = false,
                             PosterUrl = "/posters/mission-impossible-the-final-reckoning.jpg",
                             ReleaseDate = new DateTime(2026, 8, 7, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ShowOnBanner = false,
                             Status = "Ngừng chiếu",
                             Title = "Mission: Impossible – The Final Reckoning"
                         },
                         new
                         {
                             MovieId = 2,
+                            ApprovalStatus = "Đã duyệt",
                             CreatedAt = new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified),
                             Description = "Hai cảnh sát Miami Mike Lowrey và Marcus Burnett phải chạy đua để minh oan cho người chỉ huy quá cố của mình.",
                             Duration = 115,
+                            HasPendingEdit = false,
                             PosterUrl = "/posters/bad-boys-ride-or-die.jpg",
                             ReleaseDate = new DateTime(2026, 8, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ShowOnBanner = false,
                             Status = "Sắp chiếu",
                             Title = "Bad Boys: Ride or Die"
                         },
                         new
                         {
                             MovieId = 3,
+                            ApprovalStatus = "Đã duyệt",
                             CreatedAt = new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified),
                             Description = "Một diễn viên đóng thế phải điều tra vụ mất tích của ngôi sao điện ảnh trong lúc cố gắng hàn gắn chuyện tình cũ.",
                             Duration = 126,
                             EndDate = new DateTime(2026, 8, 13, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            HasPendingEdit = false,
                             PosterUrl = "/posters/the-fall-guy.jpg",
                             ReleaseDate = new DateTime(2026, 7, 4, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ShowOnBanner = false,
                             Status = "Ngừng chiếu",
                             Title = "The Fall Guy"
                         },
                         new
                         {
                             MovieId = 4,
+                            ApprovalStatus = "Đã duyệt",
                             CreatedAt = new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified),
                             Description = "Câu chuyện về tuổi trẻ của Furiosa trong thế giới hậu tận thế khắc nghiệt của vũ trụ Mad Max.",
                             Duration = 148,
+                            HasPendingEdit = false,
                             PosterUrl = "/posters/furiosa-a-mad-max-saga.jpg",
                             ReleaseDate = new DateTime(2026, 8, 28, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ShowOnBanner = false,
                             Status = "Sắp chiếu",
                             Title = "Furiosa: A Mad Max Saga"
                         },
                         new
                         {
                             MovieId = 5,
+                            ApprovalStatus = "Đã duyệt",
                             CreatedAt = new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified),
                             Description = "Một nhóm thợ săn bão liều lĩnh đối đầu với những cơn lốc xoáy ngày càng khốc liệt ở vùng Trung Tây nước Mỹ.",
                             Duration = 122,
                             EndDate = new DateTime(2026, 7, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            HasPendingEdit = false,
                             PosterUrl = "/posters/twisters.jpg",
                             ReleaseDate = new DateTime(2026, 6, 23, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ShowOnBanner = false,
                             Status = "Ngừng chiếu",
                             Title = "Twisters"
                         },
                         new
                         {
                             MovieId = 6,
+                            ApprovalStatus = "Đã duyệt",
                             CreatedAt = new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified),
                             Description = "Hai người từng có một đêm hẹn hò tuyệt vời rồi trở mặt bất ngờ, buộc phải giả vờ yêu nhau tại một đám cưới ở Úc.",
                             Duration = 103,
                             EndDate = new DateTime(2026, 8, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            HasPendingEdit = false,
                             PosterUrl = "/posters/anyone-but-you.jpg",
                             ReleaseDate = new DateTime(2026, 6, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ShowOnBanner = false,
                             Status = "Đang chiếu",
                             Title = "Anyone but You"
                         },
                         new
                         {
                             MovieId = 7,
+                            ApprovalStatus = "Đã duyệt",
                             BannerUrl = "/banners/it-ends-with-us-banner.jpg",
                             CreatedAt = new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified),
                             Description = "Một người phụ nữ trẻ phải đối mặt với những lựa chọn khó khăn khi tình yêu và quá khứ đau buồn đan xen.",
                             Duration = 130,
                             EndDate = new DateTime(2026, 11, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            HasPendingEdit = false,
                             PosterUrl = "/posters/it-ends-with-us.jpg",
                             ReleaseDate = new DateTime(2026, 9, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ShowOnBanner = true,
                             Status = "Đang chiếu",
                             Title = "It Ends with Us"
                         },
                         new
                         {
                             MovieId = 8,
+                            ApprovalStatus = "Đã duyệt",
                             CreatedAt = new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified),
                             Description = "Một cặp đôi cùng nhau trải qua những cột mốc vui buồn của cuộc sống, tình yêu và bệnh tật.",
                             Duration = 108,
                             EndDate = new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            HasPendingEdit = false,
                             PosterUrl = "/posters/we-live-in-time.jpg",
                             ReleaseDate = new DateTime(2026, 7, 31, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ShowOnBanner = false,
                             Status = "Ngừng chiếu",
                             Title = "We Live in Time"
                         },
                         new
                         {
                             MovieId = 9,
+                            ApprovalStatus = "Đã duyệt",
                             CreatedAt = new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified),
                             Description = "Một người mẹ đơn thân bất ngờ nảy sinh tình cảm với chàng ca sĩ trẻ của một ban nhạc nổi tiếng.",
                             Duration = 115,
+                            HasPendingEdit = false,
                             PosterUrl = "/posters/the-idea-of-you.jpg",
                             ReleaseDate = new DateTime(2026, 9, 13, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ShowOnBanner = false,
                             Status = "Sắp chiếu",
                             Title = "The Idea of You"
                         },
                         new
                         {
                             MovieId = 10,
+                            ApprovalStatus = "Đã duyệt",
                             BannerUrl = "/banners/past-lives-banner.jpg",
                             CreatedAt = new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified),
                             Description = "Hai người bạn thời thơ ấu tái ngộ sau nhiều năm xa cách, đối diện với những gì có thể đã xảy ra.",
                             Duration = 106,
                             EndDate = new DateTime(2026, 10, 24, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            HasPendingEdit = false,
                             PosterUrl = "/posters/past-lives.jpg",
                             ReleaseDate = new DateTime(2026, 8, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ShowOnBanner = true,
                             Status = "Đang chiếu",
                             Title = "Past Lives"
                         },
                         new
                         {
                             MovieId = 11,
+                            ApprovalStatus = "Đã duyệt",
                             BannerUrl = "/banners/the-substance-banner.jpg",
                             CreatedAt = new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified),
                             Description = "Một ngôi sao đang lụi tàn sử dụng loại thuốc bí ẩn để tạo ra phiên bản trẻ trung hơn của chính mình, với cái giá khủng khiếp.",
                             Duration = 141,
                             EndDate = new DateTime(2026, 9, 17, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            HasPendingEdit = false,
                             PosterUrl = "/posters/the-substance.jpg",
                             ReleaseDate = new DateTime(2026, 8, 17, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ShowOnBanner = true,
                             Status = "Đang chiếu",
                             Title = "The Substance"
                         },
                         new
                         {
                             MovieId = 12,
+                            ApprovalStatus = "Đã duyệt",
                             CreatedAt = new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified),
                             Description = "Một ngôi sao nhạc pop phải đối mặt với những sự kiện ngày càng đáng sợ khi thực tại bắt đầu sụp đổ quanh cô.",
                             Duration = 127,
+                            HasPendingEdit = false,
                             PosterUrl = "/posters/smile-2.jpg",
                             ReleaseDate = new DateTime(2026, 6, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ShowOnBanner = false,
                             Status = "Sắp chiếu",
                             Title = "Smile 2"
                         },
                         new
                         {
                             MovieId = 13,
+                            ApprovalStatus = "Đã duyệt",
                             CreatedAt = new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified),
                             Description = "Gã hề sát nhân Art the Clown trở lại gieo rắc kinh hoàng trong đêm Giáng sinh.",
                             Duration = 125,
                             EndDate = new DateTime(2026, 9, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            HasPendingEdit = false,
                             PosterUrl = "/posters/terrifier-3.jpg",
                             ReleaseDate = new DateTime(2026, 7, 11, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ShowOnBanner = false,
                             Status = "Đang chiếu",
                             Title = "Terrifier 3"
                         },
                         new
                         {
                             MovieId = 14,
+                            ApprovalStatus = "Đã duyệt",
                             CreatedAt = new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified),
                             Description = "Ba thế hệ trong gia đình Deetz vô tình mở lại cánh cổng dẫn đến thế giới của hồn ma Beetlejuice.",
                             Duration = 105,
+                            HasPendingEdit = false,
                             PosterUrl = "/posters/beetlejuice-beetlejuice.jpg",
                             ReleaseDate = new DateTime(2026, 8, 9, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ShowOnBanner = false,
                             Status = "Sắp chiếu",
                             Title = "Beetlejuice Beetlejuice"
                         },
                         new
                         {
                             MovieId = 15,
+                            ApprovalStatus = "Đã duyệt",
                             CreatedAt = new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified),
                             Description = "Một đặc vụ FBI điều tra loạt án mạng liên quan đến các manh mối huyền bí đầy ám ảnh.",
                             Duration = 101,
+                            HasPendingEdit = false,
                             PosterUrl = "/posters/longlegs.jpg",
                             ReleaseDate = new DateTime(2026, 8, 6, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ShowOnBanner = false,
                             Status = "Sắp chiếu",
                             Title = "Longlegs"
                         },
                         new
                         {
                             MovieId = 16,
+                            ApprovalStatus = "Đã duyệt",
                             CreatedAt = new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified),
                             Description = "Riley bước vào tuổi dậy thì và phải đối mặt với những cảm xúc mới phức tạp hơn trong tâm trí mình.",
                             Duration = 96,
+                            HasPendingEdit = false,
                             PosterUrl = "/posters/inside-out-2.jpg",
                             ReleaseDate = new DateTime(2026, 8, 16, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ShowOnBanner = false,
                             Status = "Sắp chiếu",
                             Title = "Inside Out 2"
                         },
                         new
                         {
                             MovieId = 17,
+                            ApprovalStatus = "Đã duyệt",
                             CreatedAt = new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified),
                             Description = "Moana lên đường trong một chuyến hải trình mới đầy thử thách cùng những người bạn cũ và mới.",
                             Duration = 100,
+                            HasPendingEdit = false,
                             PosterUrl = "/posters/moana-2.jpg",
                             ReleaseDate = new DateTime(2026, 8, 31, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ShowOnBanner = false,
                             Status = "Sắp chiếu",
                             Title = "Moana 2"
                         },
                         new
                         {
                             MovieId = 18,
+                            ApprovalStatus = "Đã duyệt",
                             CreatedAt = new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified),
                             Description = "Gru phải bảo vệ gia đình mới của mình trước một kẻ thù cũ đầy nguy hiểm.",
                             Duration = 94,
                             EndDate = new DateTime(2026, 10, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            HasPendingEdit = false,
                             PosterUrl = "/posters/despicable-me-4.jpg",
                             ReleaseDate = new DateTime(2026, 8, 13, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ShowOnBanner = false,
                             Status = "Đang chiếu",
                             Title = "Despicable Me 4"
                         },
                         new
                         {
                             MovieId = 19,
+                            ApprovalStatus = "Đã duyệt",
                             CreatedAt = new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified),
                             Description = "Một robot bị mắc kẹt trên hòn đảo hoang phải học cách sinh tồn và trở thành người mẹ nuôi của một chú ngỗng con.",
                             Duration = 102,
                             EndDate = new DateTime(2026, 7, 31, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            HasPendingEdit = false,
                             PosterUrl = "/posters/the-wild-robot.jpg",
                             ReleaseDate = new DateTime(2026, 6, 21, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ShowOnBanner = false,
                             Status = "Ngừng chiếu",
                             Title = "The Wild Robot"
                         },
                         new
                         {
                             MovieId = 20,
+                            ApprovalStatus = "Đã duyệt",
                             CreatedAt = new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified),
                             Description = "Po phải tìm người kế nhiệm làm Rồng Chiến Binh trong khi đối mặt với một pháp sư biến hình nguy hiểm.",
                             Duration = 94,
                             EndDate = new DateTime(2026, 8, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            HasPendingEdit = false,
                             PosterUrl = "/posters/kung-fu-panda-4.jpg",
                             ReleaseDate = new DateTime(2026, 7, 16, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ShowOnBanner = false,
                             Status = "Ngừng chiếu",
                             Title = "Kung Fu Panda 4"
                         },
                         new
                         {
                             MovieId = 21,
+                            ApprovalStatus = "Đã duyệt",
                             BannerUrl = "/banners/barbie-banner.jpg",
                             CreatedAt = new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified),
                             Description = "Barbie rời khỏi thế giới hoàn hảo của mình để khám phá thế giới thực đầy bất ngờ.",
                             Duration = 114,
                             EndDate = new DateTime(2026, 11, 17, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            HasPendingEdit = false,
                             PosterUrl = "/posters/barbie.jpg",
                             ReleaseDate = new DateTime(2026, 9, 26, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ShowOnBanner = true,
                             Status = "Đang chiếu",
                             Title = "Barbie"
                         },
                         new
                         {
                             MovieId = 22,
+                            ApprovalStatus = "Đã duyệt",
                             CreatedAt = new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified),
                             Description = "Một phụ nữ được thuê để giúp một chàng trai nhút nhát tự tin hơn trước khi vào đại học.",
                             Duration = 103,
+                            HasPendingEdit = false,
                             PosterUrl = "/posters/no-hard-feelings.jpg",
                             ReleaseDate = new DateTime(2026, 7, 13, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ShowOnBanner = false,
                             Status = "Sắp chiếu",
                             Title = "No Hard Feelings"
                         },
                         new
                         {
                             MovieId = 23,
+                            ApprovalStatus = "Đã duyệt",
                             CreatedAt = new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified),
                             Description = "Một nữ tiểu thuyết gia phát hiện cốt truyện trong sách của mình đang trở thành sự thật ngoài đời.",
                             Duration = 139,
+                            HasPendingEdit = false,
                             PosterUrl = "/posters/argylle.jpg",
                             ReleaseDate = new DateTime(2026, 9, 16, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ShowOnBanner = false,
                             Status = "Sắp chiếu",
                             Title = "Argylle"
                         },
                         new
                         {
                             MovieId = 24,
+                            ApprovalStatus = "Đã duyệt",
                             CreatedAt = new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified),
                             Description = "Một nhóm bạn trẻ phải sống sót qua đêm giao thừa thiên niên kỷ khi máy móc nổi loạn.",
                             Duration = 93,
+                            HasPendingEdit = false,
                             PosterUrl = "/posters/y2k.jpg",
                             ReleaseDate = new DateTime(2026, 8, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ShowOnBanner = false,
                             Status = "Sắp chiếu",
                             Title = "Y2K"
                         },
                         new
                         {
                             MovieId = 25,
+                            ApprovalStatus = "Đã duyệt",
                             CreatedAt = new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified),
                             Description = "Một phụ nữ ở độ tuổi 30 bắt đầu hành trình khám phá lại chính bản thân mình.",
                             Duration = 96,
                             EndDate = new DateTime(2026, 8, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            HasPendingEdit = false,
                             PosterUrl = "/posters/am-i-ok.jpg",
                             ReleaseDate = new DateTime(2026, 6, 14, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ShowOnBanner = false,
                             Status = "Đang chiếu",
                             Title = "Am I OK?"
                         },
                         new
                         {
                             MovieId = 26,
+                            ApprovalStatus = "Đã duyệt",
                             BannerUrl = "/banners/dune-2-banner.jpg",
                             CreatedAt = new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified),
                             Description = "Paul Atreides hợp lực cùng người Fremen trên hành trình trả thù và định đoạt số phận cả vũ trụ.",
                             Duration = 166,
                             EndDate = new DateTime(2026, 10, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            HasPendingEdit = false,
                             PosterUrl = "/posters/dune-part-two.jpg",
                             ReleaseDate = new DateTime(2026, 9, 17, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ShowOnBanner = true,
                             Status = "Đang chiếu",
                             Title = "Dune: Part Two"
                         },
                         new
                         {
                             MovieId = 27,
+                            ApprovalStatus = "Đã duyệt",
                             CreatedAt = new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified),
                             Description = "Hai quái vật huyền thoại Godzilla và Kong buộc phải bắt tay chống lại một mối đe dọa ẩn giấu.",
                             Duration = 115,
+                            HasPendingEdit = false,
                             PosterUrl = "/posters/godzilla-x-kong-the-new-empire.jpg",
                             ReleaseDate = new DateTime(2026, 6, 24, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ShowOnBanner = false,
                             Status = "Sắp chiếu",
                             Title = "Godzilla x Kong: The New Empire"
                         },
                         new
                         {
                             MovieId = 28,
+                            ApprovalStatus = "Đã duyệt",
                             CreatedAt = new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified),
                             Description = "Một nhóm người trẻ khai thác trạm vũ trụ bỏ hoang chạm trán sinh vật ngoài hành tinh nguy hiểm bậc nhất vũ trụ.",
                             Duration = 119,
                             EndDate = new DateTime(2026, 9, 28, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            HasPendingEdit = false,
                             PosterUrl = "/posters/alien-romulus.jpg",
                             ReleaseDate = new DateTime(2026, 7, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ShowOnBanner = false,
                             Status = "Đang chiếu",
                             Title = "Alien: Romulus"
                         },
                         new
                         {
                             MovieId = 29,
+                            ApprovalStatus = "Đã duyệt",
                             CreatedAt = new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified),
                             Description = "Trong cuộc chiến giữa loài người và trí tuệ nhân tạo, một cựu binh phát hiện vũ khí bí mật mang hình hài đứa trẻ.",
                             Duration = 133,
                             EndDate = new DateTime(2026, 7, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            HasPendingEdit = false,
                             PosterUrl = "/posters/the-creator.jpg",
                             ReleaseDate = new DateTime(2026, 6, 13, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ShowOnBanner = false,
                             Status = "Đang chiếu",
                             Title = "The Creator"
                         },
                         new
                         {
                             MovieId = 30,
+                            ApprovalStatus = "Đã duyệt",
                             CreatedAt = new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified),
                             Description = "Một phụ nữ trẻ được hồi sinh bởi khoa học kỳ lạ và bắt đầu hành trình khám phá thế giới theo cách riêng của mình.",
                             Duration = 141,
                             EndDate = new DateTime(2026, 8, 21, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            HasPendingEdit = false,
                             PosterUrl = "/posters/poor-things.jpg",
                             ReleaseDate = new DateTime(2026, 7, 7, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ShowOnBanner = false,
                             Status = "Đang chiếu",
                             Title = "Poor Things"
                         },
                         new
                         {
                             MovieId = 31,
+                            ApprovalStatus = "Đã duyệt",
                             CreatedAt = new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified),
                             Description = "Ghi lại hành trình leo núi El Capitan không dây bảo hộ đầy mạo hiểm của vận động viên Alex Honnold.",
                             Duration = 100,
                             EndDate = new DateTime(2026, 8, 31, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            HasPendingEdit = false,
                             PosterUrl = "/posters/free-solo.jpg",
                             ReleaseDate = new DateTime(2026, 7, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ShowOnBanner = false,
                             Status = "Ngừng chiếu",
                             Title = "Free Solo"
                         },
                         new
                         {
                             MovieId = 32,
+                            ApprovalStatus = "Đã duyệt",
                             CreatedAt = new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified),
                             Description = "Một nhà làm phim xây dựng mối quan hệ đặc biệt với một con bạch tuộc hoang dã ngoài khơi Nam Phi.",
                             Duration = 85,
+                            HasPendingEdit = false,
                             PosterUrl = "/posters/my-octopus-teacher.jpg",
                             ReleaseDate = new DateTime(2026, 6, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ShowOnBanner = false,
                             Status = "Sắp chiếu",
                             Title = "My Octopus Teacher"
                         },
                         new
                         {
                             MovieId = 33,
+                            ApprovalStatus = "Đã duyệt",
                             CreatedAt = new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified),
                             Description = "Bộ phim tài liệu phân tích mối liên hệ giữa chế độ nô lệ và hệ thống nhà tù ở nước Mỹ hiện đại.",
                             Duration = 100,
+                            HasPendingEdit = false,
                             PosterUrl = "/posters/13th.jpg",
                             ReleaseDate = new DateTime(2026, 9, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ShowOnBanner = false,
                             Status = "Sắp chiếu",
                             Title = "13th"
                         },
                         new
                         {
                             MovieId = 34,
+                            ApprovalStatus = "Đã duyệt",
                             CreatedAt = new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified),
                             Description = "Chân dung về cuộc đời và di sản của Fred Rogers, người dẫn chương trình truyền hình thiếu nhi huyền thoại.",
                             Duration = 94,
                             EndDate = new DateTime(2026, 9, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            HasPendingEdit = false,
                             PosterUrl = "/posters/won-t-you-be-my-neighbor.jpg",
                             ReleaseDate = new DateTime(2026, 7, 24, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ShowOnBanner = false,
                             Status = "Đang chiếu",
                             Title = "Won't You Be My Neighbor?"
                         },
                         new
                         {
                             MovieId = 35,
+                            ApprovalStatus = "Đã duyệt",
                             CreatedAt = new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified),
                             Description = "Câu chuyện có thật đằng sau lễ hội âm nhạc xa hoa sụp đổ thảm hại trên mạng xã hội.",
                             Duration = 97,
                             EndDate = new DateTime(2026, 9, 21, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            HasPendingEdit = false,
                             PosterUrl = "/posters/fyre-the-greatest-party-that-never-happened.jpg",
                             ReleaseDate = new DateTime(2026, 7, 23, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ShowOnBanner = false,
                             Status = "Đang chiếu",
                             Title = "Fyre: The Greatest Party That Never Happened"
                         });
@@ -942,6 +1070,131 @@ namespace DatVeXemPhim.Migrations
                     b.HasIndex("TicketId");
 
                     b.ToTable("Payments");
+                });
+
+            modelBuilder.Entity("DatVeXemPhim.Models.PendingChange", b =>
+                {
+                    b.Property<int>("PendingChangeId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PendingChangeId"), 1L, 1);
+
+                    b.Property<string>("ActionType")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<string>("ChangesJson")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("EntityId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("EntityType")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<string>("RejectReason")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<DateTime?>("ReviewedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("ReviewedBy")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<DateTime>("SubmittedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("SubmittedBy")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Summary")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.HasKey("PendingChangeId");
+
+                    b.HasIndex("ReviewedBy");
+
+                    b.HasIndex("SubmittedBy");
+
+                    b.ToTable("PendingChanges");
+                });
+
+            modelBuilder.Entity("DatVeXemPhim.Models.RefundRequest", b =>
+                {
+                    b.Property<int>("RefundRequestId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RefundRequestId"), 1L, 1);
+
+                    b.Property<DateTime?>("AdminApprovedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("AdminApprovedBy")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Reason")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("RejectReason")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<DateTime?>("RejectedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("RejectedBy")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("RequestedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("StaffApprovedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("StaffApprovedBy")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int>("TicketId")
+                        .HasColumnType("int");
+
+                    b.HasKey("RefundRequestId");
+
+                    b.HasIndex("AdminApprovedBy");
+
+                    b.HasIndex("CustomerId");
+
+                    b.HasIndex("RejectedBy");
+
+                    b.HasIndex("StaffApprovedBy");
+
+                    b.HasIndex("TicketId");
+
+                    b.ToTable("RefundRequests");
                 });
 
             modelBuilder.Entity("DatVeXemPhim.Models.Review", b =>
@@ -8326,6 +8579,64 @@ namespace DatVeXemPhim.Migrations
                         .HasForeignKey("TicketId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Ticket");
+                });
+
+            modelBuilder.Entity("DatVeXemPhim.Models.PendingChange", b =>
+                {
+                    b.HasOne("DatVeXemPhim.Models.User", "ReviewedByUser")
+                        .WithMany()
+                        .HasForeignKey("ReviewedBy")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("DatVeXemPhim.Models.User", "SubmittedByUser")
+                        .WithMany()
+                        .HasForeignKey("SubmittedBy")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("ReviewedByUser");
+
+                    b.Navigation("SubmittedByUser");
+                });
+
+            modelBuilder.Entity("DatVeXemPhim.Models.RefundRequest", b =>
+                {
+                    b.HasOne("DatVeXemPhim.Models.User", "AdminApprover")
+                        .WithMany()
+                        .HasForeignKey("AdminApprovedBy")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("DatVeXemPhim.Models.Customer", "Customer")
+                        .WithMany()
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("DatVeXemPhim.Models.User", "Rejecter")
+                        .WithMany()
+                        .HasForeignKey("RejectedBy")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("DatVeXemPhim.Models.User", "StaffApprover")
+                        .WithMany()
+                        .HasForeignKey("StaffApprovedBy")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("DatVeXemPhim.Models.Ticket", "Ticket")
+                        .WithMany()
+                        .HasForeignKey("TicketId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("AdminApprover");
+
+                    b.Navigation("Customer");
+
+                    b.Navigation("Rejecter");
+
+                    b.Navigation("StaffApprover");
 
                     b.Navigation("Ticket");
                 });

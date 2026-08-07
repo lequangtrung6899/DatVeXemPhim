@@ -1,4 +1,4 @@
-using DatVeXemPhim.Models;
+﻿using DatVeXemPhim.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace DatVeXemPhim.Data;
@@ -14,6 +14,8 @@ public class ApplicationDbContext : DbContext
     public DbSet<MovieGenre> MovieGenres => Set<MovieGenre>();
     public DbSet<Movie> Movies => Set<Movie>();
     public DbSet<Payment> Payments => Set<Payment>();
+    public DbSet<PendingChange> PendingChanges => Set<PendingChange>();
+    public DbSet<RefundRequest> RefundRequests => Set<RefundRequest>();
     public DbSet<Review> Reviews => Set<Review>();
     public DbSet<Role> Roles => Set<Role>();
     public DbSet<Room> Rooms => Set<Room>();
@@ -61,6 +63,50 @@ public class ApplicationDbContext : DbContext
             .HasOne(r => r.Customer)
             .WithMany(c => c.Reviews)
             .HasForeignKey(r => r.CustomerId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        // ---- RefundRequests (yêu cầu hoàn tiền, cần Nhân viên + Admin duyệt) ----
+        modelBuilder.Entity<RefundRequest>()
+            .HasOne(r => r.Ticket)
+            .WithMany()
+            .HasForeignKey(r => r.TicketId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<RefundRequest>()
+            .HasOne(r => r.Customer)
+            .WithMany()
+            .HasForeignKey(r => r.CustomerId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<RefundRequest>()
+            .HasOne(r => r.StaffApprover)
+            .WithMany()
+            .HasForeignKey(r => r.StaffApprovedBy)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<RefundRequest>()
+            .HasOne(r => r.AdminApprover)
+            .WithMany()
+            .HasForeignKey(r => r.AdminApprovedBy)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<RefundRequest>()
+            .HasOne(r => r.Rejecter)
+            .WithMany()
+            .HasForeignKey(r => r.RejectedBy)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        // ---- PendingChange ---- (hàng đợi chờ Admin duyệt, xem Models/PendingChange.cs)
+        modelBuilder.Entity<PendingChange>()
+            .HasOne(pc => pc.SubmittedByUser)
+            .WithMany()
+            .HasForeignKey(pc => pc.SubmittedBy)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<PendingChange>()
+            .HasOne(pc => pc.ReviewedByUser)
+            .WithMany()
+            .HasForeignKey(pc => pc.ReviewedBy)
             .OnDelete(DeleteBehavior.Restrict);
 
         // ---- Seats ----
@@ -253,11 +299,11 @@ public class ApplicationDbContext : DbContext
             new Movie { MovieId = 4, Title = "Furiosa: A Mad Max Saga", Description = "Câu chuyện về tuổi trẻ của Furiosa trong thế giới hậu tận thế khắc nghiệt của vũ trụ Mad Max.", Duration = 148, PosterUrl = "/posters/furiosa-a-mad-max-saga.jpg", ReleaseDate = new DateTime(2026,8,28,0,0,0), EndDate = null, Status = "Sắp chiếu", CreatedAt = new DateTime(2026,7,12,17,13,55,597) },
             new Movie { MovieId = 5, Title = "Twisters", Description = "Một nhóm thợ săn bão liều lĩnh đối đầu với những cơn lốc xoáy ngày càng khốc liệt ở vùng Trung Tây nước Mỹ.", Duration = 122, PosterUrl = "/posters/twisters.jpg", ReleaseDate = new DateTime(2026,6,23,0,0,0), EndDate = new DateTime(2026,7,22,0,0,0), Status = "Ngừng chiếu", CreatedAt = new DateTime(2026,7,12,17,13,55,597) },
             new Movie { MovieId = 6, Title = "Anyone but You", Description = "Hai người từng có một đêm hẹn hò tuyệt vời rồi trở mặt bất ngờ, buộc phải giả vờ yêu nhau tại một đám cưới ở Úc.", Duration = 103, PosterUrl = "/posters/anyone-but-you.jpg", ReleaseDate = new DateTime(2026,6,29,0,0,0), EndDate = new DateTime(2026,8,15,0,0,0), Status = "Đang chiếu", CreatedAt = new DateTime(2026,7,12,17,13,55,597) },
-            new Movie { MovieId = 7, Title = "It Ends with Us", Description = "Một người phụ nữ trẻ phải đối mặt với những lựa chọn khó khăn khi tình yêu và quá khứ đau buồn đan xen.", Duration = 130, PosterUrl = "/posters/it-ends-with-us.jpg", BannerUrl = "/banners/it-ends-with-us-banner.jpg", ReleaseDate = new DateTime(2026,9,22,0,0,0), EndDate = new DateTime(2026,11,10,0,0,0), Status = "Đang chiếu", CreatedAt = new DateTime(2026,7,12,17,13,55,597) },
+            new Movie { MovieId = 7, Title = "It Ends with Us", Description = "Một người phụ nữ trẻ phải đối mặt với những lựa chọn khó khăn khi tình yêu và quá khứ đau buồn đan xen.", Duration = 130, PosterUrl = "/posters/it-ends-with-us.jpg", BannerUrl = "/banners/it-ends-with-us-banner.jpg", ReleaseDate = new DateTime(2026,9,22,0,0,0), EndDate = new DateTime(2026,11,10,0,0,0), Status = "Đang chiếu", ShowOnBanner = true, CreatedAt = new DateTime(2026,7,12,17,13,55,597) },
             new Movie { MovieId = 8, Title = "We Live in Time", Description = "Một cặp đôi cùng nhau trải qua những cột mốc vui buồn của cuộc sống, tình yêu và bệnh tật.", Duration = 108, PosterUrl = "/posters/we-live-in-time.jpg", ReleaseDate = new DateTime(2026,7,31,0,0,0), EndDate = new DateTime(2026,9,9,0,0,0), Status = "Ngừng chiếu", CreatedAt = new DateTime(2026,7,12,17,13,55,597) },
             new Movie { MovieId = 9, Title = "The Idea of You", Description = "Một người mẹ đơn thân bất ngờ nảy sinh tình cảm với chàng ca sĩ trẻ của một ban nhạc nổi tiếng.", Duration = 115, PosterUrl = "/posters/the-idea-of-you.jpg", ReleaseDate = new DateTime(2026,9,13,0,0,0), EndDate = null, Status = "Sắp chiếu", CreatedAt = new DateTime(2026,7,12,17,13,55,597) },
-            new Movie { MovieId = 10, Title = "Past Lives", Description = "Hai người bạn thời thơ ấu tái ngộ sau nhiều năm xa cách, đối diện với những gì có thể đã xảy ra.", Duration = 106, PosterUrl = "/posters/past-lives.jpg", BannerUrl = "/banners/past-lives-banner.jpg", ReleaseDate = new DateTime(2026,8,29,0,0,0), EndDate = new DateTime(2026,10,24,0,0,0), Status = "Đang chiếu", CreatedAt = new DateTime(2026,7,12,17,13,55,597) },
-            new Movie { MovieId = 11, Title = "The Substance", Description = "Một ngôi sao đang lụi tàn sử dụng loại thuốc bí ẩn để tạo ra phiên bản trẻ trung hơn của chính mình, với cái giá khủng khiếp.", Duration = 141, PosterUrl = "/posters/the-substance.jpg", BannerUrl = "/banners/the-substance-banner.jpg", ReleaseDate = new DateTime(2026,8,17,0,0,0), EndDate = new DateTime(2026,9,17,0,0,0), Status = "Đang chiếu", CreatedAt = new DateTime(2026,7,12,17,13,55,597) },
+            new Movie { MovieId = 10, Title = "Past Lives", Description = "Hai người bạn thời thơ ấu tái ngộ sau nhiều năm xa cách, đối diện với những gì có thể đã xảy ra.", Duration = 106, PosterUrl = "/posters/past-lives.jpg", BannerUrl = "/banners/past-lives-banner.jpg", ReleaseDate = new DateTime(2026,8,29,0,0,0), EndDate = new DateTime(2026,10,24,0,0,0), Status = "Đang chiếu", ShowOnBanner = true, CreatedAt = new DateTime(2026,7,12,17,13,55,597) },
+            new Movie { MovieId = 11, Title = "The Substance", Description = "Một ngôi sao đang lụi tàn sử dụng loại thuốc bí ẩn để tạo ra phiên bản trẻ trung hơn của chính mình, với cái giá khủng khiếp.", Duration = 141, PosterUrl = "/posters/the-substance.jpg", BannerUrl = "/banners/the-substance-banner.jpg", ReleaseDate = new DateTime(2026,8,17,0,0,0), EndDate = new DateTime(2026,9,17,0,0,0), Status = "Đang chiếu", ShowOnBanner = true, CreatedAt = new DateTime(2026,7,12,17,13,55,597) },
             new Movie { MovieId = 12, Title = "Smile 2", Description = "Một ngôi sao nhạc pop phải đối mặt với những sự kiện ngày càng đáng sợ khi thực tại bắt đầu sụp đổ quanh cô.", Duration = 127, PosterUrl = "/posters/smile-2.jpg", ReleaseDate = new DateTime(2026,6,15,0,0,0), EndDate = null, Status = "Sắp chiếu", CreatedAt = new DateTime(2026,7,12,17,13,55,597) },
             new Movie { MovieId = 13, Title = "Terrifier 3", Description = "Gã hề sát nhân Art the Clown trở lại gieo rắc kinh hoàng trong đêm Giáng sinh.", Duration = 125, PosterUrl = "/posters/terrifier-3.jpg", ReleaseDate = new DateTime(2026,7,11,0,0,0), EndDate = new DateTime(2026,9,3,0,0,0), Status = "Đang chiếu", CreatedAt = new DateTime(2026,7,12,17,13,55,597) },
             new Movie { MovieId = 14, Title = "Beetlejuice Beetlejuice", Description = "Ba thế hệ trong gia đình Deetz vô tình mở lại cánh cổng dẫn đến thế giới của hồn ma Beetlejuice.", Duration = 105, PosterUrl = "/posters/beetlejuice-beetlejuice.jpg", ReleaseDate = new DateTime(2026,8,9,0,0,0), EndDate = null, Status = "Sắp chiếu", CreatedAt = new DateTime(2026,7,12,17,13,55,597) },
@@ -267,12 +313,12 @@ public class ApplicationDbContext : DbContext
             new Movie { MovieId = 18, Title = "Despicable Me 4", Description = "Gru phải bảo vệ gia đình mới của mình trước một kẻ thù cũ đầy nguy hiểm.", Duration = 94, PosterUrl = "/posters/despicable-me-4.jpg", ReleaseDate = new DateTime(2026,8,13,0,0,0), EndDate = new DateTime(2026,10,3,0,0,0), Status = "Đang chiếu", CreatedAt = new DateTime(2026,7,12,17,13,55,597) },
             new Movie { MovieId = 19, Title = "The Wild Robot", Description = "Một robot bị mắc kẹt trên hòn đảo hoang phải học cách sinh tồn và trở thành người mẹ nuôi của một chú ngỗng con.", Duration = 102, PosterUrl = "/posters/the-wild-robot.jpg", ReleaseDate = new DateTime(2026,6,21,0,0,0), EndDate = new DateTime(2026,7,31,0,0,0), Status = "Ngừng chiếu", CreatedAt = new DateTime(2026,7,12,17,13,55,597) },
             new Movie { MovieId = 20, Title = "Kung Fu Panda 4", Description = "Po phải tìm người kế nhiệm làm Rồng Chiến Binh trong khi đối mặt với một pháp sư biến hình nguy hiểm.", Duration = 94, PosterUrl = "/posters/kung-fu-panda-4.jpg", ReleaseDate = new DateTime(2026,7,16,0,0,0), EndDate = new DateTime(2026,8,22,0,0,0), Status = "Ngừng chiếu", CreatedAt = new DateTime(2026,7,12,17,13,55,597) },
-            new Movie { MovieId = 21, Title = "Barbie", Description = "Barbie rời khỏi thế giới hoàn hảo của mình để khám phá thế giới thực đầy bất ngờ.", Duration = 114, PosterUrl = "/posters/barbie.jpg", BannerUrl = "/banners/barbie-banner.jpg", ReleaseDate = new DateTime(2026,9,26,0,0,0), EndDate = new DateTime(2026,11,17,0,0,0), Status = "Đang chiếu", CreatedAt = new DateTime(2026,7,12,17,13,55,597) },
+            new Movie { MovieId = 21, Title = "Barbie", Description = "Barbie rời khỏi thế giới hoàn hảo của mình để khám phá thế giới thực đầy bất ngờ.", Duration = 114, PosterUrl = "/posters/barbie.jpg", BannerUrl = "/banners/barbie-banner.jpg", ReleaseDate = new DateTime(2026,9,26,0,0,0), EndDate = new DateTime(2026,11,17,0,0,0), Status = "Đang chiếu", ShowOnBanner = true, CreatedAt = new DateTime(2026,7,12,17,13,55,597) },
             new Movie { MovieId = 22, Title = "No Hard Feelings", Description = "Một phụ nữ được thuê để giúp một chàng trai nhút nhát tự tin hơn trước khi vào đại học.", Duration = 103, PosterUrl = "/posters/no-hard-feelings.jpg", ReleaseDate = new DateTime(2026,7,13,0,0,0), EndDate = null, Status = "Sắp chiếu", CreatedAt = new DateTime(2026,7,12,17,13,55,597) },
             new Movie { MovieId = 23, Title = "Argylle", Description = "Một nữ tiểu thuyết gia phát hiện cốt truyện trong sách của mình đang trở thành sự thật ngoài đời.", Duration = 139, PosterUrl = "/posters/argylle.jpg", ReleaseDate = new DateTime(2026,9,16,0,0,0), EndDate = null, Status = "Sắp chiếu", CreatedAt = new DateTime(2026,7,12,17,13,55,597) },
             new Movie { MovieId = 24, Title = "Y2K", Description = "Một nhóm bạn trẻ phải sống sót qua đêm giao thừa thiên niên kỷ khi máy móc nổi loạn.", Duration = 93, PosterUrl = "/posters/y2k.jpg", ReleaseDate = new DateTime(2026,8,15,0,0,0), EndDate = null, Status = "Sắp chiếu", CreatedAt = new DateTime(2026,7,12,17,13,55,597) },
             new Movie { MovieId = 25, Title = "Am I OK?", Description = "Một phụ nữ ở độ tuổi 30 bắt đầu hành trình khám phá lại chính bản thân mình.", Duration = 96, PosterUrl = "/posters/am-i-ok.jpg", ReleaseDate = new DateTime(2026,6,14,0,0,0), EndDate = new DateTime(2026,8,1,0,0,0), Status = "Đang chiếu", CreatedAt = new DateTime(2026,7,12,17,13,55,597) },
-            new Movie { MovieId = 26, Title = "Dune: Part Two", Description = "Paul Atreides hợp lực cùng người Fremen trên hành trình trả thù và định đoạt số phận cả vũ trụ.", Duration = 166, PosterUrl = "/posters/dune-part-two.jpg", BannerUrl = "/banners/dune-2-banner.jpg", ReleaseDate = new DateTime(2026,9,17,0,0,0), EndDate = new DateTime(2026,10,29,0,0,0), Status = "Đang chiếu", CreatedAt = new DateTime(2026,7,12,17,13,55,597) },
+            new Movie { MovieId = 26, Title = "Dune: Part Two", Description = "Paul Atreides hợp lực cùng người Fremen trên hành trình trả thù và định đoạt số phận cả vũ trụ.", Duration = 166, PosterUrl = "/posters/dune-part-two.jpg", BannerUrl = "/banners/dune-2-banner.jpg", ReleaseDate = new DateTime(2026,9,17,0,0,0), EndDate = new DateTime(2026,10,29,0,0,0), Status = "Đang chiếu", ShowOnBanner = true, CreatedAt = new DateTime(2026,7,12,17,13,55,597) },
             new Movie { MovieId = 27, Title = "Godzilla x Kong: The New Empire", Description = "Hai quái vật huyền thoại Godzilla và Kong buộc phải bắt tay chống lại một mối đe dọa ẩn giấu.", Duration = 115, PosterUrl = "/posters/godzilla-x-kong-the-new-empire.jpg", ReleaseDate = new DateTime(2026,6,24,0,0,0), EndDate = null, Status = "Sắp chiếu", CreatedAt = new DateTime(2026,7,12,17,13,55,597) },
             new Movie { MovieId = 28, Title = "Alien: Romulus", Description = "Một nhóm người trẻ khai thác trạm vũ trụ bỏ hoang chạm trán sinh vật ngoài hành tinh nguy hiểm bậc nhất vũ trụ.", Duration = 119, PosterUrl = "/posters/alien-romulus.jpg", ReleaseDate = new DateTime(2026,7,30,0,0,0), EndDate = new DateTime(2026,9,28,0,0,0), Status = "Đang chiếu", CreatedAt = new DateTime(2026,7,12,17,13,55,597) },
             new Movie { MovieId = 29, Title = "The Creator", Description = "Trong cuộc chiến giữa loài người và trí tuệ nhân tạo, một cựu binh phát hiện vũ khí bí mật mang hình hài đứa trẻ.", Duration = 133, PosterUrl = "/posters/the-creator.jpg", ReleaseDate = new DateTime(2026,6,13,0,0,0), EndDate = new DateTime(2026,7,19,0,0,0), Status = "Đang chiếu", CreatedAt = new DateTime(2026,7,12,17,13,55,597) },

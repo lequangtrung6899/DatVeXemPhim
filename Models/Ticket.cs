@@ -19,7 +19,8 @@ public class Ticket
     [Column(TypeName = "decimal(18,2)")]
     public decimal TotalAmount { get; set; }
 
-    // 'Chờ thanh toán' | 'Đã thanh toán' | 'Đã hủy'
+    // 'Chờ thanh toán' (trong giỏ hàng) | 'Đã thanh toán' | 'Đang chờ hoàn tiền' (đã gửi yêu cầu,
+    // chờ Nhân viên/Admin duyệt — xem RefundRequest) | 'Đã hủy' (đã hoàn tiền xong)
     [Required, MaxLength(50)]
     public string Status { get; set; } = "Chờ thanh toán";
 

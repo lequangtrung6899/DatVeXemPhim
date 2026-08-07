@@ -9,10 +9,12 @@ namespace DatVeXemPhim.Controllers.Admin;
 // Ca sử dụng "Quản lý suất chiếu".
 public class AdminShowtimeController : AdminBaseController
 {
+    private const int PageSize = 6;
+
     public AdminShowtimeController(ApplicationDbContext db) : base(db) { }
 
     [HttpGet, Route("/quan-tri/suat-chieu")]
-    public async Task<IActionResult> Index(int? movieId, DateTime? date)
+    public async Task<IActionResult> Index(int? movieId, DateTime? date, int page = 1)
     {
         IQueryable<Showtime> query = Db.Showtimes.Include(s => s.Movie).Include(s => s.Room);
 
@@ -24,11 +26,19 @@ public class AdminShowtimeController : AdminBaseController
             query = query.Where(s => s.StartTime >= d0 && s.StartTime < d1);
         }
 
-        var showtimes = await query.OrderByDescending(s => s.StartTime).Take(200).ToListAsync();
+        var totalCount = await query.CountAsync();
+        var totalPages = Math.Max(1, (int)Math.Ceiling(totalCount / (double)PageSize));
+        page = Math.Clamp(page, 1, totalPages);
+
+        var showtimes = await query.OrderByDescending(s => s.StartTime)
+            .Skip((page - 1) * PageSize).Take(PageSize).ToListAsync();
 
         ViewBag.Movies = await Db.Movies.OrderBy(m => m.Title).ToListAsync();
         ViewBag.MovieId = movieId;
         ViewBag.Date = date;
+        var extra = (movieId.HasValue ? $"movieId={movieId}&" : "") +
+                    (date.HasValue ? $"date={date.Value:yyyy-MM-dd}&" : "");
+        ViewBag.Pagination = new PaginationVM { Page = page, TotalPages = totalPages, BaseUrl = "/quan-tri/suat-chieu?" + extra };
         return View(showtimes);
     }
 
@@ -36,7 +46,10 @@ public class AdminShowtimeController : AdminBaseController
     public async Task<IActionResult> Create()
     {
         var rooms = await Db.Rooms.Where(r => r.IsActive).OrderBy(r => r.RoomName).ToListAsync();
-        var movies = await Db.Movies.Where(m => m.Status != "Ngừng chiếu").OrderBy(m => m.Title).ToListAsync();
+        // Không cho tạo suất chiếu cho phim đang "Chờ duyệt"/"Từ chối" — phim đó chưa hiển thị
+        // cho khách hàng nên đặt suất chiếu lúc này sẽ khiến khách vào link suất chiếu rồi
+        // gặp lỗi vì trang phim chưa tồn tại đối với họ.
+        var movies = await Db.Movies.Where(m => m.Status != "Ngừng chiếu" && m.ApprovalStatus == "Đã duyệt").OrderBy(m => m.Title).ToListAsync();
 
         if (rooms.Count == 0)
         {
@@ -93,28 +106,48 @@ public class AdminShowtimeController : AdminBaseController
             return Redirect(showtimeId == 0 ? "/quan-tri/suat-chieu/them" : $"/quan-tri/suat-chieu/{showtimeId}/sua");
         }
 
+        var isAdmin = await IsAdminRoleAsync();
+        var dto = new ShowtimeChangeDto
+        {
+            MovieId = movieId, RoomId = roomId, StartTime = startTime, EndTime = endTime,
+            TicketPrice = ticketPrice, Status = status
+        };
+
         if (showtimeId == 0)
         {
-            var showtime = new Showtime
+            if (isAdmin)
             {
-                MovieId = movieId,
-                RoomId = roomId,
-                StartTime = startTime,
-                EndTime = endTime,
-                TicketPrice = ticketPrice,
-                Status = status
-            };
-            Db.Showtimes.Add(showtime);
-            await Db.SaveChangesAsync(); // need ShowtimeId
+                var showtime = new Showtime
+                {
+                    MovieId = movieId,
+                    RoomId = roomId,
+                    StartTime = startTime,
+                    EndTime = endTime,
+                    TicketPrice = ticketPrice,
+                    Status = status
+                };
+                Db.Showtimes.Add(showtime);
+                await Db.SaveChangesAsync(); // need ShowtimeId
 
-            // Auto-provision one ShowtimeSeat per physical seat in the room (Trống by default).
-            var seatIds = await Db.Seats.Where(s => s.RoomId == roomId).Select(s => s.SeatId).ToListAsync();
-            foreach (var seatId in seatIds)
-            {
-                Db.ShowtimeSeats.Add(new ShowtimeSeat { ShowtimeId = showtime.ShowtimeId, SeatId = seatId, Status = "Trống" });
+                // Auto-provision one ShowtimeSeat per physical seat in the room (Trống by default).
+                var seatIds = await Db.Seats.Where(s => s.RoomId == roomId).Select(s => s.SeatId).ToListAsync();
+                foreach (var seatId in seatIds)
+                {
+                    Db.ShowtimeSeats.Add(new ShowtimeSeat { ShowtimeId = showtime.ShowtimeId, SeatId = seatId, Status = "Trống" });
+                }
+                await Db.SaveChangesAsync();
+                TempData["Success"] = $"Đã tạo suất chiếu mới với {seatIds.Count} ghế.";
             }
-            await Db.SaveChangesAsync();
-            TempData["Success"] = $"Đã tạo suất chiếu mới với {seatIds.Count} ghế.";
+            else
+            {
+                // Giá vé nằm ở đây — nhân viên có thể vô tình/cố ý đặt giá sai lệch, nên
+                // suất chiếu mới cũng phải qua Admin duyệt như voucher/combo.
+                var movie = await Db.Movies.FindAsync(movieId);
+                var room = await Db.Rooms.FindAsync(roomId);
+                await SubmitPendingChangeAsync("Showtime", null, "Create", dto,
+                    $"Thêm suất chiếu mới: '{movie?.Title}' tại {room?.RoomName}, {startTime:dd/MM/yyyy HH:mm} — giá vé {FormatVND(ticketPrice)}");
+                TempData["Success"] = "Đã gửi yêu cầu thêm suất chiếu mới — chờ Quản trị viên duyệt.";
+            }
         }
         else
         {
@@ -128,14 +161,23 @@ public class AdminShowtimeController : AdminBaseController
                 return Redirect($"/quan-tri/suat-chieu/{showtimeId}/sua");
             }
 
-            showtime.MovieId = movieId;
-            showtime.RoomId = roomId;
-            showtime.StartTime = startTime;
-            showtime.EndTime = endTime;
-            showtime.TicketPrice = ticketPrice;
-            showtime.Status = status;
-            await Db.SaveChangesAsync();
-            TempData["Success"] = "Đã cập nhật suất chiếu.";
+            if (isAdmin)
+            {
+                showtime.MovieId = movieId;
+                showtime.RoomId = roomId;
+                showtime.StartTime = startTime;
+                showtime.EndTime = endTime;
+                showtime.TicketPrice = ticketPrice;
+                showtime.Status = status;
+                await Db.SaveChangesAsync();
+                TempData["Success"] = "Đã cập nhật suất chiếu.";
+            }
+            else
+            {
+                await SubmitPendingChangeAsync("Showtime", showtime.ShowtimeId, "Update", dto,
+                    $"Sửa suất chiếu #{showtime.ShowtimeId}: giá vé {FormatVND(showtime.TicketPrice)} → {FormatVND(ticketPrice)}, giờ chiếu {startTime:dd/MM/yyyy HH:mm}");
+                TempData["Success"] = "Đã gửi yêu cầu sửa suất chiếu — chờ Quản trị viên duyệt.";
+            }
         }
 
         return Redirect("/quan-tri/suat-chieu");
@@ -155,9 +197,17 @@ public class AdminShowtimeController : AdminBaseController
             return Redirect("/quan-tri/suat-chieu");
         }
 
-        showtime.Status = "Đã hủy";
-        await Db.SaveChangesAsync();
-        TempData["Success"] = "Đã hủy suất chiếu.";
+        if (await IsAdminRoleAsync())
+        {
+            showtime.Status = "Đã hủy";
+            await Db.SaveChangesAsync();
+            TempData["Success"] = "Đã hủy suất chiếu.";
+        }
+        else
+        {
+            await SubmitPendingChangeAsync("Showtime", showtime.ShowtimeId, "Cancel", (object?)null, $"Hủy suất chiếu #{showtime.ShowtimeId}");
+            TempData["Success"] = "Đã gửi yêu cầu hủy suất chiếu — chờ Quản trị viên duyệt.";
+        }
         return Redirect("/quan-tri/suat-chieu");
     }
 }

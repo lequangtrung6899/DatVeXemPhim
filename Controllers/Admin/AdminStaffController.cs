@@ -10,6 +10,8 @@ namespace DatVeXemPhim.Controllers.Admin;
 // Ca sử dụng "Quản lý tài khoản nhân viên" — chỉ dành cho vai trò Admin.
 public class AdminStaffController : AdminBaseController
 {
+    private const int PageSize = 6;
+
     public AdminStaffController(ApplicationDbContext db) : base(db) { }
 
     private async Task<IActionResult?> GuardAdminOnlyAsync()
@@ -23,11 +25,18 @@ public class AdminStaffController : AdminBaseController
     }
 
     [HttpGet, Route("/quan-tri/nhan-vien")]
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(int page = 1)
     {
         if (await GuardAdminOnlyAsync() is { } guard) return guard;
 
-        var staff = await Db.Users.Include(u => u.Role).OrderBy(u => u.FullName).ToListAsync();
+        var query = Db.Users.Include(u => u.Role).OrderBy(u => u.FullName);
+        var totalCount = await query.CountAsync();
+        var totalPages = Math.Max(1, (int)Math.Ceiling(totalCount / (double)PageSize));
+        page = Math.Clamp(page, 1, totalPages);
+
+        var staff = await query.Skip((page - 1) * PageSize).Take(PageSize).ToListAsync();
+
+        ViewBag.Pagination = new PaginationVM { Page = page, TotalPages = totalPages, BaseUrl = "/quan-tri/nhan-vien?" };
         return View(staff);
     }
 

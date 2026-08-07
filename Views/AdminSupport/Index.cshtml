@@ -82,15 +82,36 @@
         </tbody>
     </table>
 
-    @if (t.Status != "Đã hủy")
+    @if (Model.LatestRefundRequest != null)
     {
-        <form method="post" action="/quan-tri/ho-tro/@t.TicketId/huy-ve" onsubmit="return confirm('Hủy vé này và hoàn tiền cho khách?');" class="admin-form">
+        var rr = Model.LatestRefundRequest;
+        var rrBadge = rr.Status switch { "Đã hoàn tiền" => "admin-badge-ok", "Từ chối" => "admin-badge-danger", _ => "admin-badge-warn" };
+        <h2 style="font-size:15px;">Yêu cầu hoàn tiền gần nhất</h2>
+        <div class="admin-alert" style="margin-bottom:20px;">
+            <span class="admin-badge @rrBadge">@rr.Status</span>
+            &nbsp; Số tiền: <strong>@ViewBag.FormatVND(rr.Amount)</strong> · Gửi lúc @rr.RequestedAt.ToString("dd/MM/yyyy HH:mm")
+            @if (!string.IsNullOrWhiteSpace(rr.Reason)) { <div style="margin-top:6px; color:#9aa0ad;">Lý do: @rr.Reason</div> }
+            @if (rr.Status == "Từ chối" && !string.IsNullOrWhiteSpace(rr.RejectReason)) { <div style="margin-top:6px; color:#e05555;">Lý do từ chối: @rr.RejectReason</div> }
+            <div style="margin-top:6px;"><a href="/quan-tri/hoan-tien" style="color:#7aa2ff;">Xem tại trang Duyệt hoàn tiền &rarr;</a></div>
+        </div>
+    }
+
+    var hasActiveRefundRequest = Model.LatestRefundRequest != null &&
+    (Model.LatestRefundRequest.Status == "Chờ nhân viên duyệt" ||
+     Model.LatestRefundRequest.Status == "Chờ admin duyệt");
+
+    @if (t.Status != "Đã hủy" &&
+         t.Status != "Đang chờ hoàn tiền" &&
+         !hasActiveRefundRequest)
+    {
+        <form method="post" action="/quan-tri/ho-tro/@t.TicketId/huy-ve" onsubmit="return confirm('Gửi yêu cầu hủy vé / hoàn tiền cho khách? Tiền chỉ thực sự được hoàn sau khi được duyệt đủ 2 cấp (Nhân viên rồi Admin).');" class="admin-form">
             @Html.AntiForgeryToken()
             <h2 style="font-size:15px; margin-top:0;">Hỗ trợ hủy vé / hoàn tiền</h2>
+            <p style="color:#9aa0ad; font-size:13px; margin-top:-6px;">Hành động này chỉ GỬI YÊU CẦU hoàn tiền và tự động hoàn tất bước duyệt "Nhân viên" (nếu tài khoản hiện tại là Admin thì hoàn tất luôn cả hai bước). Vé chỉ thực sự bị hủy sau khi được Admin duyệt lần cuối tại trang <a href="/quan-tri/hoan-tien" style="color:#7aa2ff;">Duyệt hoàn tiền</a>.</p>
             <label>Số tiền hoàn (mặc định bằng tổng tiền vé)</label>
             <input type="number" name="refundAmount" value="@t.TotalAmount.ToString("0.####", System.Globalization.CultureInfo.InvariantCulture)" min="0" step="1000">
             <div class="admin-actions">
-                <button type="submit" class="btn btn-primary admin-link-danger">Hủy vé cho khách &amp; đánh dấu hoàn tiền</button>
+                <button type="submit" class="btn btn-primary admin-link-danger">Gửi yêu cầu hủy vé / hoàn tiền</button>
             </div>
         </form>
     }

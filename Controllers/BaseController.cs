@@ -56,7 +56,14 @@ public abstract class BaseController : Controller
     {
         // Mirrors the res.locals middleware in server.js: expose the current customer and
         // request path to every view via ViewBag.
-        ViewBag.Customer = await GetCurrentCustomerAsync();
+        var customer = await GetCurrentCustomerAsync();
+        ViewBag.Customer = customer;
+
+        // Số món trong giỏ hàng (vé "Chờ thanh toán") — hiển thị badge trên icon giỏ hàng ở header.
+        ViewBag.CartCount = customer != null
+            ? await Db.Tickets.CountAsync(t => t.CustomerId == customer.CustomerId && t.Status == "Chờ thanh toán")
+            : 0;
+
         ViewBag.Path = Request.Path.Value ?? "/";
         ViewBag.FormatVND = (Func<decimal, string>)FormatVND;
         await next();

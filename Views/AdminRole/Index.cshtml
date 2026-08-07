@@ -26,10 +26,17 @@ else
                     <td>@(counts != null && counts.ContainsKey(r.RoleId) ? counts[r.RoleId] : 0)</td>
                     <td>
                         <a href="/quan-tri/vai-tro/@r.RoleId/sua" class="btn btn-ghost btn-sm">Sửa</a>
-                        <form class="admin-inline-form" method="post" action="/quan-tri/vai-tro/@r.RoleId/xoa" onsubmit="return confirm('Xóa vai trò này?');">
-                            @Html.AntiForgeryToken()
-                            <button type="submit" class="btn btn-ghost btn-sm admin-link-danger">Xóa</button>
-                        </form>
+                        @if (r.RoleName != "Admin")
+                        {
+                            <form class="admin-inline-form" method="post" action="/quan-tri/vai-tro/@r.RoleId/xoa" onsubmit="return confirm('Xóa vai trò này?');">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-ghost btn-sm admin-link-danger">Xóa</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <span class="admin-badge admin-badge-muted" title="Vai trò gốc của hệ thống, không thể xóa">Vai trò gốc</span>
+                        }
                     </td>
                 </tr>
             }

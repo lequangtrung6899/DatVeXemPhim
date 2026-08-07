@@ -1,0 +1,25 @@
+@model PaginationVM
+@if (Model.TotalPages > 1)
+{
+    <div class="admin-pagination">
+        @if (Model.Page > 1)
+        {
+            <a class="btn btn-ghost btn-sm" href="@(Model.BaseUrl)page=@(Model.Page - 1)">‹ Trước</a>
+        }
+        else
+        {
+            <span class="btn btn-ghost btn-sm admin-pagination-disabled">‹ Trước</span>
+        }
+
+        <span class="admin-pagination-info">Trang @Model.Page / @Model.TotalPages</span>
+
+        @if (Model.Page < Model.TotalPages)
+        {
+            <a class="btn btn-ghost btn-sm" href="@(Model.BaseUrl)page=@(Model.Page + 1)">Sau ›</a>
+        }
+        else
+        {
+            <span class="btn btn-ghost btn-sm admin-pagination-disabled">Sau ›</span>
+        }
+    </div>
+}

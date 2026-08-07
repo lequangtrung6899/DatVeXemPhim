@@ -24,7 +24,8 @@ public class MoviesController : BaseController
     {
         var effectiveStatus = string.IsNullOrWhiteSpace(status) ? "Đang chiếu" : status;
 
-        IQueryable<Movie> query = Db.Movies.Where(m => m.Status == effectiveStatus);
+        // Chỉ hiển thị phim đã được Admin duyệt (ẩn phim "Chờ duyệt"/"Từ chối" do Nhân viên gửi).
+        IQueryable<Movie> query = Db.Movies.Where(m => m.Status == effectiveStatus && m.ApprovalStatus == "Đã duyệt");
 
         if (genre.HasValue)
         {
@@ -54,7 +55,9 @@ public class MoviesController : BaseController
     [Route("/phim/{id:int}")]
     public async Task<IActionResult> Detail(int id, string? review)
     {
-        var movie = await Db.Movies.FirstOrDefaultAsync(m => m.MovieId == id);
+        // Phim đang "Chờ duyệt"/"Từ chối" (do Nhân viên thêm/sửa, chưa được Admin duyệt)
+        // không được phép xem ở trang khách hàng, kể cả khi có link trực tiếp.
+        var movie = await Db.Movies.FirstOrDefaultAsync(m => m.MovieId == id && m.ApprovalStatus == "Đã duyệt");
         if (movie is null) return NotFound();
 
         var full = await MovieQueryHelper.AttachGenresAndRatingAsync(Db, movie);
@@ -104,7 +107,8 @@ public class MoviesController : BaseController
 
         var relatedGenreIds = await Db.MovieGenres.Where(mg => mg.MovieId == movie.MovieId).Select(mg => mg.GenreId).ToListAsync();
         var relatedMovies = await Db.Movies
-            .Where(m => m.MovieId != movie.MovieId && Db.MovieGenres.Any(mg => mg.MovieId == m.MovieId && relatedGenreIds.Contains(mg.GenreId)))
+            .Where(m => m.MovieId != movie.MovieId && m.ApprovalStatus == "Đã duyệt"
+                && Db.MovieGenres.Any(mg => mg.MovieId == m.MovieId && relatedGenreIds.Contains(mg.GenreId)))
             .Distinct()
             .Take(6)
             .ToListAsync();

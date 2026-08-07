@@ -1,0 +1,71 @@
+@model DatVeXemPhim.Models.ViewModels.PaymentVM
+@{
+    ViewData["Title"] = "Thanh toán";
+    var formatVND = (Func<decimal, string>)ViewBag.FormatVND;
+}
+
+<div class="container" style="padding-top:32px;">
+    <div class="section-head">
+        <div>
+            <h1 class="section-title">Thanh toán</h1>
+            <p style="color:var(--text-dim); font-size:14px; margin-top:6px;">Chuyển khoản theo mã QR bên dưới — số tiền đã được điền sẵn trong mã QR.</p>
+        </div>
+        <a href="/gio-hang" class="section-link">← Quay lại giỏ hàng</a>
+    </div>
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="form-error">@TempData["Error"]</div>
+    }
+
+    <div class="booking-layout">
+        <div>
+            <div class="qr-payment-card">
+                <h3 style="margin-top:0;">Quét mã QR để chuyển khoản</h3>
+                <img src="@Model.QrImageUrl" alt="VietQR thanh toán">
+                <p style="font-size:12px; color:var(--text-dimmer); margin:12px 0 0;">
+                    ⓘ Mã QR chuẩn <strong>VietQR</strong> đã nhúng sẵn số tiền — ứng dụng ngân hàng của bạn
+                    sẽ <strong>tự động điền đúng số tiền</strong> khi quét, bạn không cần tự nhập lại.
+                </p>
+
+                <div style="margin-top:18px; text-align:left;">
+                    <div class="bank-info-row"><span class="label">Ngân hàng</span><strong>@Model.BankName</strong></div>
+                    <div class="bank-info-row"><span class="label">Số tài khoản</span><strong>@Model.AccountNo</strong></div>
+                    <div class="bank-info-row"><span class="label">Chủ tài khoản</span><strong>@Model.AccountName</strong></div>
+                    <div class="bank-info-row"><span class="label">Nội dung chuyển khoản</span><strong>@Model.TransferContent</strong></div>
+                    <div class="bank-info-row"><span class="label">Số tiền</span><strong style="color:var(--accent);">@formatVND(Model.Total)</strong></div>
+                </div>
+            </div>
+
+            <p style="font-size:11.5px; color:var(--text-dimmer); margin-top:14px; line-height:1.5;">
+                ⓘ Đây vẫn là chức năng <strong>mô phỏng</strong> cho mục đích học tập/báo cáo — ảnh QR được
+                sinh bởi dịch vụ VietQR công khai (đúng chuẩn QR ngân hàng Việt Nam), nhưng hệ thống KHÔNG
+                đối soát giao dịch ngân hàng thật. Sau khi chuyển khoản, hãy bấm nút xác nhận bên dưới.
+            </p>
+        </div>
+
+        <div>
+            <div class="summary-card">
+                <h3>Đơn hàng của bạn</h3>
+                @foreach (var item in Model.Items)
+                {
+                    <div class="summary-row"><span>@item.MovieTitle (@string.Join(",", item.Seats.Select(s => s.RowLabel + s.ColumnNumber)))</span><strong>@formatVND(item.Subtotal)</strong></div>
+                }
+                <div class="summary-row" style="border-top:1px solid var(--border); padding-top:10px; margin-top:10px;"><span>Tạm tính</span><strong>@formatVND(Model.Subtotal)</strong></div>
+                @if (Model.Discount > 0)
+                {
+                    <div class="summary-row"><span>Giảm giá (@Model.AppliedVoucherCode)</span><strong style="color:#69db7c;">-@formatVND(Model.Discount)</strong></div>
+                }
+                <div class="summary-total">
+                    <span>Tổng cộng</span>
+                    <span class="val">@formatVND(Model.Total)</span>
+                </div>
+
+                <form method="post" action="/thanh-toan/xac-nhan" onsubmit="return confirm('Xác nhận bạn đã chuyển khoản đủ số tiền ' + '@formatVND(Model.Total)' + '?');">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-primary btn-block" style="margin-top:18px;">✅ Tôi đã chuyển khoản — Xác nhận thanh toán</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

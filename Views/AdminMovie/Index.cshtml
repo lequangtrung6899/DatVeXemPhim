@@ -2,15 +2,34 @@
 @{
     Layout = "_AdminLayout";
     ViewData["Title"] = "Quản lý phim";
+    var isAdmin = (bool)(ViewBag.IsAdmin ?? false);
+    var duyet = (string)ViewBag.Duyet;
+    var pendingCount = (int)ViewBag.PendingCount;
 }
 <div class="admin-toolbar">
     <h1 style="margin:0;">Quản lý phim</h1>
     <a href="/quan-tri/phim/them" class="btn btn-primary btn-sm">+ Thêm phim</a>
 </div>
 
-<form method="get" class="admin-search-form" style="margin-bottom:16px;">
-    <input type="text" name="q" placeholder="Tìm theo tên phim..." value="@ViewBag.Q">
+<div class="admin-tabs" style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;">
+    @foreach (var s in new[] { "Tất cả", "Chờ duyệt", "Đã duyệt", "Từ chối" })
+    {
+        var active = duyet == s;
+        var href = "/quan-tri/phim?" + (s == "Tất cả" ? "" : $"duyet={Uri.EscapeDataString(s)}") + (string.IsNullOrEmpty((string)ViewBag.Q) ? "" : (s == "Tất cả" ? "q=" : "&q=") + Uri.EscapeDataString((string)ViewBag.Q));
+        <a href="@href" class="btn btn-sm @(active ? "btn-primary" : "btn-ghost")">
+            @s@(s == "Chờ duyệt" && pendingCount > 0 ? $" ({pendingCount})" : "")
+        </a>
+    }
+</div>
+
+<form method="get" class="admin-search-form" style="margin-bottom:16px;position:relative;max-width:420px;" autocomplete="off">
+    @if (duyet != "Tất cả")
+    {
+        <input type="hidden" name="duyet" value="@duyet">
+    }
+    <input type="text" name="q" id="movieSearchInput" placeholder="Tìm theo tên phim..." value="@ViewBag.Q">
     <button type="submit" class="btn btn-ghost btn-sm">Tìm</button>
+    <div class="search-suggest" id="movieSearchSuggest"></div>
 </form>
 
 @if (Model.Count == 0)
@@ -20,12 +39,18 @@
 else
 {
     <table class="admin-table">
-        <thead><tr><th>Tên phim</th><th>Thời lượng</th><th>Khởi chiếu</th><th>Trạng thái</th><th></th></tr></thead>
+        <thead><tr><th>Tên phim</th><th>Thời lượng</th><th>Khởi chiếu</th><th>Trạng thái chiếu</th><th>Duyệt</th><th></th></tr></thead>
         <tbody>
             @foreach (var m in Model)
             {
                 <tr>
-                    <td>@m.Title</td>
+                    <td>
+                        @m.Title
+                        @if (m.ShowOnBanner)
+                        {
+                            <span class="admin-badge admin-badge-ok" title="Đang hiển thị trên banner trang chủ">🖼 Banner</span>
+                        }
+                    </td>
                     <td>@m.Duration phút</td>
                     <td>@m.ReleaseDate.ToString("dd/MM/yyyy")</td>
                     <td>
@@ -40,14 +65,84 @@ else
                         <span class="admin-badge @badge">@m.Status</span>
                     </td>
                     <td>
+                        @{
+                            var duyetBadge = m.ApprovalStatus switch
+                            {
+                                "Đã duyệt" => "admin-badge-ok",
+                                "Chờ duyệt" => "admin-badge-warn",
+                                _ => "admin-badge-danger"
+                            };
+                        }
+                        <span class="admin-badge @duyetBadge">@m.ApprovalStatus</span>
+                        @if (m.HasPendingEdit)
+                        {
+                            <span class="admin-badge admin-badge-warn" title="Đang có đề xuất chỉnh sửa chờ Admin duyệt — dữ liệu hiện tại vẫn hiển thị bình thường cho khách">✏️ Có đề xuất sửa</span>
+                        }
+                    </td>
+                    <td>
                         <a href="/quan-tri/phim/@m.MovieId/sua" class="btn btn-ghost btn-sm">Sửa</a>
-                        <form class="admin-inline-form" method="post" action="/quan-tri/phim/@m.MovieId/xoa" onsubmit="return confirm('Xóa phim này?');">
-                            @Html.AntiForgeryToken()
-                            <button type="submit" class="btn btn-ghost btn-sm admin-link-danger">Xóa</button>
-                        </form>
+                        @if (isAdmin && (m.ApprovalStatus == "Chờ duyệt" || m.HasPendingEdit))
+                        {
+                            <form class="admin-inline-form" method="post" action="/quan-tri/phim/@m.MovieId/duyet" style="display:inline;">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-ghost btn-sm" style="color:#7be8a5;">Duyệt</button>
+                            </form>
+                            <form class="admin-inline-form" method="post" action="/quan-tri/phim/@m.MovieId/tu-choi" style="display:inline;" onsubmit="return confirm('Từ chối phim này?');">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-ghost btn-sm admin-link-danger">Từ chối</button>
+                            </form>
+                        }
+                        @if (isAdmin)
+                        {
+                            <form class="admin-inline-form" method="post" action="/quan-tri/phim/@m.MovieId/xoa" onsubmit="return confirm('Xóa phim này?');" style="display:inline;">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-ghost btn-sm admin-link-danger">Xóa</button>
+                            </form>
+                        }
                     </td>
                 </tr>
             }
         </tbody>
     </table>
+    @await Html.PartialAsync("_AdminPagination", (PaginationVM)ViewBag.Pagination)
 }
+
+    <script>
+        (function () {
+            const input = document.getElementById('movieSearchInput');
+            const box = document.getElementById('movieSearchSuggest');
+            if (!input || !box) return;
+            let timer = null;
+
+            function escapeHtml(s) {
+                return (s || '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+            }
+
+            function hide() { box.classList.remove('open'); box.innerHTML = ''; }
+
+            async function fetchSuggest(q) {
+                try {
+                    const res = await fetch('/quan-tri/phim/goi-y?q=' + encodeURIComponent(q));
+                    const items = await res.json();
+                    if (!items.length) { hide(); return; }
+                    box.innerHTML = items.map(m => `
+                        <a href="/quan-tri/phim/${m.id}/sua" class="search-suggest-item">
+                            ${m.posterUrl ? `<img src="${m.posterUrl}" alt="">` : ''}
+                            <div class="search-suggest-info">
+                                <span class="search-suggest-title">${escapeHtml(m.title)}</span>
+                                <span class="search-suggest-meta">${escapeHtml(m.status)} · ${escapeHtml(m.approvalStatus)}</span>
+                            </div>
+                        </a>`).join('');
+                    box.classList.add('open');
+                } catch { hide(); }
+            }
+
+            input.addEventListener('input', () => {
+                clearTimeout(timer);
+                const q = input.value.trim();
+                if (q.length < 2) { hide(); return; }
+                timer = setTimeout(() => fetchSuggest(q), 200);
+            });
+            document.addEventListener('click', e => { if (!e.target.closest('.admin-search-form')) hide(); });
+        })();
+    </script>

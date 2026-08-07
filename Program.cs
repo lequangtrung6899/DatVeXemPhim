@@ -36,6 +36,10 @@ builder.Services.AddHttpClient<OmdbService>();
 // Dịch Plot/Genre/Awards từ OMDb (tiếng Anh) sang tiếng Việt qua MyMemory (miễn phí, không cần key).
 builder.Services.AddHttpClient<TranslationService>();
 
+// Xử lý luồng duyệt hoàn tiền 2 cấp (Nhân viên -> Admin) dùng chung giữa
+// TicketController, AdminSupportController và AdminRefundController.
+builder.Services.AddScoped<RefundService>();
+
 var app = builder.Build();
 
 // ---- Code First: apply any pending EF Core migrations automatically on startup ----

@@ -8,28 +8,40 @@
     </div>
 
     <div class="review-card" style="padding:22px 24px; line-height:1.7; font-size:14.5px;">
-        <h3 style="margin-top:0;">1. Điều kiện hủy vé</h3>
+        <h3 style="margin-top:0;">1. Điều kiện gửi yêu cầu hoàn tiền</h3>
         <p>
-            Khách hàng có thể tự hủy vé đã đặt trong mục <a href="/tai-khoan/ve-cua-toi" style="color:var(--accent); font-weight:600;">"Vé của tôi"</a>
+            Khách hàng có thể tự gửi <strong style="color:var(--text);">yêu cầu hoàn tiền</strong> cho vé đã đặt trong mục <a href="/tai-khoan/ve-cua-toi" style="color:var(--accent); font-weight:600;">"Vé của tôi"</a>
             khi đáp ứng đủ hai điều kiện sau:
         </p>
         <ul style="padding-left:20px; color:var(--text-dim);">
-            <li>Vé đang ở trạng thái <strong style="color:var(--text);">"Đã thanh toán"</strong> (vé đã hủy trước đó không thể hủy lại).</li>
-            <li>Suất chiếu chưa bắt đầu trong vòng <strong style="color:var(--text);">2 giờ</strong> tới, tính từ thời điểm bấm hủy.</li>
+            <li>Vé đang ở trạng thái <strong style="color:var(--text);">"Đã thanh toán"</strong> (vé đã hủy, hoặc đang chờ duyệt hoàn tiền, không thể gửi yêu cầu lại).</li>
+            <li>Suất chiếu chưa bắt đầu trong vòng <strong style="color:var(--text);">2 giờ</strong> tới, tính từ thời điểm gửi yêu cầu.</li>
         </ul>
 
-        <h3>2. Hoàn tiền</h3>
+        <h3>2. Hoàn tiền phải được duyệt qua 2 cấp</h3>
         <p>
-            Vé hủy đúng hạn được hoàn <strong style="color:var(--text);">100%</strong> số tiền đã thanh toán. Vì hệ thống thanh toán
-            hiện là <strong style="color:var(--text);">mô phỏng</strong> (chưa tích hợp cổng thanh toán thật), việc "hoàn tiền" chỉ mang
-            tính ghi nhận trạng thái trong hệ thống, không có giao dịch chuyển khoản/thẻ thật nào được thực hiện.
+            Để đảm bảo minh bạch, một yêu cầu hoàn tiền <strong style="color:var(--text);">không</strong> được xử lý ngay lập tức.
+            Vé chỉ thực sự bị hủy và tiền chỉ thực sự được đánh dấu đã hoàn sau khi yêu cầu đi qua đủ hai bước xét duyệt:
+        </p>
+        <ol style="padding-left:20px; color:var(--text-dim);">
+            <li><strong style="color:var(--text);">Nhân viên</strong> tiếp nhận và duyệt yêu cầu đầu tiên.</li>
+            <li><strong style="color:var(--text);">Quản trị viên (Admin)</strong> duyệt lần cuối để hoàn tất hoàn tiền.</li>
+        </ol>
+        <p>
+            Trong lúc chờ duyệt, vé sẽ ở trạng thái <strong style="color:var(--text);">"Đang chờ hoàn tiền"</strong> và không thể hủy/gửi
+            yêu cầu thêm lần nữa. Nếu yêu cầu bị từ chối ở bất kỳ bước nào, vé sẽ trở lại trạng thái "Đã thanh toán" như bình thường.
+        </p>
+        <p>
+            Vé được duyệt hoàn tiền thành công sẽ được hoàn <strong style="color:var(--text);">100%</strong> số tiền đã thanh toán. Vì hệ thống
+            thanh toán hiện là <strong style="color:var(--text);">mô phỏng</strong> (chưa tích hợp cổng ngân hàng/thanh toán thật), việc "hoàn tiền" chỉ
+            mang tính ghi nhận trạng thái trong hệ thống, không có giao dịch chuyển khoản thật nào được thực hiện.
         </p>
 
         <h3>3. Ghế và điểm tích lũy</h3>
-        <p>Khi hủy vé thành công, hệ thống sẽ tự động:</p>
+        <p>Khi yêu cầu hoàn tiền được duyệt xong (cả 2 cấp), hệ thống sẽ tự động:</p>
         <ul style="padding-left:20px; color:var(--text-dim);">
-            <li>Giải phóng lại (các) ghế đã đặt để khách hàng khác có thể đặt.</li>
-            <li>Hoàn lại mã giảm giá (nếu vé có sử dụng voucher) để bạn dùng cho lần đặt khác.</li>
+            <li>Hủy vé và giải phóng lại (các) ghế đã đặt để khách hàng khác có thể đặt.</li>
+            <li>Hoàn lại lượt dùng mã giảm giá (nếu vé có sử dụng voucher) để bạn dùng cho lần đặt khác.</li>
             <li>Thu hồi lại số điểm tích lũy đã cộng từ đơn hàng đó và tính lại hạng thành viên tương ứng.</li>
         </ul>
 
@@ -37,7 +49,7 @@
         <p>
             Nếu bạn cần hỗ trợ hủy/đổi vé sát giờ chiếu vì lý do đặc biệt, vui lòng
             <a href="/ho-tro/lien-he" style="color:var(--accent); font-weight:600;">liên hệ bộ phận hỗ trợ</a> —
-            nhân viên có thể xử lý thủ công tại quầy trong một số trường hợp.
+            nhân viên có thể khởi tạo yêu cầu hoàn tiền giúp bạn tại quầy trong một số trường hợp, yêu cầu này vẫn cần Admin duyệt lần cuối.
         </p>
     </div>
 </div>

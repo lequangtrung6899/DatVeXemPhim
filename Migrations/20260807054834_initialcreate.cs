@@ -26,6 +26,26 @@ namespace DatVeXemPhim.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ContactMessages",
+                columns: table => new
+                {
+                    ContactMessageId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FullName = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    Phone = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
+                    Subject = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    Message = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsResolved = table.Column<bool>(type: "bit", nullable: false),
+                    ResolvedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ContactMessages", x => x.ContactMessageId);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Customers",
                 columns: table => new
                 {
@@ -72,7 +92,14 @@ namespace DatVeXemPhim.Migrations
                     ReleaseDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EndDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Status = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ShowOnBanner = table.Column<bool>(type: "bit", nullable: false),
+                    ApprovalStatus = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    SubmittedBy = table.Column<int>(type: "int", nullable: true),
+                    ReviewedBy = table.Column<int>(type: "int", nullable: true),
+                    ReviewedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    HasPendingEdit = table.Column<bool>(type: "bit", nullable: false),
+                    PendingChangesJson = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -263,6 +290,41 @@ namespace DatVeXemPhim.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "PendingChanges",
+                columns: table => new
+                {
+                    PendingChangeId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    EntityType = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
+                    EntityId = table.Column<int>(type: "int", nullable: true),
+                    ActionType = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
+                    ChangesJson = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Summary = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    SubmittedBy = table.Column<int>(type: "int", nullable: false),
+                    SubmittedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    ReviewedBy = table.Column<int>(type: "int", nullable: true),
+                    ReviewedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    RejectReason = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PendingChanges", x => x.PendingChangeId);
+                    table.ForeignKey(
+                        name: "FK_PendingChanges_Users_ReviewedBy",
+                        column: x => x.ReviewedBy,
+                        principalTable: "Users",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_PendingChanges_Users_SubmittedBy",
+                        column: x => x.SubmittedBy,
+                        principalTable: "Users",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ShowtimeSeats",
                 columns: table => new
                 {
@@ -356,6 +418,61 @@ namespace DatVeXemPhim.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "RefundRequests",
+                columns: table => new
+                {
+                    RefundRequestId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    TicketId = table.Column<int>(type: "int", nullable: false),
+                    CustomerId = table.Column<int>(type: "int", nullable: false),
+                    Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Reason = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    RequestedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    StaffApprovedBy = table.Column<int>(type: "int", nullable: true),
+                    StaffApprovedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    AdminApprovedBy = table.Column<int>(type: "int", nullable: true),
+                    AdminApprovedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    RejectReason = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    RejectedBy = table.Column<int>(type: "int", nullable: true),
+                    RejectedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RefundRequests", x => x.RefundRequestId);
+                    table.ForeignKey(
+                        name: "FK_RefundRequests_Customers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "Customers",
+                        principalColumn: "CustomerId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_RefundRequests_Tickets_TicketId",
+                        column: x => x.TicketId,
+                        principalTable: "Tickets",
+                        principalColumn: "TicketId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_RefundRequests_Users_AdminApprovedBy",
+                        column: x => x.AdminApprovedBy,
+                        principalTable: "Users",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_RefundRequests_Users_RejectedBy",
+                        column: x => x.RejectedBy,
+                        principalTable: "Users",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_RefundRequests_Users_StaffApprovedBy",
+                        column: x => x.StaffApprovedBy,
+                        principalTable: "Users",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "TicketCombos",
                 columns: table => new
                 {
@@ -422,9 +539,9 @@ namespace DatVeXemPhim.Migrations
                 columns: new[] { "CustomerId", "CreatedAt", "Email", "FullName", "IsActive", "LoyaltyPoint", "MembershipRank", "PasswordHash", "Phone" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2026, 7, 9, 15, 25, 8, 577, DateTimeKind.Unspecified), "levanan@gmail.com", "Lê Văn An", true, 150, "Thành viên Bạc", "$2a$hash_cust01", "0911111111" },
-                    { 2, new DateTime(2026, 7, 9, 15, 25, 8, 577, DateTimeKind.Unspecified), "phambinh@gmail.com", "Phạm Thị Bình", true, 0, "Thành viên mới", "$2a$hash_cust02", "0922222222" },
-                    { 3, new DateTime(2026, 7, 9, 15, 25, 8, 577, DateTimeKind.Unspecified), "hoangchau@gmail.com", "Hoàng Minh Châu", true, 500, "Thành viên Vàng", "$2a$hash_cust03", "0933333333" }
+                    { 1, new DateTime(2026, 7, 9, 15, 25, 8, 577, DateTimeKind.Unspecified), "levanan@gmail.com", "Lê Văn An", true, 150, "Thành viên Bạc", "100000.4SgTxqKC1i7w9NcxXcVMug==.d1OwkzA/BzT14g9XjJUynl6I2Q8E89AWKCNl5kH24Fs=", "0911111111" },
+                    { 2, new DateTime(2026, 7, 9, 15, 25, 8, 577, DateTimeKind.Unspecified), "phambinh@gmail.com", "Phạm Thị Bình", true, 0, "Thành viên mới", "100000.kxJLGbkx9ggbzb7IS9HeXA==.+y/EWaZsaqW7VX9EkiBhxYCZrYAKVhvyy1KOlQeYAl0=", "0922222222" },
+                    { 3, new DateTime(2026, 7, 9, 15, 25, 8, 577, DateTimeKind.Unspecified), "hoangchau@gmail.com", "Hoàng Minh Châu", true, 500, "Thành viên Vàng", "100000.wfRv+xtcdWvsuJNlQKaVPg==.mMtChUK9eHp8Bx41+z/gcGMh6HGquvH0jiqTjHbOml4=", "0933333333" }
                 });
 
             migrationBuilder.InsertData(
@@ -443,51 +560,51 @@ namespace DatVeXemPhim.Migrations
 
             migrationBuilder.InsertData(
                 table: "Movies",
-                columns: new[] { "MovieId", "BannerUrl", "CreatedAt", "Description", "Duration", "EndDate", "PosterUrl", "ReleaseDate", "Status", "Title" },
+                columns: new[] { "MovieId", "ApprovalStatus", "BannerUrl", "CreatedAt", "Description", "Duration", "EndDate", "HasPendingEdit", "PendingChangesJson", "PosterUrl", "ReleaseDate", "ReviewedAt", "ReviewedBy", "ShowOnBanner", "Status", "SubmittedBy", "Title" },
                 values: new object[,]
                 {
-                    { 1, null, new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified), "Ethan Hunt và đội IMF đối mặt nhiệm vụ nguy hiểm nhất sự nghiệp trong phần cuối của loạt phim gián điệp hành động kinh điển.", 170, new DateTime(2026, 9, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), "/posters/mission-impossible-the-final-reckoning.jpg", new DateTime(2026, 8, 7, 0, 0, 0, 0, DateTimeKind.Unspecified), "Ngừng chiếu", "Mission: Impossible – The Final Reckoning" },
-                    { 2, null, new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified), "Hai cảnh sát Miami Mike Lowrey và Marcus Burnett phải chạy đua để minh oan cho người chỉ huy quá cố của mình.", 115, null, "/posters/bad-boys-ride-or-die.jpg", new DateTime(2026, 8, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), "Sắp chiếu", "Bad Boys: Ride or Die" },
-                    { 3, null, new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified), "Một diễn viên đóng thế phải điều tra vụ mất tích của ngôi sao điện ảnh trong lúc cố gắng hàn gắn chuyện tình cũ.", 126, new DateTime(2026, 8, 13, 0, 0, 0, 0, DateTimeKind.Unspecified), "/posters/the-fall-guy.jpg", new DateTime(2026, 7, 4, 0, 0, 0, 0, DateTimeKind.Unspecified), "Ngừng chiếu", "The Fall Guy" },
-                    { 4, null, new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified), "Câu chuyện về tuổi trẻ của Furiosa trong thế giới hậu tận thế khắc nghiệt của vũ trụ Mad Max.", 148, null, "/posters/furiosa-a-mad-max-saga.jpg", new DateTime(2026, 8, 28, 0, 0, 0, 0, DateTimeKind.Unspecified), "Sắp chiếu", "Furiosa: A Mad Max Saga" },
-                    { 5, null, new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified), "Một nhóm thợ săn bão liều lĩnh đối đầu với những cơn lốc xoáy ngày càng khốc liệt ở vùng Trung Tây nước Mỹ.", 122, new DateTime(2026, 7, 22, 0, 0, 0, 0, DateTimeKind.Unspecified), "/posters/twisters.jpg", new DateTime(2026, 6, 23, 0, 0, 0, 0, DateTimeKind.Unspecified), "Ngừng chiếu", "Twisters" },
-                    { 6, null, new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified), "Hai người từng có một đêm hẹn hò tuyệt vời rồi trở mặt bất ngờ, buộc phải giả vờ yêu nhau tại một đám cưới ở Úc.", 103, new DateTime(2026, 8, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), "/posters/anyone-but-you.jpg", new DateTime(2026, 6, 29, 0, 0, 0, 0, DateTimeKind.Unspecified), "Đang chiếu", "Anyone but You" },
-                    { 7, "/banners/it-ends-with-us-banner.jpg", new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified), "Một người phụ nữ trẻ phải đối mặt với những lựa chọn khó khăn khi tình yêu và quá khứ đau buồn đan xen.", 130, new DateTime(2026, 11, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), "/posters/it-ends-with-us.jpg", new DateTime(2026, 9, 22, 0, 0, 0, 0, DateTimeKind.Unspecified), "Đang chiếu", "It Ends with Us" },
-                    { 8, null, new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified), "Một cặp đôi cùng nhau trải qua những cột mốc vui buồn của cuộc sống, tình yêu và bệnh tật.", 108, new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Unspecified), "/posters/we-live-in-time.jpg", new DateTime(2026, 7, 31, 0, 0, 0, 0, DateTimeKind.Unspecified), "Ngừng chiếu", "We Live in Time" },
-                    { 9, null, new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified), "Một người mẹ đơn thân bất ngờ nảy sinh tình cảm với chàng ca sĩ trẻ của một ban nhạc nổi tiếng.", 115, null, "/posters/the-idea-of-you.jpg", new DateTime(2026, 9, 13, 0, 0, 0, 0, DateTimeKind.Unspecified), "Sắp chiếu", "The Idea of You" },
-                    { 10, "/banners/past-lives-banner.jpg", new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified), "Hai người bạn thời thơ ấu tái ngộ sau nhiều năm xa cách, đối diện với những gì có thể đã xảy ra.", 106, new DateTime(2026, 10, 24, 0, 0, 0, 0, DateTimeKind.Unspecified), "/posters/past-lives.jpg", new DateTime(2026, 8, 29, 0, 0, 0, 0, DateTimeKind.Unspecified), "Đang chiếu", "Past Lives" },
-                    { 11, "/banners/the-substance-banner.jpg", new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified), "Một ngôi sao đang lụi tàn sử dụng loại thuốc bí ẩn để tạo ra phiên bản trẻ trung hơn của chính mình, với cái giá khủng khiếp.", 141, new DateTime(2026, 9, 17, 0, 0, 0, 0, DateTimeKind.Unspecified), "/posters/the-substance.jpg", new DateTime(2026, 8, 17, 0, 0, 0, 0, DateTimeKind.Unspecified), "Đang chiếu", "The Substance" },
-                    { 12, null, new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified), "Một ngôi sao nhạc pop phải đối mặt với những sự kiện ngày càng đáng sợ khi thực tại bắt đầu sụp đổ quanh cô.", 127, null, "/posters/smile-2.jpg", new DateTime(2026, 6, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), "Sắp chiếu", "Smile 2" },
-                    { 13, null, new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified), "Gã hề sát nhân Art the Clown trở lại gieo rắc kinh hoàng trong đêm Giáng sinh.", 125, new DateTime(2026, 9, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), "/posters/terrifier-3.jpg", new DateTime(2026, 7, 11, 0, 0, 0, 0, DateTimeKind.Unspecified), "Đang chiếu", "Terrifier 3" },
-                    { 14, null, new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified), "Ba thế hệ trong gia đình Deetz vô tình mở lại cánh cổng dẫn đến thế giới của hồn ma Beetlejuice.", 105, null, "/posters/beetlejuice-beetlejuice.jpg", new DateTime(2026, 8, 9, 0, 0, 0, 0, DateTimeKind.Unspecified), "Sắp chiếu", "Beetlejuice Beetlejuice" },
-                    { 15, null, new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified), "Một đặc vụ FBI điều tra loạt án mạng liên quan đến các manh mối huyền bí đầy ám ảnh.", 101, null, "/posters/longlegs.jpg", new DateTime(2026, 8, 6, 0, 0, 0, 0, DateTimeKind.Unspecified), "Sắp chiếu", "Longlegs" },
-                    { 16, null, new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified), "Riley bước vào tuổi dậy thì và phải đối mặt với những cảm xúc mới phức tạp hơn trong tâm trí mình.", 96, null, "/posters/inside-out-2.jpg", new DateTime(2026, 8, 16, 0, 0, 0, 0, DateTimeKind.Unspecified), "Sắp chiếu", "Inside Out 2" },
-                    { 17, null, new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified), "Moana lên đường trong một chuyến hải trình mới đầy thử thách cùng những người bạn cũ và mới.", 100, null, "/posters/moana-2.jpg", new DateTime(2026, 8, 31, 0, 0, 0, 0, DateTimeKind.Unspecified), "Sắp chiếu", "Moana 2" },
-                    { 18, null, new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified), "Gru phải bảo vệ gia đình mới của mình trước một kẻ thù cũ đầy nguy hiểm.", 94, new DateTime(2026, 10, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), "/posters/despicable-me-4.jpg", new DateTime(2026, 8, 13, 0, 0, 0, 0, DateTimeKind.Unspecified), "Đang chiếu", "Despicable Me 4" },
-                    { 19, null, new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified), "Một robot bị mắc kẹt trên hòn đảo hoang phải học cách sinh tồn và trở thành người mẹ nuôi của một chú ngỗng con.", 102, new DateTime(2026, 7, 31, 0, 0, 0, 0, DateTimeKind.Unspecified), "/posters/the-wild-robot.jpg", new DateTime(2026, 6, 21, 0, 0, 0, 0, DateTimeKind.Unspecified), "Ngừng chiếu", "The Wild Robot" },
-                    { 20, null, new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified), "Po phải tìm người kế nhiệm làm Rồng Chiến Binh trong khi đối mặt với một pháp sư biến hình nguy hiểm.", 94, new DateTime(2026, 8, 22, 0, 0, 0, 0, DateTimeKind.Unspecified), "/posters/kung-fu-panda-4.jpg", new DateTime(2026, 7, 16, 0, 0, 0, 0, DateTimeKind.Unspecified), "Ngừng chiếu", "Kung Fu Panda 4" },
-                    { 21, "/banners/barbie-banner.jpg", new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified), "Barbie rời khỏi thế giới hoàn hảo của mình để khám phá thế giới thực đầy bất ngờ.", 114, new DateTime(2026, 11, 17, 0, 0, 0, 0, DateTimeKind.Unspecified), "/posters/barbie.jpg", new DateTime(2026, 9, 26, 0, 0, 0, 0, DateTimeKind.Unspecified), "Đang chiếu", "Barbie" },
-                    { 22, null, new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified), "Một phụ nữ được thuê để giúp một chàng trai nhút nhát tự tin hơn trước khi vào đại học.", 103, null, "/posters/no-hard-feelings.jpg", new DateTime(2026, 7, 13, 0, 0, 0, 0, DateTimeKind.Unspecified), "Sắp chiếu", "No Hard Feelings" },
-                    { 23, null, new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified), "Một nữ tiểu thuyết gia phát hiện cốt truyện trong sách của mình đang trở thành sự thật ngoài đời.", 139, null, "/posters/argylle.jpg", new DateTime(2026, 9, 16, 0, 0, 0, 0, DateTimeKind.Unspecified), "Sắp chiếu", "Argylle" },
-                    { 24, null, new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified), "Một nhóm bạn trẻ phải sống sót qua đêm giao thừa thiên niên kỷ khi máy móc nổi loạn.", 93, null, "/posters/y2k.jpg", new DateTime(2026, 8, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), "Sắp chiếu", "Y2K" },
-                    { 25, null, new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified), "Một phụ nữ ở độ tuổi 30 bắt đầu hành trình khám phá lại chính bản thân mình.", 96, new DateTime(2026, 8, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "/posters/am-i-ok.jpg", new DateTime(2026, 6, 14, 0, 0, 0, 0, DateTimeKind.Unspecified), "Đang chiếu", "Am I OK?" },
-                    { 26, "/banners/dune-2-banner.jpg", new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified), "Paul Atreides hợp lực cùng người Fremen trên hành trình trả thù và định đoạt số phận cả vũ trụ.", 166, new DateTime(2026, 10, 29, 0, 0, 0, 0, DateTimeKind.Unspecified), "/posters/dune-part-two.jpg", new DateTime(2026, 9, 17, 0, 0, 0, 0, DateTimeKind.Unspecified), "Đang chiếu", "Dune: Part Two" },
-                    { 27, null, new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified), "Hai quái vật huyền thoại Godzilla và Kong buộc phải bắt tay chống lại một mối đe dọa ẩn giấu.", 115, null, "/posters/godzilla-x-kong-the-new-empire.jpg", new DateTime(2026, 6, 24, 0, 0, 0, 0, DateTimeKind.Unspecified), "Sắp chiếu", "Godzilla x Kong: The New Empire" },
-                    { 28, null, new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified), "Một nhóm người trẻ khai thác trạm vũ trụ bỏ hoang chạm trán sinh vật ngoài hành tinh nguy hiểm bậc nhất vũ trụ.", 119, new DateTime(2026, 9, 28, 0, 0, 0, 0, DateTimeKind.Unspecified), "/posters/alien-romulus.jpg", new DateTime(2026, 7, 30, 0, 0, 0, 0, DateTimeKind.Unspecified), "Đang chiếu", "Alien: Romulus" },
-                    { 29, null, new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified), "Trong cuộc chiến giữa loài người và trí tuệ nhân tạo, một cựu binh phát hiện vũ khí bí mật mang hình hài đứa trẻ.", 133, new DateTime(2026, 7, 19, 0, 0, 0, 0, DateTimeKind.Unspecified), "/posters/the-creator.jpg", new DateTime(2026, 6, 13, 0, 0, 0, 0, DateTimeKind.Unspecified), "Đang chiếu", "The Creator" },
-                    { 30, null, new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified), "Một phụ nữ trẻ được hồi sinh bởi khoa học kỳ lạ và bắt đầu hành trình khám phá thế giới theo cách riêng của mình.", 141, new DateTime(2026, 8, 21, 0, 0, 0, 0, DateTimeKind.Unspecified), "/posters/poor-things.jpg", new DateTime(2026, 7, 7, 0, 0, 0, 0, DateTimeKind.Unspecified), "Đang chiếu", "Poor Things" }
+                    { 1, "Đã duyệt", null, new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified), "Ethan Hunt và đội IMF đối mặt nhiệm vụ nguy hiểm nhất sự nghiệp trong phần cuối của loạt phim gián điệp hành động kinh điển.", 170, new DateTime(2026, 9, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), false, null, "/posters/mission-impossible-the-final-reckoning.jpg", new DateTime(2026, 8, 7, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, false, "Ngừng chiếu", null, "Mission: Impossible – The Final Reckoning" },
+                    { 2, "Đã duyệt", null, new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified), "Hai cảnh sát Miami Mike Lowrey và Marcus Burnett phải chạy đua để minh oan cho người chỉ huy quá cố của mình.", 115, null, false, null, "/posters/bad-boys-ride-or-die.jpg", new DateTime(2026, 8, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, false, "Sắp chiếu", null, "Bad Boys: Ride or Die" },
+                    { 3, "Đã duyệt", null, new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified), "Một diễn viên đóng thế phải điều tra vụ mất tích của ngôi sao điện ảnh trong lúc cố gắng hàn gắn chuyện tình cũ.", 126, new DateTime(2026, 8, 13, 0, 0, 0, 0, DateTimeKind.Unspecified), false, null, "/posters/the-fall-guy.jpg", new DateTime(2026, 7, 4, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, false, "Ngừng chiếu", null, "The Fall Guy" },
+                    { 4, "Đã duyệt", null, new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified), "Câu chuyện về tuổi trẻ của Furiosa trong thế giới hậu tận thế khắc nghiệt của vũ trụ Mad Max.", 148, null, false, null, "/posters/furiosa-a-mad-max-saga.jpg", new DateTime(2026, 8, 28, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, false, "Sắp chiếu", null, "Furiosa: A Mad Max Saga" },
+                    { 5, "Đã duyệt", null, new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified), "Một nhóm thợ săn bão liều lĩnh đối đầu với những cơn lốc xoáy ngày càng khốc liệt ở vùng Trung Tây nước Mỹ.", 122, new DateTime(2026, 7, 22, 0, 0, 0, 0, DateTimeKind.Unspecified), false, null, "/posters/twisters.jpg", new DateTime(2026, 6, 23, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, false, "Ngừng chiếu", null, "Twisters" },
+                    { 6, "Đã duyệt", null, new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified), "Hai người từng có một đêm hẹn hò tuyệt vời rồi trở mặt bất ngờ, buộc phải giả vờ yêu nhau tại một đám cưới ở Úc.", 103, new DateTime(2026, 8, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), false, null, "/posters/anyone-but-you.jpg", new DateTime(2026, 6, 29, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, false, "Đang chiếu", null, "Anyone but You" },
+                    { 7, "Đã duyệt", "/banners/it-ends-with-us-banner.jpg", new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified), "Một người phụ nữ trẻ phải đối mặt với những lựa chọn khó khăn khi tình yêu và quá khứ đau buồn đan xen.", 130, new DateTime(2026, 11, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), false, null, "/posters/it-ends-with-us.jpg", new DateTime(2026, 9, 22, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, true, "Đang chiếu", null, "It Ends with Us" },
+                    { 8, "Đã duyệt", null, new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified), "Một cặp đôi cùng nhau trải qua những cột mốc vui buồn của cuộc sống, tình yêu và bệnh tật.", 108, new DateTime(2026, 9, 9, 0, 0, 0, 0, DateTimeKind.Unspecified), false, null, "/posters/we-live-in-time.jpg", new DateTime(2026, 7, 31, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, false, "Ngừng chiếu", null, "We Live in Time" },
+                    { 9, "Đã duyệt", null, new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified), "Một người mẹ đơn thân bất ngờ nảy sinh tình cảm với chàng ca sĩ trẻ của một ban nhạc nổi tiếng.", 115, null, false, null, "/posters/the-idea-of-you.jpg", new DateTime(2026, 9, 13, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, false, "Sắp chiếu", null, "The Idea of You" },
+                    { 10, "Đã duyệt", "/banners/past-lives-banner.jpg", new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified), "Hai người bạn thời thơ ấu tái ngộ sau nhiều năm xa cách, đối diện với những gì có thể đã xảy ra.", 106, new DateTime(2026, 10, 24, 0, 0, 0, 0, DateTimeKind.Unspecified), false, null, "/posters/past-lives.jpg", new DateTime(2026, 8, 29, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, true, "Đang chiếu", null, "Past Lives" },
+                    { 11, "Đã duyệt", "/banners/the-substance-banner.jpg", new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified), "Một ngôi sao đang lụi tàn sử dụng loại thuốc bí ẩn để tạo ra phiên bản trẻ trung hơn của chính mình, với cái giá khủng khiếp.", 141, new DateTime(2026, 9, 17, 0, 0, 0, 0, DateTimeKind.Unspecified), false, null, "/posters/the-substance.jpg", new DateTime(2026, 8, 17, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, true, "Đang chiếu", null, "The Substance" },
+                    { 12, "Đã duyệt", null, new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified), "Một ngôi sao nhạc pop phải đối mặt với những sự kiện ngày càng đáng sợ khi thực tại bắt đầu sụp đổ quanh cô.", 127, null, false, null, "/posters/smile-2.jpg", new DateTime(2026, 6, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, false, "Sắp chiếu", null, "Smile 2" },
+                    { 13, "Đã duyệt", null, new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified), "Gã hề sát nhân Art the Clown trở lại gieo rắc kinh hoàng trong đêm Giáng sinh.", 125, new DateTime(2026, 9, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), false, null, "/posters/terrifier-3.jpg", new DateTime(2026, 7, 11, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, false, "Đang chiếu", null, "Terrifier 3" },
+                    { 14, "Đã duyệt", null, new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified), "Ba thế hệ trong gia đình Deetz vô tình mở lại cánh cổng dẫn đến thế giới của hồn ma Beetlejuice.", 105, null, false, null, "/posters/beetlejuice-beetlejuice.jpg", new DateTime(2026, 8, 9, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, false, "Sắp chiếu", null, "Beetlejuice Beetlejuice" },
+                    { 15, "Đã duyệt", null, new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified), "Một đặc vụ FBI điều tra loạt án mạng liên quan đến các manh mối huyền bí đầy ám ảnh.", 101, null, false, null, "/posters/longlegs.jpg", new DateTime(2026, 8, 6, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, false, "Sắp chiếu", null, "Longlegs" },
+                    { 16, "Đã duyệt", null, new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified), "Riley bước vào tuổi dậy thì và phải đối mặt với những cảm xúc mới phức tạp hơn trong tâm trí mình.", 96, null, false, null, "/posters/inside-out-2.jpg", new DateTime(2026, 8, 16, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, false, "Sắp chiếu", null, "Inside Out 2" },
+                    { 17, "Đã duyệt", null, new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified), "Moana lên đường trong một chuyến hải trình mới đầy thử thách cùng những người bạn cũ và mới.", 100, null, false, null, "/posters/moana-2.jpg", new DateTime(2026, 8, 31, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, false, "Sắp chiếu", null, "Moana 2" },
+                    { 18, "Đã duyệt", null, new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified), "Gru phải bảo vệ gia đình mới của mình trước một kẻ thù cũ đầy nguy hiểm.", 94, new DateTime(2026, 10, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), false, null, "/posters/despicable-me-4.jpg", new DateTime(2026, 8, 13, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, false, "Đang chiếu", null, "Despicable Me 4" },
+                    { 19, "Đã duyệt", null, new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified), "Một robot bị mắc kẹt trên hòn đảo hoang phải học cách sinh tồn và trở thành người mẹ nuôi của một chú ngỗng con.", 102, new DateTime(2026, 7, 31, 0, 0, 0, 0, DateTimeKind.Unspecified), false, null, "/posters/the-wild-robot.jpg", new DateTime(2026, 6, 21, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, false, "Ngừng chiếu", null, "The Wild Robot" },
+                    { 20, "Đã duyệt", null, new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified), "Po phải tìm người kế nhiệm làm Rồng Chiến Binh trong khi đối mặt với một pháp sư biến hình nguy hiểm.", 94, new DateTime(2026, 8, 22, 0, 0, 0, 0, DateTimeKind.Unspecified), false, null, "/posters/kung-fu-panda-4.jpg", new DateTime(2026, 7, 16, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, false, "Ngừng chiếu", null, "Kung Fu Panda 4" },
+                    { 21, "Đã duyệt", "/banners/barbie-banner.jpg", new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified), "Barbie rời khỏi thế giới hoàn hảo của mình để khám phá thế giới thực đầy bất ngờ.", 114, new DateTime(2026, 11, 17, 0, 0, 0, 0, DateTimeKind.Unspecified), false, null, "/posters/barbie.jpg", new DateTime(2026, 9, 26, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, true, "Đang chiếu", null, "Barbie" },
+                    { 22, "Đã duyệt", null, new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified), "Một phụ nữ được thuê để giúp một chàng trai nhút nhát tự tin hơn trước khi vào đại học.", 103, null, false, null, "/posters/no-hard-feelings.jpg", new DateTime(2026, 7, 13, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, false, "Sắp chiếu", null, "No Hard Feelings" },
+                    { 23, "Đã duyệt", null, new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified), "Một nữ tiểu thuyết gia phát hiện cốt truyện trong sách của mình đang trở thành sự thật ngoài đời.", 139, null, false, null, "/posters/argylle.jpg", new DateTime(2026, 9, 16, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, false, "Sắp chiếu", null, "Argylle" },
+                    { 24, "Đã duyệt", null, new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified), "Một nhóm bạn trẻ phải sống sót qua đêm giao thừa thiên niên kỷ khi máy móc nổi loạn.", 93, null, false, null, "/posters/y2k.jpg", new DateTime(2026, 8, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, false, "Sắp chiếu", null, "Y2K" },
+                    { 25, "Đã duyệt", null, new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified), "Một phụ nữ ở độ tuổi 30 bắt đầu hành trình khám phá lại chính bản thân mình.", 96, new DateTime(2026, 8, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, null, "/posters/am-i-ok.jpg", new DateTime(2026, 6, 14, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, false, "Đang chiếu", null, "Am I OK?" },
+                    { 26, "Đã duyệt", "/banners/dune-2-banner.jpg", new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified), "Paul Atreides hợp lực cùng người Fremen trên hành trình trả thù và định đoạt số phận cả vũ trụ.", 166, new DateTime(2026, 10, 29, 0, 0, 0, 0, DateTimeKind.Unspecified), false, null, "/posters/dune-part-two.jpg", new DateTime(2026, 9, 17, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, true, "Đang chiếu", null, "Dune: Part Two" },
+                    { 27, "Đã duyệt", null, new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified), "Hai quái vật huyền thoại Godzilla và Kong buộc phải bắt tay chống lại một mối đe dọa ẩn giấu.", 115, null, false, null, "/posters/godzilla-x-kong-the-new-empire.jpg", new DateTime(2026, 6, 24, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, false, "Sắp chiếu", null, "Godzilla x Kong: The New Empire" },
+                    { 28, "Đã duyệt", null, new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified), "Một nhóm người trẻ khai thác trạm vũ trụ bỏ hoang chạm trán sinh vật ngoài hành tinh nguy hiểm bậc nhất vũ trụ.", 119, new DateTime(2026, 9, 28, 0, 0, 0, 0, DateTimeKind.Unspecified), false, null, "/posters/alien-romulus.jpg", new DateTime(2026, 7, 30, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, false, "Đang chiếu", null, "Alien: Romulus" },
+                    { 29, "Đã duyệt", null, new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified), "Trong cuộc chiến giữa loài người và trí tuệ nhân tạo, một cựu binh phát hiện vũ khí bí mật mang hình hài đứa trẻ.", 133, new DateTime(2026, 7, 19, 0, 0, 0, 0, DateTimeKind.Unspecified), false, null, "/posters/the-creator.jpg", new DateTime(2026, 6, 13, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, false, "Đang chiếu", null, "The Creator" },
+                    { 30, "Đã duyệt", null, new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified), "Một phụ nữ trẻ được hồi sinh bởi khoa học kỳ lạ và bắt đầu hành trình khám phá thế giới theo cách riêng của mình.", 141, new DateTime(2026, 8, 21, 0, 0, 0, 0, DateTimeKind.Unspecified), false, null, "/posters/poor-things.jpg", new DateTime(2026, 7, 7, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, false, "Đang chiếu", null, "Poor Things" }
                 });
 
             migrationBuilder.InsertData(
                 table: "Movies",
-                columns: new[] { "MovieId", "BannerUrl", "CreatedAt", "Description", "Duration", "EndDate", "PosterUrl", "ReleaseDate", "Status", "Title" },
+                columns: new[] { "MovieId", "ApprovalStatus", "BannerUrl", "CreatedAt", "Description", "Duration", "EndDate", "HasPendingEdit", "PendingChangesJson", "PosterUrl", "ReleaseDate", "ReviewedAt", "ReviewedBy", "ShowOnBanner", "Status", "SubmittedBy", "Title" },
                 values: new object[,]
                 {
-                    { 31, null, new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified), "Ghi lại hành trình leo núi El Capitan không dây bảo hộ đầy mạo hiểm của vận động viên Alex Honnold.", 100, new DateTime(2026, 8, 31, 0, 0, 0, 0, DateTimeKind.Unspecified), "/posters/free-solo.jpg", new DateTime(2026, 7, 29, 0, 0, 0, 0, DateTimeKind.Unspecified), "Ngừng chiếu", "Free Solo" },
-                    { 32, null, new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified), "Một nhà làm phim xây dựng mối quan hệ đặc biệt với một con bạch tuộc hoang dã ngoài khơi Nam Phi.", 85, null, "/posters/my-octopus-teacher.jpg", new DateTime(2026, 6, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), "Sắp chiếu", "My Octopus Teacher" },
-                    { 33, null, new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified), "Bộ phim tài liệu phân tích mối liên hệ giữa chế độ nô lệ và hệ thống nhà tù ở nước Mỹ hiện đại.", 100, null, "/posters/13th.jpg", new DateTime(2026, 9, 18, 0, 0, 0, 0, DateTimeKind.Unspecified), "Sắp chiếu", "13th" },
-                    { 34, null, new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified), "Chân dung về cuộc đời và di sản của Fred Rogers, người dẫn chương trình truyền hình thiếu nhi huyền thoại.", 94, new DateTime(2026, 9, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "/posters/won-t-you-be-my-neighbor.jpg", new DateTime(2026, 7, 24, 0, 0, 0, 0, DateTimeKind.Unspecified), "Đang chiếu", "Won't You Be My Neighbor?" },
-                    { 35, null, new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified), "Câu chuyện có thật đằng sau lễ hội âm nhạc xa hoa sụp đổ thảm hại trên mạng xã hội.", 97, new DateTime(2026, 9, 21, 0, 0, 0, 0, DateTimeKind.Unspecified), "/posters/fyre-the-greatest-party-that-never-happened.jpg", new DateTime(2026, 7, 23, 0, 0, 0, 0, DateTimeKind.Unspecified), "Đang chiếu", "Fyre: The Greatest Party That Never Happened" }
+                    { 31, "Đã duyệt", null, new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified), "Ghi lại hành trình leo núi El Capitan không dây bảo hộ đầy mạo hiểm của vận động viên Alex Honnold.", 100, new DateTime(2026, 8, 31, 0, 0, 0, 0, DateTimeKind.Unspecified), false, null, "/posters/free-solo.jpg", new DateTime(2026, 7, 29, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, false, "Ngừng chiếu", null, "Free Solo" },
+                    { 32, "Đã duyệt", null, new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified), "Một nhà làm phim xây dựng mối quan hệ đặc biệt với một con bạch tuộc hoang dã ngoài khơi Nam Phi.", 85, null, false, null, "/posters/my-octopus-teacher.jpg", new DateTime(2026, 6, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, false, "Sắp chiếu", null, "My Octopus Teacher" },
+                    { 33, "Đã duyệt", null, new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified), "Bộ phim tài liệu phân tích mối liên hệ giữa chế độ nô lệ và hệ thống nhà tù ở nước Mỹ hiện đại.", 100, null, false, null, "/posters/13th.jpg", new DateTime(2026, 9, 18, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, false, "Sắp chiếu", null, "13th" },
+                    { 34, "Đã duyệt", null, new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified), "Chân dung về cuộc đời và di sản của Fred Rogers, người dẫn chương trình truyền hình thiếu nhi huyền thoại.", 94, new DateTime(2026, 9, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), false, null, "/posters/won-t-you-be-my-neighbor.jpg", new DateTime(2026, 7, 24, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, false, "Đang chiếu", null, "Won't You Be My Neighbor?" },
+                    { 35, "Đã duyệt", null, new DateTime(2026, 7, 12, 17, 13, 55, 597, DateTimeKind.Unspecified), "Câu chuyện có thật đằng sau lễ hội âm nhạc xa hoa sụp đổ thảm hại trên mạng xã hội.", 97, new DateTime(2026, 9, 21, 0, 0, 0, 0, DateTimeKind.Unspecified), false, null, "/posters/fyre-the-greatest-party-that-never-happened.jpg", new DateTime(2026, 7, 23, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, false, "Đang chiếu", null, "Fyre: The Greatest Party That Never Happened" }
                 });
 
             migrationBuilder.InsertData(
@@ -663,7 +780,32 @@ namespace DatVeXemPhim.Migrations
                     { 100053, new DateTime(2026, 8, 10, 13, 43, 0, 0, DateTimeKind.Unspecified), 32, 1, new DateTime(2026, 8, 10, 12, 18, 0, 0, DateTimeKind.Unspecified), "Sắp chiếu", 75000m },
                     { 100054, new DateTime(2026, 8, 7, 13, 34, 0, 0, DateTimeKind.Unspecified), 32, 2, new DateTime(2026, 8, 7, 12, 9, 0, 0, DateTimeKind.Unspecified), "Sắp chiếu", 75000m },
                     { 100055, new DateTime(2026, 8, 11, 13, 25, 0, 0, DateTimeKind.Unspecified), 33, 2, new DateTime(2026, 8, 11, 11, 45, 0, 0, DateTimeKind.Unspecified), "Sắp chiếu", 75000m },
-                    { 100056, new DateTime(2026, 8, 8, 13, 3, 0, 0, DateTimeKind.Unspecified), 33, 1, new DateTime(2026, 8, 8, 11, 23, 0, 0, DateTimeKind.Unspecified), "Sắp chiếu", 75000m }
+                    { 100056, new DateTime(2026, 8, 8, 13, 3, 0, 0, DateTimeKind.Unspecified), 33, 1, new DateTime(2026, 8, 8, 11, 23, 0, 0, DateTimeKind.Unspecified), "Sắp chiếu", 75000m },
+                    { 100057, new DateTime(2026, 8, 8, 18, 43, 0, 0, DateTimeKind.Unspecified), 6, 1, new DateTime(2026, 8, 8, 17, 0, 0, 0, DateTimeKind.Unspecified), "Đang chiếu", 75000m },
+                    { 100058, new DateTime(2026, 8, 8, 19, 10, 0, 0, DateTimeKind.Unspecified), 7, 2, new DateTime(2026, 8, 8, 17, 0, 0, 0, DateTimeKind.Unspecified), "Đang chiếu", 75000m },
+                    { 100059, new DateTime(2026, 8, 8, 20, 49, 0, 0, DateTimeKind.Unspecified), 10, 1, new DateTime(2026, 8, 8, 19, 3, 0, 0, DateTimeKind.Unspecified), "Đang chiếu", 75000m },
+                    { 100060, new DateTime(2026, 8, 8, 21, 51, 0, 0, DateTimeKind.Unspecified), 11, 2, new DateTime(2026, 8, 8, 19, 30, 0, 0, DateTimeKind.Unspecified), "Đang chiếu", 75000m },
+                    { 100061, new DateTime(2026, 8, 8, 23, 14, 0, 0, DateTimeKind.Unspecified), 13, 1, new DateTime(2026, 8, 8, 21, 9, 0, 0, DateTimeKind.Unspecified), "Đang chiếu", 75000m },
+                    { 100062, new DateTime(2026, 8, 8, 23, 45, 0, 0, DateTimeKind.Unspecified), 18, 2, new DateTime(2026, 8, 8, 22, 11, 0, 0, DateTimeKind.Unspecified), "Đang chiếu", 75000m },
+                    { 100063, new DateTime(2026, 8, 9, 10, 43, 0, 0, DateTimeKind.Unspecified), 6, 1, new DateTime(2026, 8, 9, 9, 0, 0, 0, DateTimeKind.Unspecified), "Đang chiếu", 75000m },
+                    { 100064, new DateTime(2026, 8, 9, 11, 10, 0, 0, DateTimeKind.Unspecified), 7, 2, new DateTime(2026, 8, 9, 9, 0, 0, 0, DateTimeKind.Unspecified), "Đang chiếu", 75000m },
+                    { 100065, new DateTime(2026, 8, 9, 12, 49, 0, 0, DateTimeKind.Unspecified), 10, 1, new DateTime(2026, 8, 9, 11, 3, 0, 0, DateTimeKind.Unspecified), "Đang chiếu", 75000m },
+                    { 100066, new DateTime(2026, 8, 9, 13, 51, 0, 0, DateTimeKind.Unspecified), 11, 2, new DateTime(2026, 8, 9, 11, 30, 0, 0, DateTimeKind.Unspecified), "Đang chiếu", 75000m },
+                    { 100067, new DateTime(2026, 8, 9, 15, 14, 0, 0, DateTimeKind.Unspecified), 13, 1, new DateTime(2026, 8, 9, 13, 9, 0, 0, DateTimeKind.Unspecified), "Đang chiếu", 75000m },
+                    { 100068, new DateTime(2026, 8, 9, 15, 45, 0, 0, DateTimeKind.Unspecified), 18, 2, new DateTime(2026, 8, 9, 14, 11, 0, 0, DateTimeKind.Unspecified), "Đang chiếu", 75000m }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Showtimes",
+                columns: new[] { "ShowtimeId", "EndTime", "MovieId", "RoomId", "StartTime", "Status", "TicketPrice" },
+                values: new object[,]
+                {
+                    { 100069, new DateTime(2026, 8, 9, 17, 28, 0, 0, DateTimeKind.Unspecified), 21, 1, new DateTime(2026, 8, 9, 15, 34, 0, 0, DateTimeKind.Unspecified), "Đang chiếu", 75000m },
+                    { 100070, new DateTime(2026, 8, 9, 17, 41, 0, 0, DateTimeKind.Unspecified), 25, 2, new DateTime(2026, 8, 9, 16, 5, 0, 0, DateTimeKind.Unspecified), "Đang chiếu", 75000m },
+                    { 100071, new DateTime(2026, 8, 9, 20, 34, 0, 0, DateTimeKind.Unspecified), 26, 1, new DateTime(2026, 8, 9, 17, 48, 0, 0, DateTimeKind.Unspecified), "Đang chiếu", 75000m },
+                    { 100072, new DateTime(2026, 8, 9, 20, 0, 0, 0, DateTimeKind.Unspecified), 28, 2, new DateTime(2026, 8, 9, 18, 1, 0, 0, DateTimeKind.Unspecified), "Đang chiếu", 75000m },
+                    { 100073, new DateTime(2026, 8, 9, 23, 7, 0, 0, DateTimeKind.Unspecified), 29, 1, new DateTime(2026, 8, 9, 20, 54, 0, 0, DateTimeKind.Unspecified), "Đang chiếu", 75000m },
+                    { 100074, new DateTime(2026, 8, 9, 22, 41, 0, 0, DateTimeKind.Unspecified), 30, 2, new DateTime(2026, 8, 9, 20, 20, 0, 0, DateTimeKind.Unspecified), "Đang chiếu", 75000m }
                 });
 
             migrationBuilder.InsertData(
@@ -671,8 +813,8 @@ namespace DatVeXemPhim.Migrations
                 columns: new[] { "UserId", "CreatedAt", "Email", "FullName", "IsActive", "PasswordHash", "Phone", "RoleId", "Username" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2026, 7, 9, 15, 25, 8, 577, DateTimeKind.Unspecified), "admin01@rapphim.vn", "Nguyễn Văn Quản", true, "$2a$hash_admin01", "0900000001", 2, "admin01" },
-                    { 2, new DateTime(2026, 7, 9, 15, 25, 8, 577, DateTimeKind.Unspecified), "staff01@rapphim.vn", "Trần Thị Nhân Viên", true, "$2a$hash_staff01", "0900000002", 1, "staff01" }
+                    { 1, new DateTime(2026, 7, 9, 15, 25, 8, 577, DateTimeKind.Unspecified), "admin01@rapphim.vn", "Nguyễn Văn Quản", true, "100000.CHbfym1v7fmbKrh7bi/tSw==.hOJV2nu7uA6qiEAqU5BkCXQ7lpThnQOAvqosUHxby2M=", "0900000001", 2, "admin01" },
+                    { 2, new DateTime(2026, 7, 9, 15, 25, 8, 577, DateTimeKind.Unspecified), "staff01@rapphim.vn", "Trần Thị Nhân Viên", true, "100000.glxfROvxJ6dnkFPGXnwJDw==.KWyDIAdywy5y/vUCO3btYzxO/5Vj0DU7KqD29qqZl1A=", "0900000002", 1, "staff01" }
                 });
 
             migrationBuilder.InsertData(
@@ -1428,7 +1570,249 @@ namespace DatVeXemPhim.Migrations
                     { 200641, null, null, 12, 100056, "Trống" },
                     { 200642, null, null, 13, 100056, "Trống" },
                     { 200643, null, null, 14, 100056, "Trống" },
-                    { 200644, null, null, 15, 100056, "Trống" }
+                    { 200644, null, null, 15, 100056, "Trống" },
+                    { 200645, null, null, 1, 100057, "Trống" },
+                    { 200646, null, null, 2, 100057, "Trống" },
+                    { 200647, null, null, 3, 100057, "Trống" },
+                    { 200648, null, null, 4, 100057, "Trống" },
+                    { 200649, null, null, 5, 100057, "Trống" },
+                    { 200650, null, null, 6, 100057, "Trống" },
+                    { 200651, null, null, 7, 100057, "Trống" },
+                    { 200652, null, null, 8, 100057, "Trống" },
+                    { 200653, null, null, 9, 100057, "Trống" },
+                    { 200654, null, null, 10, 100057, "Trống" },
+                    { 200655, null, null, 11, 100057, "Trống" },
+                    { 200656, null, null, 12, 100057, "Trống" },
+                    { 200657, null, null, 13, 100057, "Trống" },
+                    { 200658, null, null, 14, 100057, "Trống" },
+                    { 200659, null, null, 15, 100057, "Trống" },
+                    { 200660, null, null, 16, 100058, "Trống" },
+                    { 200661, null, null, 17, 100058, "Trống" },
+                    { 200662, null, null, 18, 100058, "Trống" },
+                    { 200663, null, null, 19, 100058, "Trống" },
+                    { 200664, null, null, 20, 100058, "Trống" },
+                    { 200665, null, null, 21, 100058, "Trống" },
+                    { 200666, null, null, 22, 100058, "Trống" },
+                    { 200667, null, null, 23, 100058, "Trống" },
+                    { 200668, null, null, 1, 100059, "Trống" },
+                    { 200669, null, null, 2, 100059, "Trống" },
+                    { 200670, null, null, 3, 100059, "Trống" },
+                    { 200671, null, null, 4, 100059, "Trống" },
+                    { 200672, null, null, 5, 100059, "Trống" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "ShowtimeSeats",
+                columns: new[] { "ShowtimeSeatId", "HeldBySessionId", "HoldExpiredAt", "SeatId", "ShowtimeId", "Status" },
+                values: new object[,]
+                {
+                    { 200673, null, null, 6, 100059, "Trống" },
+                    { 200674, null, null, 7, 100059, "Trống" },
+                    { 200675, null, null, 8, 100059, "Trống" },
+                    { 200676, null, null, 9, 100059, "Trống" },
+                    { 200677, null, null, 10, 100059, "Trống" },
+                    { 200678, null, null, 11, 100059, "Trống" },
+                    { 200679, null, null, 12, 100059, "Trống" },
+                    { 200680, null, null, 13, 100059, "Trống" },
+                    { 200681, null, null, 14, 100059, "Trống" },
+                    { 200682, null, null, 15, 100059, "Trống" },
+                    { 200683, null, null, 16, 100060, "Trống" },
+                    { 200684, null, null, 17, 100060, "Trống" },
+                    { 200685, null, null, 18, 100060, "Trống" },
+                    { 200686, null, null, 19, 100060, "Trống" },
+                    { 200687, null, null, 20, 100060, "Trống" },
+                    { 200688, null, null, 21, 100060, "Trống" },
+                    { 200689, null, null, 22, 100060, "Trống" },
+                    { 200690, null, null, 23, 100060, "Trống" },
+                    { 200691, null, null, 1, 100061, "Trống" },
+                    { 200692, null, null, 2, 100061, "Trống" },
+                    { 200693, null, null, 3, 100061, "Trống" },
+                    { 200694, null, null, 4, 100061, "Trống" },
+                    { 200695, null, null, 5, 100061, "Trống" },
+                    { 200696, null, null, 6, 100061, "Trống" },
+                    { 200697, null, null, 7, 100061, "Trống" },
+                    { 200698, null, null, 8, 100061, "Trống" },
+                    { 200699, null, null, 9, 100061, "Trống" },
+                    { 200700, null, null, 10, 100061, "Trống" },
+                    { 200701, null, null, 11, 100061, "Trống" },
+                    { 200702, null, null, 12, 100061, "Trống" },
+                    { 200703, null, null, 13, 100061, "Trống" },
+                    { 200704, null, null, 14, 100061, "Trống" },
+                    { 200705, null, null, 15, 100061, "Trống" },
+                    { 200706, null, null, 16, 100062, "Trống" },
+                    { 200707, null, null, 17, 100062, "Trống" },
+                    { 200708, null, null, 18, 100062, "Trống" },
+                    { 200709, null, null, 19, 100062, "Trống" },
+                    { 200710, null, null, 20, 100062, "Trống" },
+                    { 200711, null, null, 21, 100062, "Trống" },
+                    { 200712, null, null, 22, 100062, "Trống" },
+                    { 200713, null, null, 23, 100062, "Trống" },
+                    { 200714, null, null, 1, 100063, "Trống" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "ShowtimeSeats",
+                columns: new[] { "ShowtimeSeatId", "HeldBySessionId", "HoldExpiredAt", "SeatId", "ShowtimeId", "Status" },
+                values: new object[,]
+                {
+                    { 200715, null, null, 2, 100063, "Trống" },
+                    { 200716, null, null, 3, 100063, "Trống" },
+                    { 200717, null, null, 4, 100063, "Trống" },
+                    { 200718, null, null, 5, 100063, "Trống" },
+                    { 200719, null, null, 6, 100063, "Trống" },
+                    { 200720, null, null, 7, 100063, "Trống" },
+                    { 200721, null, null, 8, 100063, "Trống" },
+                    { 200722, null, null, 9, 100063, "Trống" },
+                    { 200723, null, null, 10, 100063, "Trống" },
+                    { 200724, null, null, 11, 100063, "Trống" },
+                    { 200725, null, null, 12, 100063, "Trống" },
+                    { 200726, null, null, 13, 100063, "Trống" },
+                    { 200727, null, null, 14, 100063, "Trống" },
+                    { 200728, null, null, 15, 100063, "Trống" },
+                    { 200729, null, null, 16, 100064, "Trống" },
+                    { 200730, null, null, 17, 100064, "Trống" },
+                    { 200731, null, null, 18, 100064, "Trống" },
+                    { 200732, null, null, 19, 100064, "Trống" },
+                    { 200733, null, null, 20, 100064, "Trống" },
+                    { 200734, null, null, 21, 100064, "Trống" },
+                    { 200735, null, null, 22, 100064, "Trống" },
+                    { 200736, null, null, 23, 100064, "Trống" },
+                    { 200737, null, null, 1, 100065, "Trống" },
+                    { 200738, null, null, 2, 100065, "Trống" },
+                    { 200739, null, null, 3, 100065, "Trống" },
+                    { 200740, null, null, 4, 100065, "Trống" },
+                    { 200741, null, null, 5, 100065, "Trống" },
+                    { 200742, null, null, 6, 100065, "Trống" },
+                    { 200743, null, null, 7, 100065, "Trống" },
+                    { 200744, null, null, 8, 100065, "Trống" },
+                    { 200745, null, null, 9, 100065, "Trống" },
+                    { 200746, null, null, 10, 100065, "Trống" },
+                    { 200747, null, null, 11, 100065, "Trống" },
+                    { 200748, null, null, 12, 100065, "Trống" },
+                    { 200749, null, null, 13, 100065, "Trống" },
+                    { 200750, null, null, 14, 100065, "Trống" },
+                    { 200751, null, null, 15, 100065, "Trống" },
+                    { 200752, null, null, 16, 100066, "Trống" },
+                    { 200753, null, null, 17, 100066, "Trống" },
+                    { 200754, null, null, 18, 100066, "Trống" },
+                    { 200755, null, null, 19, 100066, "Trống" },
+                    { 200756, null, null, 20, 100066, "Trống" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "ShowtimeSeats",
+                columns: new[] { "ShowtimeSeatId", "HeldBySessionId", "HoldExpiredAt", "SeatId", "ShowtimeId", "Status" },
+                values: new object[,]
+                {
+                    { 200757, null, null, 21, 100066, "Trống" },
+                    { 200758, null, null, 22, 100066, "Trống" },
+                    { 200759, null, null, 23, 100066, "Trống" },
+                    { 200760, null, null, 1, 100067, "Trống" },
+                    { 200761, null, null, 2, 100067, "Trống" },
+                    { 200762, null, null, 3, 100067, "Trống" },
+                    { 200763, null, null, 4, 100067, "Trống" },
+                    { 200764, null, null, 5, 100067, "Trống" },
+                    { 200765, null, null, 6, 100067, "Trống" },
+                    { 200766, null, null, 7, 100067, "Trống" },
+                    { 200767, null, null, 8, 100067, "Trống" },
+                    { 200768, null, null, 9, 100067, "Trống" },
+                    { 200769, null, null, 10, 100067, "Trống" },
+                    { 200770, null, null, 11, 100067, "Trống" },
+                    { 200771, null, null, 12, 100067, "Trống" },
+                    { 200772, null, null, 13, 100067, "Trống" },
+                    { 200773, null, null, 14, 100067, "Trống" },
+                    { 200774, null, null, 15, 100067, "Trống" },
+                    { 200775, null, null, 16, 100068, "Trống" },
+                    { 200776, null, null, 17, 100068, "Trống" },
+                    { 200777, null, null, 18, 100068, "Trống" },
+                    { 200778, null, null, 19, 100068, "Trống" },
+                    { 200779, null, null, 20, 100068, "Trống" },
+                    { 200780, null, null, 21, 100068, "Trống" },
+                    { 200781, null, null, 22, 100068, "Trống" },
+                    { 200782, null, null, 23, 100068, "Trống" },
+                    { 200783, null, null, 1, 100069, "Trống" },
+                    { 200784, null, null, 2, 100069, "Trống" },
+                    { 200785, null, null, 3, 100069, "Trống" },
+                    { 200786, null, null, 4, 100069, "Trống" },
+                    { 200787, null, null, 5, 100069, "Trống" },
+                    { 200788, null, null, 6, 100069, "Trống" },
+                    { 200789, null, null, 7, 100069, "Trống" },
+                    { 200790, null, null, 8, 100069, "Trống" },
+                    { 200791, null, null, 9, 100069, "Trống" },
+                    { 200792, null, null, 10, 100069, "Trống" },
+                    { 200793, null, null, 11, 100069, "Trống" },
+                    { 200794, null, null, 12, 100069, "Trống" },
+                    { 200795, null, null, 13, 100069, "Trống" },
+                    { 200796, null, null, 14, 100069, "Trống" },
+                    { 200797, null, null, 15, 100069, "Trống" },
+                    { 200798, null, null, 16, 100070, "Trống" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "ShowtimeSeats",
+                columns: new[] { "ShowtimeSeatId", "HeldBySessionId", "HoldExpiredAt", "SeatId", "ShowtimeId", "Status" },
+                values: new object[,]
+                {
+                    { 200799, null, null, 17, 100070, "Trống" },
+                    { 200800, null, null, 18, 100070, "Trống" },
+                    { 200801, null, null, 19, 100070, "Trống" },
+                    { 200802, null, null, 20, 100070, "Trống" },
+                    { 200803, null, null, 21, 100070, "Trống" },
+                    { 200804, null, null, 22, 100070, "Trống" },
+                    { 200805, null, null, 23, 100070, "Trống" },
+                    { 200806, null, null, 1, 100071, "Trống" },
+                    { 200807, null, null, 2, 100071, "Trống" },
+                    { 200808, null, null, 3, 100071, "Trống" },
+                    { 200809, null, null, 4, 100071, "Trống" },
+                    { 200810, null, null, 5, 100071, "Trống" },
+                    { 200811, null, null, 6, 100071, "Trống" },
+                    { 200812, null, null, 7, 100071, "Trống" },
+                    { 200813, null, null, 8, 100071, "Trống" },
+                    { 200814, null, null, 9, 100071, "Trống" },
+                    { 200815, null, null, 10, 100071, "Trống" },
+                    { 200816, null, null, 11, 100071, "Trống" },
+                    { 200817, null, null, 12, 100071, "Trống" },
+                    { 200818, null, null, 13, 100071, "Trống" },
+                    { 200819, null, null, 14, 100071, "Trống" },
+                    { 200820, null, null, 15, 100071, "Trống" },
+                    { 200821, null, null, 16, 100072, "Trống" },
+                    { 200822, null, null, 17, 100072, "Trống" },
+                    { 200823, null, null, 18, 100072, "Trống" },
+                    { 200824, null, null, 19, 100072, "Trống" },
+                    { 200825, null, null, 20, 100072, "Trống" },
+                    { 200826, null, null, 21, 100072, "Trống" },
+                    { 200827, null, null, 22, 100072, "Trống" },
+                    { 200828, null, null, 23, 100072, "Trống" },
+                    { 200829, null, null, 1, 100073, "Trống" },
+                    { 200830, null, null, 2, 100073, "Trống" },
+                    { 200831, null, null, 3, 100073, "Trống" },
+                    { 200832, null, null, 4, 100073, "Trống" },
+                    { 200833, null, null, 5, 100073, "Trống" },
+                    { 200834, null, null, 6, 100073, "Trống" },
+                    { 200835, null, null, 7, 100073, "Trống" },
+                    { 200836, null, null, 8, 100073, "Trống" },
+                    { 200837, null, null, 9, 100073, "Trống" },
+                    { 200838, null, null, 10, 100073, "Trống" },
+                    { 200839, null, null, 11, 100073, "Trống" },
+                    { 200840, null, null, 12, 100073, "Trống" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "ShowtimeSeats",
+                columns: new[] { "ShowtimeSeatId", "HeldBySessionId", "HoldExpiredAt", "SeatId", "ShowtimeId", "Status" },
+                values: new object[,]
+                {
+                    { 200841, null, null, 13, 100073, "Trống" },
+                    { 200842, null, null, 14, 100073, "Trống" },
+                    { 200843, null, null, 15, 100073, "Trống" },
+                    { 200844, null, null, 16, 100074, "Trống" },
+                    { 200845, null, null, 17, 100074, "Trống" },
+                    { 200846, null, null, 18, 100074, "Trống" },
+                    { 200847, null, null, 19, 100074, "Trống" },
+                    { 200848, null, null, 20, 100074, "Trống" },
+                    { 200849, null, null, 21, 100074, "Trống" },
+                    { 200850, null, null, 22, 100074, "Trống" },
+                    { 200851, null, null, 23, 100074, "Trống" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -1439,6 +1823,41 @@ namespace DatVeXemPhim.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Payments_TicketId",
                 table: "Payments",
+                column: "TicketId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PendingChanges_ReviewedBy",
+                table: "PendingChanges",
+                column: "ReviewedBy");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PendingChanges_SubmittedBy",
+                table: "PendingChanges",
+                column: "SubmittedBy");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RefundRequests_AdminApprovedBy",
+                table: "RefundRequests",
+                column: "AdminApprovedBy");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RefundRequests_CustomerId",
+                table: "RefundRequests",
+                column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RefundRequests_RejectedBy",
+                table: "RefundRequests",
+                column: "RejectedBy");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RefundRequests_StaffApprovedBy",
+                table: "RefundRequests",
+                column: "StaffApprovedBy");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RefundRequests_TicketId",
+                table: "RefundRequests",
                 column: "TicketId");
 
             migrationBuilder.CreateIndex(
@@ -1525,10 +1944,19 @@ namespace DatVeXemPhim.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "ContactMessages");
+
+            migrationBuilder.DropTable(
                 name: "MovieGenres");
 
             migrationBuilder.DropTable(
                 name: "Payments");
+
+            migrationBuilder.DropTable(
+                name: "PendingChanges");
+
+            migrationBuilder.DropTable(
+                name: "RefundRequests");
 
             migrationBuilder.DropTable(
                 name: "Reviews");
@@ -1540,10 +1968,10 @@ namespace DatVeXemPhim.Migrations
                 name: "TicketDetails");
 
             migrationBuilder.DropTable(
-                name: "Users");
+                name: "Genres");
 
             migrationBuilder.DropTable(
-                name: "Genres");
+                name: "Users");
 
             migrationBuilder.DropTable(
                 name: "Combos");

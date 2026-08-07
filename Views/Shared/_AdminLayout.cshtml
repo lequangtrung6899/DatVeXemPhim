@@ -25,7 +25,14 @@
                 <a href="/quan-tri" class="@(path == "/quan-tri" ? "active" : "")">Thống kê báo cáo</a>
 
                 <div class="admin-nav-group">Nội dung</div>
-                <a href="/quan-tri/phim" class="@(IsActive("/quan-tri/phim") ? "active" : "")">Quản lý phim</a>
+                <a href="/quan-tri/phim" class="@(IsActive("/quan-tri/phim") ? "active" : "")">
+                    Quản lý phim
+                    @{ var pendingMovies = ViewBag.PendingMovieCount as int?; }
+                    @if (pendingMovies is > 0)
+                    {
+                        <span style="background:#f5d76e;color:#1a1a1a;border-radius:10px;padding:1px 7px;font-size:11px;font-weight:700;margin-left:6px;">@pendingMovies</span>
+                    }
+                </a>
                 <a href="/quan-tri/the-loai" class="@(IsActive("/quan-tri/the-loai") ? "active" : "")">Quản lý thể loại</a>
                 <a href="/quan-tri/danh-gia" class="@(IsActive("/quan-tri/danh-gia") ? "active" : "")">Quản lý đánh giá</a>
 
@@ -41,11 +48,27 @@
                 <div class="admin-nav-group">Khách hàng &amp; hỗ trợ</div>
                 <a href="/quan-tri/khach-hang" class="@(IsActive("/quan-tri/khach-hang") ? "active" : "")">Quản lý khách hàng</a>
                 <a href="/quan-tri/ho-tro" class="@(IsActive("/quan-tri/ho-tro") ? "active" : "")">Hỗ trợ khách hàng</a>
+                <a href="/quan-tri/hoan-tien" class="@(IsActive("/quan-tri/hoan-tien") ? "active" : "")">
+                    Duyệt hoàn tiền
+                    @{ var pendingRefunds = ViewBag.PendingRefundCount as int?; }
+                    @if (pendingRefunds is > 0)
+                    {
+                        <span style="background:#f5d76e;color:#1a1a1a;border-radius:10px;padding:1px 7px;font-size:11px;font-weight:700;margin-left:6px;">@pendingRefunds</span>
+                    }
+                </a>
                 <a href="/quan-tri/lien-he" class="@(IsActive("/quan-tri/lien-he") ? "active" : "")">Yêu cầu liên hệ</a>
 
                 @if (isAdminRole)
                 {
                     <div class="admin-nav-group">Quản trị hệ thống</div>
+                    <a href="/quan-tri/cho-duyet" class="@(IsActive("/quan-tri/cho-duyet") ? "active" : "")">
+                        Duyệt thay đổi
+                        @{ var pendingApprovals = ViewBag.PendingApprovalCount as int?; }
+                        @if (pendingApprovals is > 0)
+                        {
+                            <span style="background:#f5d76e;color:#1a1a1a;border-radius:10px;padding:1px 7px;font-size:11px;font-weight:700;margin-left:6px;">@pendingApprovals</span>
+                        }
+                    </a>
                     <a href="/quan-tri/nhan-vien" class="@(IsActive("/quan-tri/nhan-vien") ? "active" : "")">Quản lý tài khoản nhân viên</a>
                     <a href="/quan-tri/vai-tro" class="@(IsActive("/quan-tri/vai-tro") ? "active" : "")">Quản lý vai trò</a>
                 }

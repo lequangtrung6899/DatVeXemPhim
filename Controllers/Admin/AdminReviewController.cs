@@ -9,10 +9,12 @@ namespace DatVeXemPhim.Controllers.Admin;
 // hai mục trong báo cáo mô tả cùng một chức năng: duyệt/từ chối/xóa đánh giá của khách hàng.
 public class AdminReviewController : AdminBaseController
 {
+    private const int PageSize = 6;
+
     public AdminReviewController(ApplicationDbContext db) : base(db) { }
 
     [HttpGet, Route("/quan-tri/danh-gia")]
-    public async Task<IActionResult> Index(string? status)
+    public async Task<IActionResult> Index(string? status, int page = 1)
     {
         var effectiveStatus = string.IsNullOrWhiteSpace(status) ? "Chờ duyệt" : status;
 
@@ -22,7 +24,13 @@ public class AdminReviewController : AdminBaseController
             query = query.Where(r => r.Status == effectiveStatus);
         }
 
+        var totalCount = await query.CountAsync();
+        var totalPages = Math.Max(1, (int)Math.Ceiling(totalCount / (double)PageSize));
+        page = Math.Clamp(page, 1, totalPages);
+
         var reviews = await query.OrderByDescending(r => r.CreatedAt)
+            .Skip((page - 1) * PageSize)
+            .Take(PageSize)
             .Select(r => new AdminReviewRow
             {
                 ReviewId = r.ReviewId,
@@ -36,6 +44,12 @@ public class AdminReviewController : AdminBaseController
             .ToListAsync();
 
         ViewBag.Status = effectiveStatus;
+        ViewBag.Pagination = new PaginationVM
+        {
+            Page = page,
+            TotalPages = totalPages,
+            BaseUrl = $"/quan-tri/danh-gia?status={Uri.EscapeDataString(effectiveStatus)}&"
+        };
         return View(reviews);
     }
 

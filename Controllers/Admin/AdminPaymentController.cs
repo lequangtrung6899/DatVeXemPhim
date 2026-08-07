@@ -8,10 +8,12 @@ namespace DatVeXemPhim.Controllers.Admin;
 // Ca sử dụng "Quản lý thanh toán".
 public class AdminPaymentController : AdminBaseController
 {
+    private const int PageSize = 6;
+
     public AdminPaymentController(ApplicationDbContext db) : base(db) { }
 
     [HttpGet, Route("/quan-tri/thanh-toan")]
-    public async Task<IActionResult> Index(string? status, string? q)
+    public async Task<IActionResult> Index(string? status, string? q, int page = 1)
     {
         var query = Db.Payments
             .Include(p => p.Ticket).ThenInclude(t => t.Customer)
@@ -31,8 +33,13 @@ public class AdminPaymentController : AdminBaseController
                 p.TicketId.ToString() == term);
         }
 
+        var totalCount = await query.CountAsync();
+        var totalPages = Math.Max(1, (int)Math.Ceiling(totalCount / (double)PageSize));
+        page = Math.Clamp(page, 1, totalPages);
+
         var payments = await query.OrderByDescending(p => p.PaymentDate)
-            .Take(200)
+            .Skip((page - 1) * PageSize)
+            .Take(PageSize)
             .Select(p => new AdminPaymentRow
             {
                 PaymentId = p.PaymentId,
@@ -49,6 +56,9 @@ public class AdminPaymentController : AdminBaseController
 
         ViewBag.Status = status;
         ViewBag.Q = q;
+        var extra = (string.IsNullOrEmpty(status) ? "" : $"status={Uri.EscapeDataString(status)}&") +
+                    (string.IsNullOrEmpty(q) ? "" : $"q={Uri.EscapeDataString(q)}&");
+        ViewBag.Pagination = new PaginationVM { Page = page, TotalPages = totalPages, BaseUrl = "/quan-tri/thanh-toan?" + extra };
         return View(payments);
     }
 
@@ -59,9 +69,21 @@ public class AdminPaymentController : AdminBaseController
         var payment = await Db.Payments.FindAsync(id);
         if (payment is null) return NotFound();
 
-        payment.PaymentStatus = paymentStatus;
-        await Db.SaveChangesAsync();
-        TempData["Success"] = "Đã cập nhật trạng thái thanh toán.";
+        if (await IsAdminRoleAsync())
+        {
+            payment.PaymentStatus = paymentStatus;
+            await Db.SaveChangesAsync();
+            TempData["Success"] = "Đã cập nhật trạng thái thanh toán.";
+        }
+        else
+        {
+            // Đổi trạng thái thanh toán (đặc biệt là đánh dấu "Đã hoàn tiền") động chạm
+            // trực tiếp đến tiền — nhân viên không được tự quyết, phải qua Admin duyệt.
+            await SubmitPendingChangeAsync("Payment", payment.PaymentId, "Update",
+                new PaymentStatusChangeDto { PaymentStatus = paymentStatus },
+                $"Cập nhật thanh toán #{payment.PaymentId} (vé #{payment.TicketId}): {payment.PaymentStatus} → {paymentStatus}");
+            TempData["Success"] = "Đã gửi yêu cầu cập nhật thanh toán — chờ Quản trị viên duyệt.";
+        }
         return Redirect("/quan-tri/thanh-toan");
     }
 }

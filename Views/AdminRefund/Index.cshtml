@@ -1,0 +1,97 @@
+@model List<DatVeXemPhim.Models.ViewModels.AdminRefundRow>
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Duyệt hoàn tiền";
+    string status = ViewBag.Status;
+    bool isAdmin = ViewBag.IsAdmin;
+}
+<h1>Duyệt hoàn tiền</h1>
+<p style="color:#9aa0ad; font-size:13.5px; margin-top:-10px;">
+    Yêu cầu hoàn tiền chỉ được xử lý khi đủ <strong>2 cấp duyệt</strong>: Nhân viên duyệt trước, sau đó Admin duyệt lần cuối thì vé mới bị hủy và tiền mới được đánh dấu đã hoàn.
+    @if (!isAdmin)
+    {
+        <span>Tài khoản Nhân viên chỉ có thể duyệt/từ chối ở bước đầu tiên ("Chờ nhân viên duyệt").</span>
+    }
+    else
+    {
+        <span>Tài khoản Admin có thể duyệt cả 2 bước — nếu bấm Duyệt ngay từ bước "Chờ nhân viên duyệt", hệ thống sẽ tự hoàn tất cả hai bước.</span>
+    }
+</p>
+
+<form method="get" class="admin-search-form" style="margin-bottom:16px;">
+    <select name="status" onchange="this.form.submit()">
+        @foreach (var s in new[] { "Chờ nhân viên duyệt", "Chờ admin duyệt", "Đã hoàn tiền", "Từ chối", "Tất cả" })
+        {
+            <option value="@s" selected="@(status == s)">
+                @s
+                @if (s == "Chờ nhân viên duyệt" && (int)ViewBag.PendingStaffCount > 0) { <text> (@ViewBag.PendingStaffCount)</text> }
+                @if (s == "Chờ admin duyệt" && (int)ViewBag.PendingAdminCount > 0) { <text> (@ViewBag.PendingAdminCount)</text> }
+            </option>
+        }
+    </select>
+</form>
+
+@if (Model.Count == 0)
+{
+    <div class="admin-empty">Không có yêu cầu hoàn tiền nào ở trạng thái này.</div>
+}
+else
+{
+    <table class="admin-table">
+        <thead><tr><th>Vé</th><th>Khách hàng</th><th>Phim</th><th>Số tiền</th><th>Lý do</th><th>Trạng thái</th><th>Duyệt bởi</th><th>Ngày gửi</th><th></th></tr></thead>
+        <tbody>
+            @foreach (var r in Model)
+            {
+                var badge = r.Status switch
+                {
+                    "Đã hoàn tiền" => "admin-badge-ok",
+                    "Từ chối" => "admin-badge-danger",
+                    _ => "admin-badge-warn"
+                };
+                <tr>
+                    <td><a href="/quan-tri/ho-tro?ticketId=@r.TicketId" style="color:inherit;">#@r.TicketId</a></td>
+                    <td>@r.CustomerName</td>
+                    <td>@r.MovieTitle</td>
+                    <td>@ViewBag.FormatVND(r.Amount)</td>
+                    <td style="max-width:220px; white-space:normal;">@(string.IsNullOrWhiteSpace(r.Reason) ? "—" : r.Reason)</td>
+                    <td>
+                        <span class="admin-badge @badge">@r.Status</span>
+                        @if (r.Status == "Từ chối" && !string.IsNullOrWhiteSpace(r.RejectReason))
+                        {
+                            <div style="font-size:12px; color:#9aa0ad; margin-top:4px;">@r.RejectReason</div>
+                        }
+                    </td>
+                    <td style="font-size:12.5px; color:#9aa0ad;">
+                        @if (r.StaffApproverName != null) { <div>NV: @r.StaffApproverName</div> }
+                        @if (r.AdminApproverName != null) { <div>Admin: @r.AdminApproverName</div> }
+                        @if (r.StaffApproverName == null && r.AdminApproverName == null) { <text>—</text> }
+                    </td>
+                    <td>@r.RequestedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>
+                        @if (r.CanAct)
+                        {
+                            <div style="display:flex; gap:6px;">
+                                <form method="post" action="/quan-tri/hoan-tien/@r.RefundRequestId/duyet" onsubmit="return confirm('Duyệt yêu cầu hoàn tiền này?');">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="status" value="@status">
+                                    <button type="submit" class="btn btn-primary btn-sm">Duyệt</button>
+                                </form>
+                                <form method="post" action="/quan-tri/hoan-tien/@r.RefundRequestId/tu-choi" onsubmit="var reason = prompt('Lý do từ chối:'); if (reason === null) return false; document.getElementById('reject-reason-@r.RefundRequestId').value = reason; return true;">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="status" value="@status">
+                                    <input type="hidden" id="reject-reason-@r.RefundRequestId" name="reason" value="">
+                                    <button type="submit" class="btn btn-ghost btn-sm admin-link-danger">Từ chối</button>
+                                </form>
+                            </div>
+                        }
+                        else if (r.Status == "Chờ admin duyệt")
+                        {
+                            <span style="font-size:12px; color:#9aa0ad;">Chờ Admin</span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    @await Html.PartialAsync("_AdminPagination", (DatVeXemPhim.Models.ViewModels.PaginationVM)ViewBag.Pagination)
+}

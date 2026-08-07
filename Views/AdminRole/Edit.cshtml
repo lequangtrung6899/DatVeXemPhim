@@ -10,7 +10,15 @@
     <input type="hidden" name="roleId" value="@Model.RoleId">
 
     <label>Tên vai trò</label>
-    <input type="text" name="roleName" value="@Model.RoleName" required>
+    @if (Model.RoleName == "Admin")
+    {
+        <input type="text" name="roleName" value="@Model.RoleName" readonly style="opacity:.7;">
+        <small class="admin-hint">Vai trò "Admin" là vai trò gốc của hệ thống nên không thể đổi tên.</small>
+    }
+    else
+    {
+        <input type="text" name="roleName" value="@Model.RoleName" required>
+    }
 
     <div class="admin-actions">
         <button type="submit" class="btn btn-primary">Lưu</button>

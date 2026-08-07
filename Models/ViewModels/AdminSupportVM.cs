@@ -25,4 +25,5 @@ public class AdminSupportVM
     public List<AdminSupportSeatLine> Seats { get; set; } = new();
     public List<AdminSupportComboLine> Combos { get; set; } = new();
     public List<Payment> Payments { get; set; } = new();
+    public RefundRequest? LatestRefundRequest { get; set; }
 }

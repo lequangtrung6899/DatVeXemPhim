@@ -19,7 +19,7 @@ public class SearchController : BaseController
         if (!string.IsNullOrEmpty(query))
         {
             var movies = await Db.Movies
-                .Where(m => EF.Functions.Like(m.Title, $"%{query}%"))
+                .Where(m => EF.Functions.Like(m.Title, $"%{query}%") && m.ApprovalStatus == "Đã duyệt")
                 .OrderByDescending(m => m.ReleaseDate)
                 .ToListAsync();
 
@@ -32,7 +32,7 @@ public class SearchController : BaseController
         if (string.IsNullOrEmpty(query) || vm.Movies.Count == 0)
         {
             var suggested = await Db.Movies
-                .Where(m => m.Status == "Đang chiếu")
+                .Where(m => m.Status == "Đang chiếu" && m.ApprovalStatus == "Đã duyệt")
                 .OrderByDescending(m => m.ReleaseDate)
                 .Take(6)
                 .ToListAsync();
@@ -54,7 +54,7 @@ public class SearchController : BaseController
         if (query.Length < 2) return Json(Array.Empty<object>());
 
         var results = await Db.Movies
-            .Where(m => EF.Functions.Like(m.Title, $"%{query}%"))
+            .Where(m => EF.Functions.Like(m.Title, $"%{query}%") && m.ApprovalStatus == "Đã duyệt")
             .OrderByDescending(m => m.Status == "Đang chiếu")
             .ThenByDescending(m => m.ReleaseDate)
             .Take(8)

@@ -1,0 +1,105 @@
+@model List<DatVeXemPhim.Models.PendingChange>
+@using DatVeXemPhim.Models.ViewModels
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Duyệt thay đổi của Nhân viên";
+    string status = ViewBag.Status;
+
+    // Nhãn tiếng Việt dễ hiểu cho từng loại + hành động, dùng để hiển thị trong bảng
+    // (Summary đã có mô tả chi tiết, cột này chỉ để lọc/nhìn nhanh loại đề xuất).
+    static string EntityLabel(string entityType) => entityType switch
+    {
+        "Combo" => "Combo",
+        "Genre" => "Thể loại",
+        "Voucher" => "Voucher",
+        "Room" => "Phòng chiếu",
+        "Showtime" => "Suất chiếu",
+        "Payment" => "Thanh toán",
+        "Customer" => "Khách hàng",
+        _ => entityType
+    };
+    static string ActionLabel(string actionType) => actionType switch
+    {
+        "Create" => "Thêm mới",
+        "Update" => "Sửa",
+        "Delete" => "Xóa",
+        "Cancel" => "Hủy",
+        _ => actionType
+    };
+}
+<h1>Duyệt thay đổi của Nhân viên</h1>
+<p style="color:#9aa0b4;margin-top:-8px;margin-bottom:16px;">
+    Khi Nhân viên (không phải Admin) thêm/sửa/xóa dữ liệu ở các trang quản lý Combo, Thể loại,
+    Voucher, Phòng chiếu, Suất chiếu, Thanh toán, Khách hàng hoặc hủy vé ở trang Hỗ trợ, thao tác
+    KHÔNG áp dụng ngay — sẽ hiện ở đây để bạn duyệt hoặc từ chối.
+</p>
+
+<form method="get" class="admin-search-form" style="margin-bottom:16px;">
+    <select name="status" onchange="this.form.submit()">
+        @foreach (var s in new[] { "Chờ duyệt", "Đã duyệt", "Từ chối", "Tất cả" })
+        {
+            <option value="@s" selected="@(status == s)">@s</option>
+        }
+    </select>
+</form>
+
+@if (Model.Count == 0)
+{
+    <div class="admin-empty">Không có đề xuất nào ở trạng thái này.</div>
+}
+else
+{
+    <table class="admin-table">
+        <thead><tr><th>Loại</th><th>Hành động</th><th>Nội dung</th><th>Gửi bởi</th><th>Ngày gửi</th><th>Trạng thái</th><th></th></tr></thead>
+        <tbody>
+            @foreach (var pc in Model)
+            {
+                <tr>
+                    <td>@EntityLabel(pc.EntityType)</td>
+                    <td>@ActionLabel(pc.ActionType)</td>
+                    <td style="max-width:360px;">
+                        @pc.Summary
+                        @if (pc.Status == "Từ chối" && !string.IsNullOrEmpty(pc.RejectReason))
+                        {
+                            <div style="color:#e57373;font-size:12px;margin-top:4px;">Lý do từ chối: @pc.RejectReason</div>
+                        }
+                    </td>
+                    <td>@(pc.SubmittedByUser?.FullName ?? "—")</td>
+                    <td>@pc.SubmittedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>
+                        @{
+                            var badge = pc.Status switch
+                            {
+                                "Đã duyệt" => "admin-badge-ok",
+                                "Từ chối" => "admin-badge-danger",
+                                _ => "admin-badge-warn"
+                            };
+                        }
+                        <span class="admin-badge @badge">@pc.Status</span>
+                    </td>
+                    <td>
+                        @if (pc.Status == "Chờ duyệt")
+                        {
+                            <form class="admin-inline-form" method="post" action="/quan-tri/cho-duyet/@pc.PendingChangeId/duyet" onsubmit="return confirm('Duyệt và áp dụng đề xuất này vào dữ liệu thật?');">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-primary btn-sm">Duyệt</button>
+                            </form>
+                            <form class="admin-inline-form" method="post" action="/quan-tri/cho-duyet/@pc.PendingChangeId/tu-choi" onsubmit="return confirm('Từ chối đề xuất này?');" style="margin-top:6px;">
+                                @Html.AntiForgeryToken()
+                                <input type="text" name="reason" placeholder="Lý do (tùy chọn)" style="width:140px;margin-right:6px;" />
+                                <button type="submit" class="btn btn-ghost btn-sm admin-link-danger">Từ chối</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <span style="color:#6b7086;font-size:12px;">
+                                @(pc.ReviewedByUser?.FullName ?? "—") · @(pc.ReviewedAt?.ToString("dd/MM/yyyy HH:mm"))
+                            </span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    @await Html.PartialAsync("_AdminPagination", (PaginationVM)ViewBag.Pagination)
+}

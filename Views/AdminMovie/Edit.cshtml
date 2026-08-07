@@ -1,12 +1,67 @@
 @model DatVeXemPhim.Models.ViewModels.AdminMovieEditVM
+@using DatVeXemPhim.Models.ViewModels
 @{
     Layout = "_AdminLayout";
     var m = Model.Movie;
+    var isAdmin = (bool)(ViewBag.IsAdmin ?? false);
+    var pending = ViewBag.PendingChange as MoviePendingChangeDto;
     ViewData["Title"] = m.MovieId == 0 ? "Thêm phim" : "Sửa phim";
 }
 <h1>@ViewData["Title"]</h1>
 
-<form class="admin-form" method="post" action="/quan-tri/phim/luu">
+@if (m.MovieId != 0 && !isAdmin && m.ApprovalStatus == "Đã duyệt")
+{
+    <div class="admin-alert admin-alert-warn" style="margin-bottom:16px;">
+        ⚠️ Phim này đang hiển thị công khai cho khách hàng. Nếu bạn sửa và Lưu, phim <strong>vẫn tiếp tục hiển thị bình thường với dữ liệu hiện tại</strong> —
+        thay đổi của bạn chỉ được lưu tạm dưới dạng đề xuất, và chỉ áp dụng sau khi Quản trị viên duyệt.
+    </div>
+}
+else if (!isAdmin)
+{
+    <div class="admin-alert admin-alert-warn" style="margin-bottom:16px;">
+        ⚠️ Bạn đang đăng nhập với vai trò Nhân viên: sau khi lưu, phim sẽ ở trạng thái
+        <strong>"Chờ duyệt"</strong> và chưa hiển thị cho khách hàng cho tới khi Quản trị viên duyệt.
+    </div>
+}
+else if (m.MovieId != 0 && m.ApprovalStatus != "Đã duyệt")
+{
+    <div class="admin-alert admin-alert-warn" style="margin-bottom:16px;">
+        Phim này đang ở trạng thái <strong>@m.ApprovalStatus</strong>. Lưu lại (với vai trò Admin) sẽ tự động chuyển về "Đã duyệt".
+    </div>
+}
+
+@if (m.HasPendingEdit && pending != null)
+{
+    <div class="admin-alert admin-alert-warn" style="margin-bottom:16px;">
+        📝 Phim này đang có <strong>1 đề xuất chỉnh sửa</strong> chờ duyệt
+        @if (!string.IsNullOrEmpty((string)(ViewBag.PendingSubmittedByName ?? "")))
+        {
+            <text>(gửi bởi <strong>@ViewBag.PendingSubmittedByName</strong>)</text>
+        }
+        — dữ liệu bên dưới là dữ liệu <strong>đang hiển thị công khai</strong>, chưa phải đề xuất. Nội dung đề xuất:
+        <ul style="margin:8px 0 0;">
+            <li>Tên phim: <strong>@pending.Title</strong></li>
+            <li>Thời lượng: @pending.Duration phút</li>
+            <li>Trạng thái chiếu: @pending.Status</li>
+            <li>Hiển thị banner: @(pending.ShowOnBanner ? "Có" : "Không")</li>
+        </ul>
+        @if (isAdmin)
+        {
+            <div style="margin-top:10px;">
+                <form method="post" action="/quan-tri/phim/@m.MovieId/duyet" style="display:inline;">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-primary btn-sm">Duyệt đề xuất này</button>
+                </form>
+                <form method="post" action="/quan-tri/phim/@m.MovieId/tu-choi" style="display:inline;" onsubmit="return confirm('Từ chối đề xuất chỉnh sửa này?');">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-ghost btn-sm admin-link-danger">Từ chối đề xuất</button>
+                </form>
+            </div>
+        }
+    </div>
+}
+
+<form class="admin-form" method="post" action="/quan-tri/phim/luu" enctype="multipart/form-data">
     @Html.AntiForgeryToken()
     <input type="hidden" name="movieId" value="@m.MovieId">
 
@@ -19,11 +74,28 @@
     <label>Thời lượng (phút)</label>
     <input type="number" name="duration" value="@m.Duration" min="1" required>
 
-    <label>Poster URL (ảnh dọc, dùng cho danh sách/chi tiết phim)</label>
-    <input type="text" name="posterUrl" value="@m.PosterUrl">
+    <label>Poster (ảnh dọc, dùng cho danh sách/chi tiết phim)</label>
+    @if (!string.IsNullOrEmpty(m.PosterUrl))
+    {
+        <img src="@m.PosterUrl" alt="Poster hiện tại" style="width:120px;border-radius:8px;margin-bottom:8px;display:block;">
+    }
+    <input type="hidden" name="posterUrl" value="@m.PosterUrl">
+    <input type="file" name="posterFile" accept=".jpg,.jpeg,.png,.webp">
+    <small class="admin-hint">Chọn ảnh để tải lên — hệ thống tự lưu vào <code>wwwroot/posters</code>. Để trống nếu muốn giữ ảnh hiện tại.</small>
 
-    <label>Banner URL (ảnh ngang, dùng cho banner trang chủ — để trống sẽ dùng tạm Poster URL)</label>
-    <input type="text" name="bannerUrl" value="@m.BannerUrl" placeholder="/banners/ten-file.jpg">
+    <label>Banner (ảnh ngang, dùng cho banner trang chủ — <strong>bắt buộc</strong> nếu tick "Hiển thị trên banner" bên dưới)</label>
+    @if (!string.IsNullOrEmpty(m.BannerUrl))
+    {
+        <img src="@m.BannerUrl" alt="Banner hiện tại" style="width:220px;border-radius:8px;margin-bottom:8px;display:block;">
+    }
+    <input type="hidden" name="bannerUrl" id="bannerUrlHidden" value="@m.BannerUrl">
+    <input type="file" name="bannerFile" id="bannerFileInput" accept=".jpg,.jpeg,.png,.webp">
+    <small class="admin-hint">Chọn ảnh để tải lên — hệ thống tự lưu vào <code>wwwroot/banners</code>. Nên dùng ảnh khổ ngang (vd 1600×700).</small>
+
+    <label style="margin-top:12px;">
+        <input type="checkbox" name="showOnBanner" id="showOnBannerInput" value="true" checked="@m.ShowOnBanner" style="width:auto;">
+        Hiển thị phim này trên banner (carousel) đầu trang chủ
+    </label>
 
     <label>Ngày khởi chiếu</label>
     <input type="date" name="releaseDate" value="@m.ReleaseDate.ToString("yyyy-MM-dd")" required>
@@ -51,7 +123,28 @@
     </div>
 
     <div class="admin-actions">
-        <button type="submit" class="btn btn-primary">Lưu</button>
+        <button type="submit" class="btn btn-primary">@(isAdmin ? "Lưu" : "Gửi duyệt")</button>
         <a href="/quan-tri/phim" class="btn btn-ghost">Hủy</a>
     </div>
 </form>
+
+<script>
+    // Kiểm tra trước ở phía trình duyệt: nếu tick "Hiển thị trên banner" mà chưa có ảnh banner
+    // (chưa có ảnh cũ và cũng chưa chọn file mới) thì chặn submit, đỡ phải chờ server trả lỗi.
+    (function () {
+        var form = document.querySelector('form.admin-form');
+        var checkbox = document.getElementById('showOnBannerInput');
+        var bannerUrlHidden = document.getElementById('bannerUrlHidden');
+        var bannerFileInput = document.getElementById('bannerFileInput');
+        if (!form || !checkbox) return;
+
+        form.addEventListener('submit', function (e) {
+            var hasExisting = bannerUrlHidden && bannerUrlHidden.value.trim() !== '';
+            var hasNewFile = bannerFileInput && bannerFileInput.files && bannerFileInput.files.length > 0;
+            if (checkbox.checked && !hasExisting && !hasNewFile) {
+                e.preventDefault();
+                alert('Đã chọn "Hiển thị trên banner" nhưng chưa có ảnh Banner — hãy tải lên ảnh Banner (ảnh ngang) trước khi lưu.');
+            }
+        });
+    })();
+</script>

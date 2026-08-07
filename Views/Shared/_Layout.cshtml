@@ -32,6 +32,14 @@
                 <div class="search-suggest" id="searchSuggest"></div>
             </form>
             <div class="header-actions">
+                <a href="/gio-hang" class="btn btn-ghost btn-sm" style="position:relative;" title="Giỏ hàng">
+                    🛒 Giỏ hàng
+                    @{ var cartCount = ViewBag.CartCount as int? ?? 0; }
+                    @if (cartCount > 0)
+                    {
+                        <span style="position:absolute; top:-7px; right:-7px; background:var(--accent); color:#fff; border-radius:999px; padding:1px 6px; font-size:10.5px; font-weight:700;">@cartCount</span>
+                    }
+                </a>
                 @if (customer != null)
                 {
                     <a href="/tai-khoan/ve-cua-toi" class="user-chip">

@@ -104,22 +104,19 @@
                 <div class="summary-row"><span>Tiền vé</span><strong id="ticketTotal">0₫</strong></div>
                 <div class="summary-row"><span>Combo</span><strong id="comboTotal">0₫</strong></div>
 
-                <div class="voucher-input">
-                    <input type="text" name="voucherCode" placeholder="Mã giảm giá (VD: SUMMER10)">
-                </div>
-
                 <div class="summary-total">
                     <span>Tổng cộng</span>
                     <span class="val" id="grandTotal">0₫</span>
                 </div>
 
                 <button type="submit" class="btn btn-primary btn-block" style="margin-top:18px;" id="submitBtn" disabled="@(!Model.IsLoggedIn)">
-                    @(Model.IsLoggedIn ? "Xác nhận đặt vé" : "Đăng nhập để đặt vé")
+                    @(Model.IsLoggedIn ? "Thêm vào giỏ hàng" : "Đăng nhập để đặt vé")
                 </button>
                 <p style="font-size:11.5px; color:var(--text-dimmer); margin-top:10px; line-height:1.5;">
-                    ⓘ Thanh toán trong hệ thống này là <strong>mô phỏng</strong> cho mục đích học tập —
-                    chưa tích hợp cổng thanh toán thật (VNPay/Momo/ZaloPay). Nhấn "Xác nhận đặt vé" sẽ
-                    đánh dấu vé là đã thanh toán mà không có giao dịch tiền thật nào xảy ra.
+                    ⓘ Ghế/combo bạn chọn sẽ được thêm vào <strong>giỏ hàng</strong>. Mã giảm giá được
+                    nhập/chọn ngay trong giỏ hàng — tiền sẽ được tính lại tự động, không cần đợi
+                    thanh toán xong mới biết. Thanh toán qua QR ngân hàng ở bước sau vẫn là <strong>mô phỏng</strong>
+                    cho mục đích học tập, chưa có giao dịch tiền thật nào xảy ra.
                 </p>
             </div>
         </div>
