@@ -23,6 +23,12 @@ public static class CartPricing
     // Session key lưu mã voucher khách đang áp dụng cho giỏ hàng hiện tại.
     public const string VoucherSessionKey = "CartVoucherCode";
 
+    // Thời gian (phút) một vé được giữ trong giỏ hàng trước khi tự động bị hủy.
+    // Ghế của vé trong giỏ hàng ở trạng thái "Đang giữ" (không đặt HoldExpiredAt theo
+    // suất chiếu — xem BookingController.Confirm) nên mốc thời gian DUY NHẤT quyết
+    // định khi nào ghế được nhả lại là BookingDate + CartHoldMinutes ở đây.
+    public const int CartHoldMinutes = 20;
+
     public static async Task<List<Ticket>> GetCartItemsAsync(ApplicationDbContext db, int customerId)
     {
         return await db.Tickets
@@ -37,7 +43,7 @@ public static class CartPricing
 
     // Vé trong giỏ hàng bị bỏ quên quá lâu sẽ tự động bị hủy để nhả ghế lại cho
     // người khác đặt (giỏ hàng không có cổng thanh toán thật giữ chỗ vô thời hạn).
-    public static async Task ExpireStaleCartAsync(ApplicationDbContext db, int customerId, int expireMinutes = 20)
+    public static async Task ExpireStaleCartAsync(ApplicationDbContext db, int customerId, int expireMinutes = CartHoldMinutes)
     {
         var cutoff = DateTime.Now.AddMinutes(-expireMinutes);
         var stale = await db.Tickets
@@ -61,6 +67,10 @@ public static class CartPricing
         var seats = await db.ShowtimeSeats.Where(s => seatIds.Contains(s.ShowtimeSeatId)).ToListAsync();
         foreach (var s in seats)
         {
+            // Chỉ nhả ghế nếu nó vẫn đang ở trạng thái "Đang giữ" gắn với vé này (chưa
+            // được thanh toán/chuyển "Đã đặt" bởi nhánh khác) — tránh trường hợp hiếm
+            // gặp xử lý chồng chéo vô tình nhả một ghế đã thuộc về giao dịch khác.
+            if (s.Status != "Đang giữ") continue;
             s.Status = "Trống";
             s.HeldBySessionId = null;
             s.HoldExpiredAt = null;

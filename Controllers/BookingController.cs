@@ -32,7 +32,38 @@ public class BookingController : BaseController
             s.HeldBySessionId = null;
             s.HoldExpiredAt = null;
         }
-        await Db.SaveChangesAsync();
+
+        // Ghế có RowVersion (concurrency token) nên nếu đúng lúc này có request khác
+        // (vd. một Hold() khác) cũng vừa sửa cùng dòng ghế thì SaveChangesAsync sẽ
+        // ném DbUpdateConcurrencyException. Việc hết hạn giữ ghế không quan trọng
+        // bằng thao tác của người đang thực hiện, nên bỏ qua (các) ghế đụng độ —
+        // giữ nguyên giá trị mới nhất trong DB — thay vì để lỗi này làm sập cả
+        // request đang gọi hàm này.
+        await SaveChangesIgnoringConflictsAsync();
+    }
+
+    // Lưu thay đổi, tự động bỏ qua (các) entity bị đụng độ concurrency (RowVersion
+    // đã đổi vì một request khác vừa lưu trước) thay vì để DbUpdateConcurrencyException
+    // văng ra ngoài làm sập cả action đang gọi. Dùng ở những chỗ việc "thắng" đụng độ
+    // không quan trọng bằng việc request vẫn phải hoàn tất bình thường.
+    private async Task SaveChangesIgnoringConflictsAsync()
+    {
+        const int maxAttempts = 10;
+        for (var attempt = 0; attempt < maxAttempts; attempt++)
+        {
+            try
+            {
+                await Db.SaveChangesAsync();
+                return;
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                foreach (var entry in ex.Entries)
+                {
+                    entry.State = EntityState.Detached;
+                }
+            }
+        }
     }
 
     // GET /dat-ve/{showtimeId}
@@ -139,6 +170,9 @@ public class BookingController : BaseController
         }
 
         var conflicts = new List<int>();
+        // Nhớ lại ghế nào ứng với entity nào để nếu SaveChangesAsync báo đụng độ
+        // concurrency, biết chính xác seatId nào cần chuyển sang "conflict".
+        var heldRows = new List<(int SeatId, ShowtimeSeat Row)>();
         foreach (var seatId in req.SeatIds)
         {
             var row = await Db.ShowtimeSeats.FirstOrDefaultAsync(ss => ss.ShowtimeSeatId == seatId && ss.ShowtimeId == showtimeId);
@@ -156,9 +190,39 @@ public class BookingController : BaseController
             row.Status = "Đang giữ";
             row.HeldBySessionId = mySessionId;
             row.HoldExpiredAt = expiresAt;
+            heldRows.Add((seatId, row));
         }
 
-        await Db.SaveChangesAsync();
+        // Dù đã kiểm tra "Trống"/"của mình" ở trên, vẫn có thể có người khác lưu
+        // đúng ghế đó GIỮA lúc mình đọc và lúc mình lưu (race condition) — lúc đó
+        // RowVersion của ghế đã đổi và SaveChangesAsync ném DbUpdateConcurrencyException.
+        // Trước đây lỗi này không được bắt: cả request văng lỗi 500 (trả về trang
+        // lỗi HTML thay vì JSON), khiến JS phía client không parse được, không báo
+        // gì cho người dùng, và KHÔNG ghế nào trong lần gọi đó được giữ thật sự —
+        // kể cả những ghế hợp lệ khác đi kèm — dù giao diện vẫn hiển thị là đã chọn.
+        // Giờ: ghế nào đụng độ bị coi là "conflict" (giống như đã bị người khác lấy),
+        // các ghế còn lại vẫn được lưu và giữ bình thường.
+        var maxAttempts = heldRows.Count + 2;
+        for (var attempt = 0; attempt < maxAttempts; attempt++)
+        {
+            try
+            {
+                await Db.SaveChangesAsync();
+                break;
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                foreach (var entry in ex.Entries)
+                {
+                    if (entry.Entity is ShowtimeSeat seat)
+                    {
+                        var match = heldRows.FirstOrDefault(h => ReferenceEquals(h.Row, seat));
+                        if (match.Row != null) conflicts.Add(match.SeatId);
+                    }
+                    entry.State = EntityState.Detached;
+                }
+            }
+        }
 
         return Json(new
         {

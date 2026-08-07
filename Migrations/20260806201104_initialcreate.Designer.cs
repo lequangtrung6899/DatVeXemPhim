@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DatVeXemPhim.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260807054834_initialcreate")]
+    [Migration("20260806201104_initialcreate")]
     partial class initialcreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -1070,131 +1070,6 @@ namespace DatVeXemPhim.Migrations
                     b.HasIndex("TicketId");
 
                     b.ToTable("Payments");
-                });
-
-            modelBuilder.Entity("DatVeXemPhim.Models.PendingChange", b =>
-                {
-                    b.Property<int>("PendingChangeId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PendingChangeId"), 1L, 1);
-
-                    b.Property<string>("ActionType")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
-
-                    b.Property<string>("ChangesJson")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("EntityId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("EntityType")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
-
-                    b.Property<string>("RejectReason")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<DateTime?>("ReviewedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("ReviewedBy")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<DateTime>("SubmittedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("SubmittedBy")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Summary")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.HasKey("PendingChangeId");
-
-                    b.HasIndex("ReviewedBy");
-
-                    b.HasIndex("SubmittedBy");
-
-                    b.ToTable("PendingChanges");
-                });
-
-            modelBuilder.Entity("DatVeXemPhim.Models.RefundRequest", b =>
-                {
-                    b.Property<int>("RefundRequestId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RefundRequestId"), 1L, 1);
-
-                    b.Property<DateTime?>("AdminApprovedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("AdminApprovedBy")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("CustomerId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Reason")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<string>("RejectReason")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<DateTime?>("RejectedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("RejectedBy")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("RequestedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("StaffApprovedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("StaffApprovedBy")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<int>("TicketId")
-                        .HasColumnType("int");
-
-                    b.HasKey("RefundRequestId");
-
-                    b.HasIndex("AdminApprovedBy");
-
-                    b.HasIndex("CustomerId");
-
-                    b.HasIndex("RejectedBy");
-
-                    b.HasIndex("StaffApprovedBy");
-
-                    b.HasIndex("TicketId");
-
-                    b.ToTable("RefundRequests");
                 });
 
             modelBuilder.Entity("DatVeXemPhim.Models.Review", b =>
@@ -8579,64 +8454,6 @@ namespace DatVeXemPhim.Migrations
                         .HasForeignKey("TicketId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.Navigation("Ticket");
-                });
-
-            modelBuilder.Entity("DatVeXemPhim.Models.PendingChange", b =>
-                {
-                    b.HasOne("DatVeXemPhim.Models.User", "ReviewedByUser")
-                        .WithMany()
-                        .HasForeignKey("ReviewedBy")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("DatVeXemPhim.Models.User", "SubmittedByUser")
-                        .WithMany()
-                        .HasForeignKey("SubmittedBy")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("ReviewedByUser");
-
-                    b.Navigation("SubmittedByUser");
-                });
-
-            modelBuilder.Entity("DatVeXemPhim.Models.RefundRequest", b =>
-                {
-                    b.HasOne("DatVeXemPhim.Models.User", "AdminApprover")
-                        .WithMany()
-                        .HasForeignKey("AdminApprovedBy")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("DatVeXemPhim.Models.Customer", "Customer")
-                        .WithMany()
-                        .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("DatVeXemPhim.Models.User", "Rejecter")
-                        .WithMany()
-                        .HasForeignKey("RejectedBy")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("DatVeXemPhim.Models.User", "StaffApprover")
-                        .WithMany()
-                        .HasForeignKey("StaffApprovedBy")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("DatVeXemPhim.Models.Ticket", "Ticket")
-                        .WithMany()
-                        .HasForeignKey("TicketId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("AdminApprover");
-
-                    b.Navigation("Customer");
-
-                    b.Navigation("Rejecter");
-
-                    b.Navigation("StaffApprover");
 
                     b.Navigation("Ticket");
                 });

@@ -97,12 +97,8 @@
     }
 
     var hasActiveRefundRequest = Model.LatestRefundRequest != null &&
-    (Model.LatestRefundRequest.Status == "Chờ nhân viên duyệt" ||
-     Model.LatestRefundRequest.Status == "Chờ admin duyệt");
-
-    @if (t.Status != "Đã hủy" &&
-         t.Status != "Đang chờ hoàn tiền" &&
-         !hasActiveRefundRequest)
+        (Model.LatestRefundRequest.Status == "Chờ nhân viên duyệt" || Model.LatestRefundRequest.Status == "Chờ admin duyệt");
+    @if (t.Status != "Đã hủy" && t.Status != "Đang chờ hoàn tiền" && !hasActiveRefundRequest)
     {
         <form method="post" action="/quan-tri/ho-tro/@t.TicketId/huy-ve" onsubmit="return confirm('Gửi yêu cầu hủy vé / hoàn tiền cho khách? Tiền chỉ thực sự được hoàn sau khi được duyệt đủ 2 cấp (Nhân viên rồi Admin).');" class="admin-form">
             @Html.AntiForgeryToken()

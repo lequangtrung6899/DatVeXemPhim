@@ -131,6 +131,16 @@ public class PaymentController : BaseController
                 item.ConfirmedAt = DateTime.Now;
                 item.VoucherId = pricing.AppliedVoucher?.VoucherId;
 
+                // Thanh toán thành công -> ghế mới thực sự chuyển từ "Đang giữ" (giỏ
+                // hàng) sang "Đã đặt" (đã bán, cố định). Trước đó ghế đã bị chiếm chỗ
+                // ở trạng thái "Đang giữ" từ lúc thêm vào giỏ hàng (BookingController.Confirm).
+                foreach (var td in item.TicketDetails)
+                {
+                    td.ShowtimeSeat.Status = "Đã đặt";
+                    td.ShowtimeSeat.HeldBySessionId = null;
+                    td.ShowtimeSeat.HoldExpiredAt = null;
+                }
+
                 Db.Payments.Add(new Payment
                 {
                     TicketId = item.TicketId,

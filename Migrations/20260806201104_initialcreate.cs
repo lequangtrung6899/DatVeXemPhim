@@ -290,41 +290,6 @@ namespace DatVeXemPhim.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "PendingChanges",
-                columns: table => new
-                {
-                    PendingChangeId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    EntityType = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
-                    EntityId = table.Column<int>(type: "int", nullable: true),
-                    ActionType = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
-                    ChangesJson = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Summary = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
-                    SubmittedBy = table.Column<int>(type: "int", nullable: false),
-                    SubmittedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Status = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    ReviewedBy = table.Column<int>(type: "int", nullable: true),
-                    ReviewedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    RejectReason = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PendingChanges", x => x.PendingChangeId);
-                    table.ForeignKey(
-                        name: "FK_PendingChanges_Users_ReviewedBy",
-                        column: x => x.ReviewedBy,
-                        principalTable: "Users",
-                        principalColumn: "UserId",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_PendingChanges_Users_SubmittedBy",
-                        column: x => x.SubmittedBy,
-                        principalTable: "Users",
-                        principalColumn: "UserId",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "ShowtimeSeats",
                 columns: table => new
                 {
@@ -414,61 +379,6 @@ namespace DatVeXemPhim.Migrations
                         column: x => x.TicketId,
                         principalTable: "Tickets",
                         principalColumn: "TicketId",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "RefundRequests",
-                columns: table => new
-                {
-                    RefundRequestId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    TicketId = table.Column<int>(type: "int", nullable: false),
-                    CustomerId = table.Column<int>(type: "int", nullable: false),
-                    Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Reason = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
-                    RequestedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Status = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    StaffApprovedBy = table.Column<int>(type: "int", nullable: true),
-                    StaffApprovedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    AdminApprovedBy = table.Column<int>(type: "int", nullable: true),
-                    AdminApprovedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    RejectReason = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
-                    RejectedBy = table.Column<int>(type: "int", nullable: true),
-                    RejectedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_RefundRequests", x => x.RefundRequestId);
-                    table.ForeignKey(
-                        name: "FK_RefundRequests_Customers_CustomerId",
-                        column: x => x.CustomerId,
-                        principalTable: "Customers",
-                        principalColumn: "CustomerId",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_RefundRequests_Tickets_TicketId",
-                        column: x => x.TicketId,
-                        principalTable: "Tickets",
-                        principalColumn: "TicketId",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_RefundRequests_Users_AdminApprovedBy",
-                        column: x => x.AdminApprovedBy,
-                        principalTable: "Users",
-                        principalColumn: "UserId",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_RefundRequests_Users_RejectedBy",
-                        column: x => x.RejectedBy,
-                        principalTable: "Users",
-                        principalColumn: "UserId",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_RefundRequests_Users_StaffApprovedBy",
-                        column: x => x.StaffApprovedBy,
-                        principalTable: "Users",
-                        principalColumn: "UserId",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -1826,41 +1736,6 @@ namespace DatVeXemPhim.Migrations
                 column: "TicketId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PendingChanges_ReviewedBy",
-                table: "PendingChanges",
-                column: "ReviewedBy");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PendingChanges_SubmittedBy",
-                table: "PendingChanges",
-                column: "SubmittedBy");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_RefundRequests_AdminApprovedBy",
-                table: "RefundRequests",
-                column: "AdminApprovedBy");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_RefundRequests_CustomerId",
-                table: "RefundRequests",
-                column: "CustomerId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_RefundRequests_RejectedBy",
-                table: "RefundRequests",
-                column: "RejectedBy");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_RefundRequests_StaffApprovedBy",
-                table: "RefundRequests",
-                column: "StaffApprovedBy");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_RefundRequests_TicketId",
-                table: "RefundRequests",
-                column: "TicketId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Reviews_CustomerId",
                 table: "Reviews",
                 column: "CustomerId");
@@ -1953,12 +1828,6 @@ namespace DatVeXemPhim.Migrations
                 name: "Payments");
 
             migrationBuilder.DropTable(
-                name: "PendingChanges");
-
-            migrationBuilder.DropTable(
-                name: "RefundRequests");
-
-            migrationBuilder.DropTable(
                 name: "Reviews");
 
             migrationBuilder.DropTable(
@@ -1968,10 +1837,10 @@ namespace DatVeXemPhim.Migrations
                 name: "TicketDetails");
 
             migrationBuilder.DropTable(
-                name: "Genres");
+                name: "Users");
 
             migrationBuilder.DropTable(
-                name: "Users");
+                name: "Genres");
 
             migrationBuilder.DropTable(
                 name: "Combos");
